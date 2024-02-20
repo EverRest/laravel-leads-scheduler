@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Models\Lead;
 use App\Models\Partner;
 use App\Repositories\LeadRepository;
 use App\Repositories\PartnerRepository;
@@ -16,11 +15,13 @@ use RuntimeException;
 
 class ScheduleService
 {
+    private const DEFAULT_TIME_FORMAT = 'Y-m-d H:i:s';
+
     /**
      * ScheduleService constructor.
      *
      * @param PartnerRepository $partnerRepository
-     * @param LeadRepository $leadRepository
+     * @param LeadRepository    $leadRepository
      */
     public function __construct(
         private readonly PartnerRepository $partnerRepository,
@@ -36,6 +37,7 @@ class ScheduleService
      * @param Carbon $toDate
      *
      * @return Collection
+     * @throws Exception
      */
     public function scheduleLeads(
         array      $importedLeads,
@@ -64,11 +66,8 @@ class ScheduleService
     public function countFreeSlots(string|int $partnerId, Carbon $fromDate, Carbon $toDate): int
     {
         $freeMinutes = $toDate->diffInMinutes($fromDate);
-        $scheduledLeadsCount = $this->leadRepository->query()
-            ->where('is_sent', false)
-            ->where('partner_id', $partnerId)
-            ->whereBetween('scheduled_at', [$fromDate, $toDate])
-            ->count();
+        $scheduledLeadsCount = $this->leadRepository
+            ->getScheduledLeadsCount($partnerId, $fromDate, $toDate);
 
         return intval($freeMinutes / 5 - $scheduledLeadsCount);
     }
@@ -99,31 +98,42 @@ class ScheduleService
         ];
 
         return $this->leadRepository
-            ->firstOrCreate($attributes);
+            ->store($attributes);
     }
 
     /**
      * @param string|int $partnerId
      * @param Carbon $fromDate
      * @param Carbon $toDate
+     * @param int $minInterval
      *
      * @return Carbon
      */
-    public function findFreeSlot(string|int $partnerId, Carbon $fromDate, Carbon $toDate): Carbon
+    public function findFreeSlot(string|int $partnerId, Carbon $fromDate, Carbon $toDate, int $minInterval = 5): Carbon
     {
-        $timeInterval = 5;
+        $timeInterval = $minInterval;
+        $minDifference = $minInterval + 1;
         $diffInMinutes = $toDate->diffInMinutes($fromDate);
         $numberOfSlots = intval($diffInMinutes / $timeInterval);
-        $allSlots = collect(range(0, $numberOfSlots - 1))
-            ->map(function ($slotIndex) use ($fromDate, $timeInterval) {
-                return $fromDate->copy()->addMinutes($slotIndex * $timeInterval);
-            });
-        $scheduledSlots = $this->leadRepository->query()
-            ->where('is_sent', false)
-            ->where('partner_id', $partnerId)
-            ->whereBetween('scheduled_at', [$fromDate, $toDate])
-            ->pluck('scheduled_at');
-        $availableSlots = $allSlots->diff($scheduledSlots);
+        $availableSlots = Collection::make();
+        for ($i = 0; $i < $numberOfSlots; $i++) {
+            $randomOffset = rand(0, $minDifference - 1);
+            $slot = $fromDate->copy()->addMinutes(($i * $timeInterval) + $randomOffset);
+            $availableSlots->push($slot);
+        }
+        $scheduledSlots = $this->leadRepository->getScheduledLeadSlots($partnerId, $fromDate, $toDate);
+        $shapedSlots = Collection::make();
+        foreach ($scheduledSlots as $scheduledSlot) {
+            $scheduledTime = Carbon::parse($scheduledSlot);
+            for ($i = 0; $i < $timeInterval; $i++) {
+                $closedPreviousSlot = $scheduledTime->copy()->subMinutes($i);
+                $closedNextSlot = $scheduledTime->copy()->addMinutes($i);
+                $shapedSlots->push($closedPreviousSlot->format(self::DEFAULT_TIME_FORMAT));
+                $shapedSlots->push($closedNextSlot->format(self::DEFAULT_TIME_FORMAT));
+            }
+        }
+        $scheduledSlots = $scheduledSlots->merge($shapedSlots)->unique();
+        $availableSlots = $availableSlots->diff($scheduledSlots);
         if ($availableSlots->isEmpty()) {
             throw new RuntimeException('No available slots within the specified range');
         }

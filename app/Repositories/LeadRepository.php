@@ -30,4 +30,36 @@ class LeadRepository extends Repository
                 ]
             )->get();
     }
+
+    /**
+     * @param int|string $partnerId
+     * @param Carbon $fromDate
+     * @param Carbon $toDate
+     *
+     * @return int
+     */
+    public function getScheduledLeadsCount(int|string $partnerId, Carbon $fromDate, Carbon $toDate): int
+    {
+        return $this->query()
+            ->where('is_sent', false)
+            ->where('partner_id', $partnerId)
+            ->whereBetween('scheduled_at', [$fromDate, $toDate])
+            ->count();
+    }
+
+    /**
+     * @param int|string $partnerId
+     * @param Carbon $fromDate
+     * @param Carbon $toDate
+     *
+     * @return Collection
+     */
+    public function getScheduledLeadSlots(int|string $partnerId, Carbon $fromDate, Carbon $toDate): Collection
+    {
+        return $this->query()
+            ->where('is_sent', false)
+            ->where('partner_id', $partnerId)
+            ->whereBetween('scheduled_at', [$fromDate, $toDate])
+            ->pluck('scheduled_at');
+    }
 }

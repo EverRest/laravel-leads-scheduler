@@ -66,7 +66,7 @@ class Repository
          */
         $model = App::make($this->model);
 
-        return $model::query();
+        return $model::query()->lockForUpdate();
     }
 
     /**
