@@ -5,12 +5,18 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\BatchRequest;
 use App\Services\ScheduleService;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Response;
 
 class BatchController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     *
+     * @param ScheduleService $scheduleService
+     */
     public function __construct(private readonly ScheduleService $scheduleService)
     {
     }
@@ -19,6 +25,7 @@ class BatchController extends Controller
      * @param BatchRequest $request
      *
      * @return JsonResponse
+     * @throws Exception
      */
     public function __invoke(BatchRequest $request): JsonResponse
     {

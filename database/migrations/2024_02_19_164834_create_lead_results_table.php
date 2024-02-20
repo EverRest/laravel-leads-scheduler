@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('lead_results', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('lead_id');
+            $table->integer('status')->default(0);
+            $table->string('screen_shot')->nullable();
             $table->foreign('lead_id')->references('id')
                 ->on('leads')
                 ->onDelete('cascade');

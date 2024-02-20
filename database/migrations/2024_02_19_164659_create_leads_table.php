@@ -18,10 +18,9 @@ return new class extends Migration
             $table->string('last_name', 100);
             $table->string('email', 100);
             $table->string('phone', 50)->nullable();
+            $table->string('phone_code', 50);
             $table->string('password', 255)->nullable();
-            $table->string('offer_url', 255);
             $table->string('country', 10);
-            $table->string('ip', 50);
             $table->unsignedBigInteger('partner_id');
             $table->foreign('partner_id')->references('id')
                 ->on('partners')

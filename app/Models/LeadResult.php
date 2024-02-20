@@ -9,4 +9,15 @@ use Illuminate\Database\Eloquent\Model;
 class LeadResult extends Model
 {
     use HasFactory;
+
+    /**
+     * @var string[] $fillable
+     */
+    protected $fillable = [
+        'lead_id',
+        'result',
+        'status',
+        'message',
+        'screen_shot',
+    ];
 }
