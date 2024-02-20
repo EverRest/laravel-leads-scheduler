@@ -25,10 +25,33 @@ class LeadRepository extends Repository
                 [
                     Carbon::now()->subMonth(),
                     Carbon::now()->addMonth(),
-//                    Carbon::now()->subMinute(),
-//                    Carbon::now()->addMinute()
+                    Carbon::now()->subMinute(),
+                    Carbon::now()->addMinute()
                 ]
             )->get();
+    }
+
+    /**
+     * @param string $import
+     *
+     * @return bool
+     */
+    public function getBatchResult(string $import): bool
+    {
+        return $this->query()
+            ->where('import', $import)
+            ->where('is_sent', false)
+            ->exists();
+    }
+
+    /**
+     * @param string $import
+     *
+     * @return Collection
+     */
+    public function getLeadsByImport(string $import): Collection
+    {
+        return $this->query()->where('import', $import)->get();
     }
 
     /**
