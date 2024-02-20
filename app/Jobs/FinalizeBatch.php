@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
-use App\Models\Lead;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -12,14 +11,14 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Carbon;
 
-class SendLead implements ShouldQueue
+class FinalizeBatch implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
      * Create a new job instance.
      */
-    public function __construct(private readonly int $leadId)
+    public function __construct(private readonly string $import)
     {
     }
 
@@ -29,7 +28,7 @@ class SendLead implements ShouldQueue
     public function handle(): void
     {
         try {
-            dd("{$this->leadId} " . Carbon::now()->format('Y-m-d H:i:s'));
+            dd("{$this->import} " . Carbon::now()->format('Y-m-d H:i:s'));
         } catch (Exception $e) {
             $this->fail($e);
         }

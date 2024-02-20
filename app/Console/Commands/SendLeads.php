@@ -3,10 +3,14 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Jobs\FinalizeBatch;
 use App\Jobs\SendLead;
 use App\Models\Lead;
 use App\Repositories\LeadRepository;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class SendLeads extends Command
 {
@@ -50,6 +54,11 @@ class SendLeads extends Command
      */
     private function sendLead(Lead $lead): void
     {
-        SendLead::dispatch($lead);
+        Bus::chain([
+            new SendLead($lead->id),
+            new FinalizeBatch($lead->import),
+        ])->catch(function (Throwable $e) {
+            Log::error($e->getMessage());
+        })->dispatch();
     }
 }

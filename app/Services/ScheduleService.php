@@ -17,12 +17,13 @@ use RuntimeException;
 class ScheduleService
 {
     private const DEFAULT_TIME_FORMAT = 'Y-m-d H:i:s';
+    private const MIN_TIME_INTERVAL_BETWEEN_LEADS = 5;
 
     /**
      * ScheduleService constructor.
      *
      * @param PartnerRepository $partnerRepository
-     * @param LeadRepository    $leadRepository
+     * @param LeadRepository $leadRepository
      */
     public function __construct(
         private readonly PartnerRepository $partnerRepository,
@@ -73,7 +74,7 @@ class ScheduleService
         $scheduledLeadsCount = $this->leadRepository
             ->getScheduledLeadsCount($partnerId, $fromDate, $toDate);
 
-        return intval($freeMinutes / 5 - $scheduledLeadsCount);
+        return intval($freeMinutes / self::MIN_TIME_INTERVAL_BETWEEN_LEADS - $scheduledLeadsCount);
     }
 
     /**
@@ -110,14 +111,30 @@ class ScheduleService
      * @param string|int $partnerId
      * @param Carbon $fromDate
      * @param Carbon $toDate
-     * @param int $minInterval
      *
      * @return Carbon
      */
-    public function findFreeSlot(string|int $partnerId, Carbon $fromDate, Carbon $toDate, int $minInterval = 5): Carbon
+    private function findFreeSlot(string|int $partnerId, Carbon $fromDate, Carbon $toDate): Carbon
     {
-        $timeInterval = $minInterval;
-        $minDifference = $minInterval + 1;
+        $availableSlots = $this->findFreeSlots($partnerId, $fromDate, $toDate);
+        if ($availableSlots->isEmpty()) {
+            throw new RuntimeException('No available slots within the specified range');
+        }
+
+        return $availableSlots->random();
+    }
+
+    /**
+     * @param string|int $partnerId
+     * @param Carbon $fromDate
+     * @param Carbon $toDate
+     *
+     * @return Collection
+     */
+    private function findFreeSlots(string|int $partnerId, Carbon $fromDate, Carbon $toDate): Collection
+    {
+        $timeInterval = self::MIN_TIME_INTERVAL_BETWEEN_LEADS;
+        $minDifference = self::MIN_TIME_INTERVAL_BETWEEN_LEADS + 1;
         $diffInMinutes = $toDate->diffInMinutes($fromDate);
         $numberOfSlots = intval($diffInMinutes / $timeInterval);
         $availableSlots = Collection::make();
@@ -138,11 +155,7 @@ class ScheduleService
             }
         }
         $scheduledSlots = $scheduledSlots->merge($shapedSlots)->unique();
-        $availableSlots = $availableSlots->diff($scheduledSlots);
-        if ($availableSlots->isEmpty()) {
-            throw new RuntimeException('No available slots within the specified range');
-        }
 
-        return $availableSlots->random();
+        return $availableSlots->diff($scheduledSlots);
     }
 }
