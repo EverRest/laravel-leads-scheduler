@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('leads', function (Blueprint $table) {
             $table->id();
+            $table->string('import', 255)->index();
             $table->string('first_name', 50);
             $table->string('last_name', 100);
             $table->string('email', 100);

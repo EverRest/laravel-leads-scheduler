@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use RuntimeException;
 
 class ScheduleService
@@ -47,6 +48,9 @@ class ScheduleService
     ): Collection
     {
         $leadModels = Collection::make();
+        /**
+         * @var Partner $partner
+         */
         $partner = $this->partnerRepository->findByExternalId($partnerId);
         foreach ($importedLeads as $importedLead) {
             $leadModel = $this->scheduleLead($importedLead, $partner, $fromDate, $toDate);
@@ -95,6 +99,7 @@ class ScheduleService
             'password' => Arr::get($importedLead, 'password'),
             'country' => Arr::get($importedLead, 'ip_data.country'),
             'ip' => Arr::get($importedLead, 'ip_data.ip'),
+            'import' => Arr::get($importedLead, 'import') . '-' . Str::random(10)
         ];
 
         return $this->leadRepository

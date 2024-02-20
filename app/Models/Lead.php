@@ -17,6 +17,7 @@ class Lead extends Model
      * @var string[] $fillable
      */
     protected $fillable = [
+        'import',
         'first_name',
         'last_name',
         'email',
