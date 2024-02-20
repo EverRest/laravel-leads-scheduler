@@ -95,11 +95,10 @@ class ScheduleService
             'first_name' => Arr::get($importedLead, 'first_name'),
             'last_name' => Arr::get($importedLead, 'last_name'),
             'email' => Arr::get($importedLead, 'email'),
-            'offer_url' => Arr::get($importedLead, 'offerUrl'),
             'phone' => Arr::get($importedLead, 'phone'),
+            'phone_code' => Arr::get($importedLead, 'phone_phoneCode'),
             'password' => Arr::get($importedLead, 'password'),
             'country' => Arr::get($importedLead, 'ip_data.country'),
-            'ip' => Arr::get($importedLead, 'ip_data.ip'),
             'import' => Arr::get($importedLead, 'import') . '-' . Str::random(10)
         ];
 

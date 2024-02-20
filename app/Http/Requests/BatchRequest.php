@@ -37,12 +37,11 @@ class BatchRequest extends FormRequest
                 new LeadPartnerRule($this->partner_id, $this->fromDate, $this->toDate)
             ],
             'leads.*.ip_data' => 'required|array',
-            'leads.*.ip_data.ip' => 'required|string|min:2|max:50',
             'leads.*.ip_data.country' => 'required|string|min:2|max:50',
             'leads.*.first_name' => 'required|string|min:2|max:50',
             'leads.*.last_name' => 'required|string|min:2|max:100',
             'leads.*.email' => 'required|email|min:2|max:100',
-            'leads.*.offerUrl' => 'required|string|min:2|max:255',
+            'leads.*.phone_phoneCode' => 'required|string|min:2|max:255',
             'leads.*.phone' => 'nullable|string|min:2|max:50',
             'partner_id' => 'required|numeric|exists:partners,external_id',
             'fromDate' => 'required|date',
