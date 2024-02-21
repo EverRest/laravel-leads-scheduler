@@ -22,12 +22,12 @@ class LeadRepository extends Repository
         return $this->query()
             ->where('is_sent', false)
             ->whereBetween(
-                'send_at',
+                'scheduled_at',
                 [
                     Carbon::now()->subMonth(),
                     Carbon::now()->addMonth(),
-                    Carbon::now()->subMinute(),
-                    Carbon::now()->addMinute()
+//                    Carbon::now()->subMinute(),
+//                    Carbon::now()->addMinute()
                 ]
             )->get();
     }

@@ -3,9 +3,11 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Http;
 
 class Sdk
 {
@@ -29,9 +31,11 @@ class Sdk
      */
     protected array$config = [];
 
-    public function __construct(Client $httpClient, string $config = '')
+    public function __construct(Client $httpClient, array $options = [])
     {
-        $this->config = Config::get($config);
+        $this->config = $options;
+        $this->domain = Arr::get($options, 'url');
+        $this->token = Arr::get($options, 'token');
         $this->httpClient = $httpClient;
     }
 
@@ -41,20 +45,21 @@ class Sdk
      * @param array $data
      * @param array $options
      *
-     * @return mixed
+     * @return string
      * @throws GuzzleException
+     * @throws Exception
      */
-    protected function sendRequest(string $endpoint, string $method, array $data = [], array $options = []): mixed
+    protected function sendRequest(string $endpoint, string $method, array $data = [], array $options = []): string
     {
-        $url = $this->domain . $endpoint;
-        $options['query'] = $data;
-        if ($method === 'GET') {
+            $url = $this->domain . $endpoint;
             $options['query'] = $data;
-        } else {
-            $options['json'] = $data;
-        }
-        $response = $this->httpClient->request($method, $url, $options);
+            if ($method === 'GET') {
+                $options['query'] = $data;
+            } else {
+                $options['json'] = $data;
+            }
 
-        return $response->getBody()->getContents();
+            $response = $this->httpClient->request($method, $url, $options);
+            return $response->getBody()->getContents();
     }
 }

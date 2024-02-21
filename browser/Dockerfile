@@ -1,4 +1,5 @@
-FROM node:slim
+FROM ubuntu:latest
+USER root
 
 RUN mkdir -p /app
 WORKDIR /app
@@ -6,6 +7,13 @@ WORKDIR /app
 COPY package.json /app
 RUN npm i
 COPY . /app
+
+#Install Node.js
+RUN apt-get update
+RUN apt-get -y install curl gnupg
+RUN curl -sL https://deb.nodesource.com/setup_11.x  | bash -
+RUN apt-get -y install nodejs
+RUN npm install
 
 # We don't need the standalone Chromium
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true

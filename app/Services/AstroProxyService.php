@@ -3,27 +3,34 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Http;
 
 final class AstroProxyService extends Sdk
 {
-    public function __construct(Client $httpClient, string $config = 'services.astro_proxy')
+    public function __construct(Client $httpClient, array $config = [])
     {
+        $config = Config::get('services.astro');
         parent::__construct($httpClient, $config);
     }
 
     /**
-     * @param $ip_data
+     * @param string $country
      * @param $black_list
      *
      * @return array|null
      * @throws GuzzleException
+     * @throws Exception
      */
-    public function checkNeededProxy($ip_data, $black_list):array|null
+    public function checkNeededProxy(string $country, $black_list): array|null
     {
         $test = false;
-        $country = $this->getCountryByISO2($ip_data['country_code']);
+        $country = $this->getCountryByISO2($country);
         if (!$country) {
             exit(json_encode(["status" => 400, "message" => "Немає достпуних проксі для цієї країни"]));
         }
@@ -60,7 +67,7 @@ final class AstroProxyService extends Sdk
 
                 if (isset($createProxy["status"]) && $createProxy["status"] === "ok") {
                     sleep(1);
-                    $needProxy = $this->checkNeededProxy($ip_data, $black_list);
+                    $needProxy = $this->checkNeededProxy($country, $black_list);
                 }
             }
 
@@ -92,7 +99,7 @@ final class AstroProxyService extends Sdk
 
                     if (isset($createProxy["status"]) && $createProxy["status"] === "ok") {
                         sleep(1);
-                        $needProxy = $this->checkNeededProxy($ip_data, $black_list);
+                        $needProxy = $this->checkNeededProxy($country, $black_list);
                     }
                 } else {
                     sleep(40);
@@ -193,18 +200,20 @@ final class AstroProxyService extends Sdk
      * @param string $iso2
      *
      * @return false|mixed
-     * @throws GuzzleException
+     * @throws Exception
      */
     public function getCountryByISO2(string $iso2): mixed
     {
-        $response = $this->sendRequest('countries', 'GET', ['token' => $this->token]);
-        $json = json_decode($response, true);
-
-        if ($json["status"] === "ok") {
-            foreach ($json['data'] as $c) {
-                if (strtoupper($c['iso2']) === strtoupper($iso2)) {
-                    return $c['name'];
-                }
+        $response = Http::get($this->domain . 'countries', [
+            'token' => $this->token,
+        ]);
+        if ($response->status() !== 200) {
+            throw new Exception('Service is not available.');
+        }
+        $json = $response->json();
+        foreach (Arr::get($json, 'data') as $c) {
+            if (strtoupper(Arr::get($c, 'iso2')) === strtoupper($iso2)) {
+                return Arr::get($c, 'name');
             }
         }
 
