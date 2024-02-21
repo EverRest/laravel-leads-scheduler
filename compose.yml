@@ -26,6 +26,19 @@ services:
     networks:
       - leads-scheduler-network
 
+  browser:
+    build:
+      context: ./browser
+      dockerfile: ./Dockerfile
+    working_dir: /app
+    command: "npm install && npm start"
+    volumes:
+      - ./browser:/app
+    ports:
+      - "4000:4000"
+    networks:
+      - leads-scheduler-network
+
   db:
     image: mysql:8.0
     container_name: db
