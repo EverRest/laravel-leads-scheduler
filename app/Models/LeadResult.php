@@ -20,4 +20,12 @@ class LeadResult extends Model
         'message',
         'screen_shot',
     ];
+
+    /**
+     * @var string[] $hidden
+     */
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
 }

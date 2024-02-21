@@ -19,7 +19,8 @@ class LeadRepository extends Repository
      */
     public function getLeadsToSend(): Collection
     {
-        return $this->query()->where('is_sent', false)
+        return $this->query()
+            ->where('is_sent', false)
             ->whereBetween(
                 'send_at',
                 [
@@ -51,7 +52,9 @@ class LeadRepository extends Repository
      */
     public function getLeadsByImport(string $import): Collection
     {
-        return $this->query()->where('import', $import)->get();
+        return $this->query()
+            ->where('import', $import)
+            ->get();
     }
 
     /**

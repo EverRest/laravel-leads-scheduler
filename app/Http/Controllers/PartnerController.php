@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
@@ -6,9 +7,9 @@ use App\Repositories\PartnerRepository;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Response;
 
-class PartnerController extends Controller
+final class PartnerController extends Controller
 {
     /**
      * @param PartnerRepository $partnerRepository

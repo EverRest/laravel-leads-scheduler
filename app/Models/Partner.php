@@ -18,4 +18,12 @@ class Partner extends Model
         'name',
         'data',
     ];
+
+    /**
+     * @var string[] $hidden
+     */
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
 }

@@ -31,6 +31,14 @@ class Lead extends Model
     ];
 
     /**
+     * @var string[] $hidden
+     */
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
+
+    /**
      * @return BelongsTo
      */
     public function Partner(): BelongsTo

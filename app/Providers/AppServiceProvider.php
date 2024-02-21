@@ -6,6 +6,7 @@ namespace App\Providers;
 use App\Repositories\LeadRepository;
 use App\Repositories\LeadResultRepository;
 use App\Repositories\PartnerRepository;
+use App\Services\LeadResultService;
 use App\Services\ScheduleService;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\ServiceProvider;
@@ -20,6 +21,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(
             ScheduleService::class,
             fn() => new ScheduleService(new PartnerRepository(), new LeadRepository())
+        );
+        $this->app->singleton(
+            LeadResultService::class,
+            fn() => new LeadResultService(new LeadResultRepository(), new LeadRepository())
         );
         $this->app->singleton(
             LeadRepository::class,

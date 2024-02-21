@@ -8,13 +8,20 @@ use Illuminate\Support\Str;
 use Illuminate\Http\UploadedFile;
 use Symfony\Component\HttpFoundation\File\File;
 
-class Base64ToUploadedFile
+final class Base64ToUploadedFile
 {
     private string $ext;
     private string $filename;
     private string $fileType;
     private UploadedFile $fileUploaded;
 
+    /**
+     * Base64ToUploadedFile constructor.
+     *
+     * @param string $base64
+     *
+     * @throws Exception
+     */
     public function __construct(private readonly string $base64)
     {
         $this->getFileOfBase64();

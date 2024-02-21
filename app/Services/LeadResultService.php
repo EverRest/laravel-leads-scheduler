@@ -1,51 +1,44 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Http\Controllers;
+namespace App\Services;
 
 use App\Helpers\Base64ToUploadedFile;
-use App\Http\Requests\LeadRequest;
 use App\Repositories\LeadRepository;
 use App\Repositories\LeadResultRepository;
 use Exception;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 
-class LeadController extends Controller
+class LeadResultService
 {
-    /**
-     * @param LeadResultRepository $leadResultRepository
-     * @param LeadRepository $leadRepository
-     */
     public function __construct(
         private readonly LeadResultRepository $leadResultRepository,
-        private readonly LeadRepository $leadRepository
+        private readonly LeadRepository       $leadRepository,
     )
     {
+
     }
 
     /**
-     * @param LeadRequest $request
+     * @param array $attributes
      *
-     * @return JsonResponse
+     * @return Model
+     * @throws Exception
      */
-    public function __invoke(LeadRequest $request): JsonResponse
+    public function store(array $attributes): Model
     {
-        $attributes = $request->validated();
         $leadId = intval(Arr::get($attributes, 'lead_id'));
         $lead = $this->leadRepository->findOrFail($leadId);
         $file = (new Base64ToUploadedFile(Arr::get($attributes, 'file')))->file();
         Storage::disk('local')->put($lead->import, $file);
-        $leadResult = $this->leadResultRepository->store(
+
+        return $this->leadResultRepository->store(
             [
                 ...Arr::except($attributes, 'file'),
                 'screen_shot' => $file->getFilename()
             ]
         );
-
-        return Response::data($leadResult);
     }
 }
