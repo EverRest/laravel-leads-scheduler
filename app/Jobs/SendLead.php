@@ -31,15 +31,16 @@ class SendLead implements ShouldQueue
      * Execute the job.
      */
     public function handle(
-        LeadRepository $leadRepository,
+        LeadRepository    $leadRepository,
         AstroProxyService $astroProxyService,
     ): void
     {
         try {
             $lead = $leadRepository->findOrFail($this->leadId);
-            $astroProxyService->checkNeededProxy($lead->country, []);
+            $proxy = $astroProxyService->checkNeededProxy($lead->country, []);
+            $ip = $astroProxyService->checkMyIP($proxy);
             $service = LeadServiceFactory::createService($lead->partner->external_id);
-            $tmpLink = $service->send($this->leadId);
+            $tmpLink = $service->send($this->leadId, $ip);
             $response = Http::get('localhost:4000', [
                 'url' => $tmpLink,
             ]);

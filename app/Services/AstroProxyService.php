@@ -7,7 +7,6 @@ use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 
@@ -207,7 +206,7 @@ final class AstroProxyService extends Sdk
         $response = Http::get($this->domain . 'countries', [
             'token' => $this->token,
         ]);
-        if ($response->status() !== 200) {
+        if ($response->failed()) {
             throw new Exception('Service is not available.');
         }
         $json = $response->json();
