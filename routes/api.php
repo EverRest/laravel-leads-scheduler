@@ -18,5 +18,5 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post('/batch', BatchController::class)->name('batches');
-Route::post('/leads', LeadResultController::class)->name('leads');
+Route::post('/lead-results', LeadResultController::class)->name('lead-results');
 Route::get('/partners', PartnerController::class)->name('partners');

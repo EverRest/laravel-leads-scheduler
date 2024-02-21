@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
-use App\Models\Lead;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -29,6 +28,9 @@ class SendLead implements ShouldQueue
     public function handle(): void
     {
         try {
+            // pick up proxy due to country code
+            // get autologin link
+            // emulate browser with pupiteer and nodejs
             dd("{$this->leadId} " . Carbon::now()->format('Y-m-d H:i:s'));
         } catch (Exception $e) {
             $this->fail($e);

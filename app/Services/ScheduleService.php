@@ -99,7 +99,7 @@ final                                                                           
             'phone_code' => Arr::get($importedLead, 'phone_phoneCode'),
             'password' => Arr::get($importedLead, 'password'),
             'country' => Arr::get($importedLead, 'ip_data.country'),
-            'import' => Arr::get($importedLead, 'import') . '-' . Str::random(10)
+            'import' => $partner->id . '-' . Carbon::now()->format(self::DEFAULT_TIME_FORMAT),
         ];
 
         return $this->leadRepository
