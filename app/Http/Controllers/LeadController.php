@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Helpers\Base64ToUploadedFile;
+use App\Http\Requests\LeadRequest;
 use App\Repositories\LeadRepository;
 use App\Repositories\LeadResultRepository;
 use Exception;
@@ -27,14 +28,13 @@ class LeadController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param LeadRequest $request
      *
      * @return JsonResponse
-     * @throws Exception
      */
-    public function __invoke(Request $request): JsonResponse
+    public function __invoke(LeadRequest $request): JsonResponse
     {
-        $attributes = $request->all();
+        $attributes = $request->validated();
         $leadId = intval(Arr::get($attributes, 'lead_id'));
         $lead = $this->leadRepository->findOrFail($leadId);
         $file = (new Base64ToUploadedFile(Arr::get($attributes, 'file')))->file();
