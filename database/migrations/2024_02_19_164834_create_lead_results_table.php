@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreign('lead_id')->references('id')
                 ->on('leads')
                 ->onDelete('cascade');
-            $table->json('result');
+            $table->json('data')->nullable();
             $table->timestamps();
         });
     }

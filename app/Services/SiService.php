@@ -5,6 +5,7 @@ namespace App\Services;
 
 use App\Dto\SiDto;
 use Exception;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use Spatie\LaravelData\Data;
@@ -21,34 +22,30 @@ class SiService extends LeadService implements ILeadService
     public function send(int $leadId, string $ip): string
     {
         $dto = $this->createDtoByLeadId($leadId);
+        $url = Config::get('services.startkirev.url');
         $response = Http::withHeaders([
             'Accept' => '*/*',
             'Accept-Encoding' => 'gzip, deflate',
             'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
             'Content-Type' => 'application/x-www-form-urlencoded',
             'Host' => 'stark-ld.platform500.com',
-        ])->asForm()
-            ->post(Config::get('services.startkirev'),
-                [
-                    ...$dto->toArray(),
-                    'ip' => $ip,
-                ]
-            );
+        ])
+            ->asForm()
+            ->post($url, [...$dto->toArray(), 'ip' => $ip,]);
         $this->leadResultRepository
             ->firstOrCreate(
                 [
                     'lead_id' => $leadId,
                     'status' => $response->status(),
-                    'message' => 'Service is not available.',
-                    'result' => $response->json(),
+                    'data' => $response->json(),
                 ]
             );
         if ($response->failed()) {
             throw new Exception('Partner is not available.');
         }
-
         $json = $response->json();
-        return '';
+
+        return Arr::get($json, 'auto_login_url', '');
     }
 
     /**

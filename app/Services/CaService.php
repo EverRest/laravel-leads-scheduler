@@ -5,6 +5,7 @@ namespace App\Services;
 
 use App\Dto\CaDto;
 use Exception;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use Spatie\LaravelData\Data;
@@ -21,6 +22,7 @@ class CaService extends LeadService implements ILeadService
     public function send(int $leadId, string $ip): string
     {
         $dto = $this->createDtoByLeadId($leadId);
+        $url = Config::get('services.cmaffs.url');
         $response = Http::withHeaders([
             'Accept' => '*/*',
             'Accept-Encoding' => 'gzip, deflate',
@@ -28,27 +30,22 @@ class CaService extends LeadService implements ILeadService
             'x-api-key' => '426ab522-a627-4d46-a792-7ac4ec68ab08',
             'Content-Type' => 'application/x-www-form-urlencoded',
         ])
-            ->post(Config::get('services.cmaffs'),
-                [
-                    ...$dto->toArray(),
-                    'ip' => $ip,
-                ]
-            );
-
+            ->asForm()
+            ->post($url, [...$dto->toArray(), 'ip' => $ip,]);
         $this->leadResultRepository
             ->firstOrCreate(
                 [
                     'lead_id' => $leadId,
                     'status' => $response->status(),
-                    'message' => 'Service is not available.',
-                    'result' => $response->json(),
+                    'data' => $response->json(),
                 ]
             );
         if ($response->failed()) {
             throw new Exception('Partner is not available.');
         }
-
         $json = $response->json();
+
+        return Arr::get($json, 'auto_login_url', '');
     }
 
     /**

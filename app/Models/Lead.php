@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Helpers\PasswordGenerator;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Str;
 
 class Lead extends Model
 {
@@ -54,7 +54,7 @@ class Lead extends Model
         return Attribute::make(
             set: function ($value) {
                 if(is_null($value)) {
-                    return Str::random(10);
+                    return PasswordGenerator::generatePassword(10);
                 }
                 return $value;
             },

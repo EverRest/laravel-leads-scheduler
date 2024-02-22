@@ -47,7 +47,7 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Nginx configuration
-COPY docker/nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY docker/nginx/* /etc/nginx/conf.d/
 
 # Expose ports
 EXPOSE 9000

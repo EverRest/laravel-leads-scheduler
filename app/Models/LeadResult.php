@@ -15,9 +15,8 @@ class LeadResult extends Model
      */
     protected $fillable = [
         'lead_id',
-        'result',
+        'data',
         'status',
-        'message',
         'screen_shot',
     ];
 
@@ -27,5 +26,13 @@ class LeadResult extends Model
     protected $hidden = [
         'created_at',
         'updated_at',
+    ];
+
+    /**
+     * @var string[] $casts
+     */
+    protected $casts = [
+        'data' => 'json',
+        'status' => 'integer',
     ];
 }

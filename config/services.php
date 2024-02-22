@@ -31,6 +31,11 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'astro' => [
+        'url' => env('ASTRO_PROXY_URL'),
+        'token' => env('ASTRO_PROXY_TOKEN'),
+    ],
+
     'startkirev' => [
         'url' => env('STARTK_IREV_URL'),
     ],

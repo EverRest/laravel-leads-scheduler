@@ -7,7 +7,6 @@ class Browser {
     proxy;
     constructor (proxy) {
         console.log(proxy)
-
         puppeteer.use(StealthPlugin())
         this.proxy = proxy
         const arg = ['--disable-gpu', '--disable-setuid-sandbox', '--no-sandbox', '--no-zygote' ]

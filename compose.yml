@@ -19,23 +19,27 @@ services:
       - .:/var/www/html
       - ./docker/nginx:/etc/nginx/conf.d
     ports:
+#      - "4000:4000"
       - "8080:80"
       - "443:443"
     depends_on:
       - app
+      - browser
     networks:
       - leads-scheduler-network
 
   browser:
+    container_name: browser
     build:
       context: ./browser
       dockerfile: ./Dockerfile
     working_dir: /app
+    restart: unless-stopped
     command: "npm install && npm start"
     volumes:
       - ./browser:/app
     ports:
-      - "4000:4000"
+      - "3000:4000"
     networks:
       - leads-scheduler-network
 

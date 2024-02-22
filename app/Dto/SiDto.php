@@ -22,9 +22,9 @@ class SiDto extends Data
         #[MapInputName('last_name')]
         public string $last_name,
         #[MapInputName('password')]
-        public float  $password,
+        public string  $password,
         #[MapInputName('email')]
-        public float  $email,
+        public string  $email,
         #[MapInputName('phone')]
         public string $phone,
         #[MapInputName('phone_code')]
