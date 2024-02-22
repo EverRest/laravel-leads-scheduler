@@ -24,18 +24,21 @@ class CaService extends LeadService implements ILeadService
     {
         $dto = $this->createDtoByLeadId($lead->id);
         $url = Config::get('services.cmaffs.url');
-        $response = Http::withOptions([
+        $response = Http::withHeaders([
+            'Content-Length' => '239',
+            'Accept' => '*/*',
+            'Accept-Encoding' => 'gzip, deflate',
+            'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
+            'Host' => 'api.lead2trk.online',
+            'x-api-key' => '426ab522-a627-4d46-a792-7ac4ec68ab08',
+            'Content-Type' => 'application/x-www-form-urlencoded',
+        ])->withOptions([
             'proxy' => "http://{$lead->leadProxy->username}:{$lead->leadProxy->password}@{$lead->leadProxy->ip}:{$lead->leadProxy->port}",
             'verify' => false,
             'curl' => [
                 CURLOPT_FOLLOWLOCATION => true,
             ],
-        ])->withHeaders([
-            'Accept' => '*/*',
-            'Accept-Encoding' => 'gzip, deflate',
-            'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
-            'x-api-key' => '426ab522-a627-4d46-a792-7ac4ec68ab08',
-            'Content-Type' => 'application/x-www-form-urlencoded',
+            'debug' => true,
         ])
             ->asForm()
             ->post($url, [...$dto->toArray(), 'ip' => $lead->leadProxy->ip,]);

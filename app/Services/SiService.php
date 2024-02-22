@@ -22,18 +22,19 @@ class SiService extends LeadService implements ILeadService
     {
         $dto = $this->createDtoByLeadId($lead->id);
         $url = Config::get('services.startkirev.url');
-        $response = Http::withOptions([
-            'proxy' => "http://{$lead->leadProxy->username}:{$lead->leadProxy->password}@{$lead->leadProxy->ip}:{$lead->leadProxy->port}",
-            'verify' => false,
-            'curl' => [
-                CURLOPT_FOLLOWLOCATION => true,
-            ],
-        ])->withHeaders([
+        $response = Http::withHeaders([
             'Accept' => '*/*',
             'Accept-Encoding' => 'gzip, deflate',
             'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
             'Content-Type' => 'application/x-www-form-urlencoded',
             'Host' => 'stark-ld.platform500.com',
+        ])->withOptions([
+            'proxy' => "http://{$lead->leadProxy->username}:{$lead->leadProxy->password}@{$lead->leadProxy->ip}:{$lead->leadProxy->port}",
+            'verify' => false,
+            'curl' => [
+                CURLOPT_FOLLOWLOCATION => true,
+            ],
+            'debug' => true,
         ])
             ->asForm()
             ->post($url, [...$dto->toArray(), 'ip' => $lead->leadProxy->ip,]);

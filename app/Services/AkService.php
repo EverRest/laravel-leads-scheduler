@@ -24,19 +24,19 @@ class AkService extends LeadService implements ILeadService
     {
         $dto = $this->createDtoByLeadId($lead->id);
         $url = Config::get('services.affiliatekingz.url');
-        $response = Http::withOptions([
+        $response = Http::withHeaders([
+            'Content-Type' => 'application/x-www-form-urlencoded',
+            'Accept' => '*/*',
+            'Accept-Encoding' => 'gzip, deflate',
+            'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
+        ])->withOptions([
             'proxy' => "http://{$lead->leadProxy->username}:{$lead->leadProxy->password}@{$lead->leadProxy->ip}:{$lead->leadProxy->port}",
             'verify' => false,
             'curl' => [
                 CURLOPT_FOLLOWLOCATION => true,
             ],
-        ])->withHeaders([
-            'Content-Type' => 'application/x-www-form-urlencoded',
-            'Accept' => '*/*',
-            'Accept-Encoding' => 'gzip, deflate',
-            'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
-        ])
-            ->asForm()
+            'debug' => true,
+        ])->asForm()
             ->post($url, [...$dto->toArray(), '_ip' => $lead->leadProxy->ip,]);
         if ($response->failed()) {
             Log::error($response->status() . ' Partner is not available.');
