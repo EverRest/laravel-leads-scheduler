@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Lead extends Model
 {
@@ -47,6 +48,22 @@ class Lead extends Model
     }
 
     /**
+     * @return HasOne
+     */
+    public function leadProxy(): HasOne
+    {
+        return $this->hasOne(LeadProxy::class);
+    }
+
+    /**
+     * @return HasOne
+     */
+    public function result(): HasOne
+    {
+        return $this->hasOne(LeadResult::class);
+    }
+
+    /**
      * @return Attribute
      */
     public function password(): Attribute
@@ -54,7 +71,7 @@ class Lead extends Model
         return Attribute::make(
             set: function ($value) {
                 if(is_null($value)) {
-                    return PasswordGenerator::generatePassword(10);
+                    return PasswordGenerator::generatePassword();
                 }
                 return $value;
             },

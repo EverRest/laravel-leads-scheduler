@@ -3,11 +3,13 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Models\Lead;
 use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class AstroService
 {
@@ -49,7 +51,7 @@ class AstroService
         $endpoint = $this->setToken($url);
         $response = Http::get($endpoint);
         if ($response->failed()) {
-            throw new Exception('Proxy returns error.');
+            Log::error($iso2 . ' getCountryByISO2: Proxy returns error.');
         }
         $json = $response->json();
         foreach (Arr::get($json, 'data') as $c) {
@@ -71,7 +73,7 @@ class AstroService
         $endpoint = $this->setToken($url);
         $response = Http::get("$endpoint&status=active");
         if ($response->failed()) {
-            throw new Exception('Proxy returns error.');
+            Log::error('getAvailablePorts:Proxy returns error.');
         }
         $json = $response->json();
 
@@ -84,17 +86,17 @@ class AstroService
      * @return mixed
      * @throws Exception
      */
-    public function changeIpOnPort(int $portId): mixed
+    public function newIp(int $portId): mixed
     {
         $url = "{$this->domain}ports/$portId/newip";
         $endpoint = $this->setToken($url);
         $response = Http::get($endpoint);
         if ($response->failed()) {
-            throw new Exception('Proxy returns error.');
+            Log::error('newIp: Proxy returns error.');
         }
         $json = $response->json();
 
-        return Arr::get($json, 'ip');
+        return Arr::get($json, 'data.ip');
     }
 
     /**
@@ -105,7 +107,7 @@ class AstroService
      */
     public function checkMyIp(array $proxy): string
     {
-        $url = "{$this->domain}checkMyIp";
+        $url = "https://bitcoin-adw.com/api/v1/checkMyIP";
         $endpoint = $this->setToken($url);
         $response = Http::withHeaders(
             [
@@ -115,7 +117,7 @@ class AstroService
         )
             ->get($endpoint);
         if ($response->failed()) {
-            throw new Exception('Proxy returns error.');
+            Log::error('checkMyIp: Proxy returns error with status ' . $response->status());
         }
         $json = $response->json();
 
@@ -144,11 +146,12 @@ class AstroService
 
     /**
      * @param string $country
+     * @param Lead $lead
      *
-     * @return Collection
+     * @return array
      * @throws Exception
      */
-    public function createPortByCountry(string $country): Collection
+    public function createPortByLead(string $country, Lead $lead): array
     {
         $url = "{$this->domain}ports";
         $endpoint = $this->setToken($url);
@@ -159,16 +162,35 @@ class AstroService
             "rotation_by" => "link",
             "is_unlimited" => "0",
             "volume" => "0.1",
-            "username" => "api_username",
-            "password" => "api_password",
+            "username" => $lead->first_name,
+            "password" => $lead->password,
         ];
         $response = Http::post($endpoint, $data);
         if ($response->failed()) {
-            throw new Exception('Proxy returns error.');
+            Log::error($lead->id . ' createPortByLead Proxy returns error.');
         }
         $json = $response->json();
 
-        return Collection::make(Arr::get($json, 'data', []));
+        return Arr::get($json, 'data.0', []);
+    }
+
+    /**
+     * @param string $country
+     * @param Lead $lead
+     *
+     * @return array
+     * @throws Exception
+     */
+    public function deletePort(string|int $portId): bool
+    {
+        $url = "{$this->domain}ports/{$portId}";
+        $endpoint = $this->setToken($url);
+        $response = Http::delete($endpoint);
+        if ($response->failed()) {
+            Log::error($portId . ' deletePort Proxy returns error.');
+        }
+
+        return $response->successful();
     }
 
     /**

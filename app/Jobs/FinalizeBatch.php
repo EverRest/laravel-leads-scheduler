@@ -5,16 +5,18 @@ namespace App\Jobs;
 
 use App\Repositories\LeadRepository;
 use Exception;
+use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 use Telegram\Bot\Laravel\Facades\Telegram;
 
 class FinalizeBatch implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
      * Create a new job instance.
@@ -29,6 +31,7 @@ class FinalizeBatch implements ShouldQueue
     public function handle(LeadRepository $leadRepository): void
     {
         try {
+            Log::info(class_basename($this) . ' started.');
             $chatId = '';
             if ($leadRepository->getBatchResult($this->import)) {
                 $leads = $leadRepository->getLeadsByImport($this->import);

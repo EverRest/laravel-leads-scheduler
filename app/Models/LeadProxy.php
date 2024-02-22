@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class LeadResult extends Model
+class LeadProxy extends Model
 {
     use HasFactory;
 
@@ -16,9 +16,13 @@ class LeadResult extends Model
      */
     protected $fillable = [
         'lead_id',
-        'data',
-        'status',
-        'screen_shot',
+        'protocol',
+        'country',
+        'ip',
+        'host',
+        'port',
+        'username',
+        'password',
     ];
 
     /**
@@ -27,14 +31,6 @@ class LeadResult extends Model
     protected $hidden = [
         'created_at',
         'updated_at',
-    ];
-
-    /**
-     * @var string[] $casts
-     */
-    protected $casts = [
-        'data' => 'json',
-        'status' => 'integer',
     ];
 
     /**

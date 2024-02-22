@@ -5,8 +5,8 @@ namespace App\Console\Commands;
 
 use App\Jobs\FinalizeBatch;
 use App\Jobs\SendLead;
-use App\Models\Lead;
 use App\Repositories\LeadRepository;
+use Illuminate\Bus\Batch;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Log;
@@ -44,21 +44,24 @@ class SendLeads extends Command
     public function handle(): void
     {
         $leads = $this->leadRepository->getLeadsToSend();
+        $batch = [];
         foreach ($leads as $lead) {
-            $this->sendLead($lead);
+            $batch[] = [
+                new SendLead($lead->id),
+                new FinalizeBatch($lead->import),
+            ];
         }
+        $this->sendLead($batch);
     }
 
     /**
-     * @param Lead $lead
+     * @param array $batch
+     * @throws Throwable
      */
-    private function sendLead(Lead $lead): void
+    private function sendLead(array $batch): void
     {
-        Bus::chain([
-            new SendLead($lead->id),
-            new FinalizeBatch($lead->import),
-        ])->catch(function (Throwable $e) {
-            Log::error($e->getMessage());
-        })->dispatch();
+        Bus::batch($batch)
+            ->then(fn (Batch $batch) => Log::info($batch->name . ': Batch finished.'))
+            ->dispatch();
     }
 }

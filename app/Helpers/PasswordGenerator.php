@@ -14,7 +14,7 @@ class PasswordGenerator
     {
         $possibleChars =
             "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnpqrstuvwxyz0123456789";
-        $password = 'Aa1';
+        $password = '';
         for ($i = 0; $i < $length; $i++) {
             $rand = rand(0, strlen($possibleChars) - 1);
             $password .= substr($possibleChars, $rand, 1);
