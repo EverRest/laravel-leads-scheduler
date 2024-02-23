@@ -6,12 +6,12 @@ class Browser {
     browser;
     proxy;
     constructor (proxy) {
-        console.log(proxy)
         puppeteer.use(StealthPlugin())
         this.proxy = proxy
         const arg = ['--disable-gpu', '--disable-setuid-sandbox', '--no-sandbox', '--no-zygote' ]
         return (async () => {
             this.browser = await puppeteer.launch({
+                headless: true,
                 executablePath: '/usr/bin/chromium-browser',
                 args: proxy ? [...arg,
                     `--proxy-server=${proxy.protocol}://${proxy.host}:${proxy.port}`,
@@ -25,14 +25,13 @@ class Browser {
     async close () {
         this.browser.close();
     }
-    async createPage (url) {
+    async acreatePage (url) {
         const USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36';
 
         //Randomize User agent or Set a valid one
         const userAgent = randomUseragent.getRandom();
         const UA = userAgent || USER_AGENT;
         const page = await this.browser.newPage();
-        console.log(this.proxy)
 
         if(this.proxy){
             await page.authenticate({
@@ -111,7 +110,7 @@ class Browser {
             })
         } catch (error) {
             if (error.name === "TimeoutError") {
-                console.log (error.name)
+                console.log (error)
                 screenshot = await page.screenshot({
                     // path: './example.png'
                     omitBackground: true,
