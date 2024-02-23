@@ -19,7 +19,7 @@ services:
       - .:/var/www/html
       - ./docker/nginx:/etc/nginx/conf.d
     ports:
-      - "8080:80"
+      - "80:80"
       - "443:443"
     depends_on:
       - app
@@ -34,7 +34,6 @@ services:
       dockerfile: ./Dockerfile
     working_dir: /app
     restart: unless-stopped
-#    command: "npm install && node index.js | pino-pretty"
     volumes:
       - ./browser:/app
     ports:
