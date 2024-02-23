@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Dto\CaDto;
+use App\Dto\CmAffsDto;
 use App\Models\Lead;
 use Exception;
 use Illuminate\Support\Arr;
@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Spatie\LaravelData\Data;
 
-class CaService extends LeadService implements ILeadService
+class CmAffsService extends LeadService implements ILeadService
 {
     /**
      * @param Lead $lead
@@ -67,6 +67,6 @@ class CaService extends LeadService implements ILeadService
     {
         $lead = $this->leadRepository->findOrFail($leadId);
 
-        return CaDto::from($lead->toArray());
+        return CmAffsDto::from($lead->toArray());
     }
 }

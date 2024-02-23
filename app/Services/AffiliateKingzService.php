@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Dto\AkDto;
+use App\Dto\AffiliateKingzDto;
 use App\Models\Lead;
 use Exception;
 use Illuminate\Support\Arr;
@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Spatie\LaravelData\Data;
 
-class AkService extends LeadService implements ILeadService
+class AffiliateKingzService extends LeadService implements ILeadService
 {
     /**
      * @param Lead $lead
@@ -63,6 +63,6 @@ class AkService extends LeadService implements ILeadService
     {
         $lead = $this->leadRepository->findOrFail($leadId);
 
-        return AkDto::from($lead->toArray());
+        return AffiliateKingzDto::from($lead->toArray());
     }
 }

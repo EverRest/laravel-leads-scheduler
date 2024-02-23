@@ -6,15 +6,15 @@ namespace App\Dto;
 use Spatie\LaravelData\Attributes\MapInputName;
 use Spatie\LaravelData\Data;
 
-class CaDto extends Data
+class AffiliateKingzDto extends Data
 {
     /**
      * @param string $first_name
      * @param string $last_name
-     * @param float $password
-     * @param float $email
+     * @param string $password
+     * @param string $email
      * @param string $phone
-     * @param string $phone_code
+     * @param string $area_code
      */
     public function __construct(
         #[MapInputName('first_name')]
@@ -28,7 +28,7 @@ class CaDto extends Data
         #[MapInputName('phone')]
         public string $phone,
         #[MapInputName('phone_code')]
-        public string $phone_code
+        public string $area_code
     )
     {
     }
@@ -43,11 +43,11 @@ class CaDto extends Data
             'last_name' => $this->last_name,
             'password' => $this->password,
             'email' => $this->email,
-            'phone' => $this->phone_code . $this->phone,
-            'custom1' => 'QuantumAI3425',
-            'custom5' => 'ba0bcb793a87f1c0dcb7cfccf55c8dee',
-            'offer_name' => 'QuantumAI3425',
-            'offer_website' => 'QuantumAI3425',
+            'funnel' => 'QuantumProject3394',
+            'affid' => '22',
+            'phone' => $this->phone,
+            'area_code' => $this->area_code,
+            'hitid' => '9e5b40ba27c04c4ffe073437cf1e3a5a',
         ];
     }
 }

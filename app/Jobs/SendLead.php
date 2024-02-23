@@ -6,12 +6,10 @@ namespace App\Jobs;
 use App\Models\Lead;
 use App\Repositories\LeadProxyRepository;
 use App\Repositories\LeadRepository;
-use App\Repositories\LeadResultRepository;
 use App\Services\AstroService;
 use App\Services\LeadResultService;
 use App\Services\LeadServiceFactory;
 use Exception;
-use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -69,7 +67,7 @@ class SendLead implements ShouldQueue
         }
         $service = LeadServiceFactory::createService($lead->partner->external_id);
         $tmpLink = $service->send($lead);
-        $response = Http::get('localhost:4000/browser', [
+        $response = Http::post('localhost:4000/browser', [
             'url' => $tmpLink,
         ]);
         Log::info('Response: ' . $response->body());
@@ -102,13 +100,14 @@ class SendLead implements ShouldQueue
     {
         $country = $astroService->getCountryByISO2($lead->country);
         if (!$country) {
-            throw new Exception(Carbon::now()->format('Y-m-d H:i:s')  . ' Country not found in the proxy list.');
+            Log::error(Carbon::now()->format('Y-m-d H:i:s')  . ' Country not found in the proxy list.');
         }
-        $availablePorts = $astroService->getAvailablePorts();
-        $countryPorts = $availablePorts->filter(
-            fn($port) => Arr::get($port, 'country') === $country
-        );
-        $randomPort = $countryPorts->isEmpty() ? $astroService->createPortByLead($country, $lead):$countryPorts->random();
+//        $availablePorts = $astroService->getAvailablePorts();
+//        $countryPorts = $availablePorts->filter(
+//            fn($port) => Arr::get($port, 'country') === $country
+//        );
+//        $randomPort = $countryPorts->isEmpty() ? $astroService->createPortByLead($country, $lead):$countryPorts->random();
+        $randomPort = $astroService->createPortByLead($country, $lead);
         Log::info( ' Random port: ' . Arr::get($randomPort, 'id') . ' for country: ' . $lead->country);
         $proxy = $astroService->setProxy($randomPort);
         Log::info( ' Picked up proxy: ' . Arr::get($proxy, 'host') . '' . Arr::get($proxy, 'port') . ' for country: ' . $country);

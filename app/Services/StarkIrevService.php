@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Dto\SiDto;
+use App\Dto\StarkIrevDto;
 use App\Models\Lead;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Spatie\LaravelData\Data;
 
-class SiService extends LeadService implements ILeadService
+class StarkIrevService extends LeadService implements ILeadService
 {
     /**
      * @param Lead $lead
@@ -63,6 +63,6 @@ class SiService extends LeadService implements ILeadService
     {
         $lead = $this->leadRepository->findOrFail($leadId);
 
-        return SiDto::from($lead->toArray());
+        return StarkIrevDto::from($lead->toArray());
     }
 }

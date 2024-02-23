@@ -6,7 +6,7 @@ namespace App\Dto;
 use Spatie\LaravelData\Attributes\MapInputName;
 use Spatie\LaravelData\Data;
 
-class SiDto extends Data
+class CmAffsDto extends Data
 {
     /**
      * @param string $first_name
@@ -39,19 +39,15 @@ class SiDto extends Data
     public function toArray(): array
     {
         return [
-            'profile' => [
-                'first_name' => $this->first_name,
-                'last_name' => $this->last_name,
-                'password' => $this->password,
-                'email' => $this->email,
-                'phone' => $this->phone_code . $this->phone,
-            ],
-            'tp_source' => 'Quantum BitQZ 3480',
-            'tp_aff_sub' => '',
-            'tp_aff_sub2' => '384jnc7fob1p',
-            'tp_aff_sub9' => '2870',
-            'tp_aff_sub5' => '449',
-            'tp_aff_sub4' => 'Quantum BitQZ 3480',
+            'first_name' => $this->first_name,
+            'last_name' => $this->last_name,
+            'password' => $this->password,
+            'email' => $this->email,
+            'phone' => $this->phone_code . $this->phone,
+            'custom1' => 'QuantumAI3425',
+            'custom5' => 'ba0bcb793a87f1c0dcb7cfccf55c8dee',
+            'offer_name' => 'QuantumAI3425',
+            'offer_website' => 'QuantumAI3425',
         ];
     }
 }

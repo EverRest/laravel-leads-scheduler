@@ -15,9 +15,9 @@ class LeadServiceFactory
     public static function createService(string $externalPartnerId): ILeadService
     {
         return match ($externalPartnerId) {
-            "1" => new AkService(),
-            "2" => new CaService(),
-            "3" => new SiService(),
+            "1" => new AffiliateKingzService(),
+            "2" => new CmAffsService(),
+            "3" => new StarkIrevService(),
             default => throw new InvalidArgumentException('Invalid partner_id'),
         };
     }
