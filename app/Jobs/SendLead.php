@@ -28,7 +28,7 @@ class SendLead implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(private readonly int $leadId)
+    public function  __construct(private readonly int $leadId)
     {
     }
 
@@ -36,10 +36,10 @@ class SendLead implements ShouldQueue
      * Execute the job.
      */
     public function handle(
-        LeadRepository    $leadRepository,
-        AstroService      $astroService,
+        LeadRepository      $leadRepository,
+        AstroService        $astroService,
         LeadProxyRepository $leadProxyRepository,
-        LeadResultService $leadResultService,
+        LeadResultService   $leadResultService,
     ): void
     {
         try {
@@ -62,7 +62,7 @@ class SendLead implements ShouldQueue
      */
     private function sendLead(Lead $lead, LeadResultService $leadResultService): void
     {
-        if(!$lead->leadProxy->ip) {
+        if (!$lead->leadProxy->ip) {
             Log::error("$lead->id Lead proxy not found.");
         }
         $service = LeadServiceFactory::createService($lead->partner->external_id);
@@ -71,7 +71,7 @@ class SendLead implements ShouldQueue
             'url' => $tmpLink,
         ]);
         Log::info('Response: ' . $response->body());
-        if($response->failed()){
+        if ($response->failed()) {
             Log::error('Failed to send lead: ' . $lead->id);
         }
         $json = $response->json();
@@ -100,23 +100,19 @@ class SendLead implements ShouldQueue
     {
         $country = $astroService->getCountryByISO2($lead->country);
         if (!$country) {
-            Log::error(Carbon::now()->format('Y-m-d H:i:s')  . ' Country not found in the proxy list.');
+            Log::error(Carbon::now()->format('Y-m-d H:i:s') . ' Country not found in the proxy list.');
         }
-//        $availablePorts = $astroService->getAvailablePorts();
-//        $countryPorts = $availablePorts->filter(
-//            fn($port) => Arr::get($port, 'country') === $country
-//        );
-//        $randomPort = $countryPorts->isEmpty() ? $astroService->createPortByLead($country, $lead):$countryPorts->random();
-        $randomPort = $astroService->createPortByLead($country, $lead);
-        Log::info( ' Random port: ' . Arr::get($randomPort, 'id') . ' for country: ' . $lead->country);
-        $proxy = $astroService->setProxy($randomPort);
-        Log::info( ' Picked up proxy: ' . Arr::get($proxy, 'host') . '' . Arr::get($proxy, 'port') . ' for country: ' . $country);
-        $ip = $astroService->newIp(Arr::get($randomPort, 'id'));
-        Log::info( ' Picked up ip: ' . $ip);
+        $port = $astroService->createPortByLead($country, $lead);
+        Log::info($lead->id . ' Random port: ' . Arr::get($port, 'id') . ' for country: ' . $lead->country);
+        $proxy = $astroService->setProxy($port);
+        Log::info($lead->id . ' Picked up proxy: ' . Arr::get($proxy, 'host') . '' . Arr::get($proxy, 'port') . ' for country: ' . $country);
+        $ip = $astroService->newIp(Arr::get($port, 'id'));
+        Log::info($lead->id . ' Picked up ip: ' . $ip);
         Arr::set($proxy, 'ip', $ip);
         $leadProxyRepository->firstOrCreate([
             'lead_id' => $lead->id,
             'ip' => $ip,
+            'external_id' => Arr::get($proxy, 'id'),
             'port' => Arr::get($proxy, 'port'),
             'protocol' => Arr::get($proxy, 'protocol'),
             'username' => Arr::get($proxy, 'username'),

@@ -11,8 +11,8 @@ class CmAffsDto extends Data
     /**
      * @param string $first_name
      * @param string $last_name
-     * @param float $password
-     * @param float $email
+     * @param string $password
+     * @param string $email
      * @param string $phone
      * @param string $phone_code
      */

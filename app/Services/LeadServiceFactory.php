@@ -8,7 +8,7 @@ use InvalidArgumentException;
 class LeadServiceFactory
 {
     /**
-     * @param int $externalPartnerId
+     * @param string $externalPartnerId
      *
      * @return ILeadService
      */

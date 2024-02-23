@@ -19,6 +19,7 @@ class LeadProxy extends Model
         'protocol',
         'country',
         'ip',
+        'external_id',
         'host',
         'port',
         'username',

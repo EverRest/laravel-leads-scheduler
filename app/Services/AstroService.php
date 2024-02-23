@@ -175,11 +175,9 @@ class AstroService
     }
 
     /**
-     * @param string $country
-     * @param Lead $lead
+     * @param string|int $portId
      *
-     * @return array
-     * @throws Exception
+     * @return bool
      */
     public function deletePort(string|int $portId): bool
     {

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('protocol', 255);
             $table->string('country', 50);
             $table->string('ip', 100);
+            $table->string('external_id', 100)->nullable();
             $table->string('host', 100);
             $table->string('port', 255)->nullable();
             $table->string('username', 50);
