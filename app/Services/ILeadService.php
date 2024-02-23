@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\Lead;
-use Spatie\LaravelData\Data;
 
 interface ILeadService
 {
@@ -14,11 +13,4 @@ interface ILeadService
      * @return string
      */
     public function send(Lead $lead):string;
-
-    /**
-     * @param int $leadId
-     *
-     * @return Data
-     */
-    public function createDtoByLeadId(int $leadId):Data;
 }

@@ -5,26 +5,30 @@ namespace App\Services;
 
 use App\Dto\CmAffsDto;
 use App\Models\Lead;
-use Exception;
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 use Spatie\LaravelData\Data;
 
 class CmAffsService extends LeadService implements ILeadService
 {
     /**
-     * @param Lead $lead
+     * @param int $leadId
      *
-     * @return string
-     * @throws Exception
+     * @return Data
      */
-    public function send(Lead $lead): string
+    protected function createDtoByLeadId(int $leadId): Data
     {
-        $dto = $this->createDtoByLeadId($lead->id);
+        $lead = $this->leadRepository->findOrFail($leadId);
+
+        return CmAffsDto::from($lead->toArray());
+    }
+
+    protected function sendRequest(Data $dto, Lead $lead): Response
+    {
         $url = Config::get('services.cmaffs.url');
-        $response = Http::withHeaders([
+        return Http::withHeaders([
             'Content-Length' => '239',
             'Accept' => '*/*',
             'Accept-Encoding' => 'gzip, deflate',
@@ -33,8 +37,9 @@ class CmAffsService extends LeadService implements ILeadService
             'x-api-key' => '426ab522-a627-4d46-a792-7ac4ec68ab08',
             'Content-Type' => 'application/x-www-form-urlencoded',
         ])->withOptions([
-            'proxy' => "http://{$lead->leadProxy->username}:{$lead->leadProxy->password}@{$lead->leadProxy->ip}:{$lead->leadProxy->port}",
+            'proxy' => "http://{$lead->leadProxy->username}:{$lead->leadProxy->password}@{$lead->leadProxy->host}:{$lead->leadProxy->port}",
             'verify' => false,
+            'timeout' => 20000,
             'curl' => [
                 CURLOPT_FOLLOWLOCATION => true,
             ],
@@ -42,31 +47,15 @@ class CmAffsService extends LeadService implements ILeadService
         ])
             ->asForm()
             ->post($url, [...$dto->toArray(), 'ip' => $lead->leadProxy->ip,]);
-        $this->leadResultRepository
-            ->firstOrCreate(
-                [
-                    'lead_id' => $lead->id,
-                    'status' => $response->status(),
-                    'data' => $response->json(),
-                ]
-            );
-        if ($response->failed()) {
-            Log::error($response->status() . ' Partner is not available.');
-        }
-        $json = $response->json();
-
-        return Arr::get($json, 'auto_login_url', '');
     }
 
     /**
-     * @param int $leadId
+     * @param array $data
      *
-     * @return Data
+     * @return string
      */
-    public function createDtoByLeadId(int $leadId): Data
+    protected function getAutoLoginUrl(array $data): string
     {
-        $lead = $this->leadRepository->findOrFail($leadId);
-
-        return CmAffsDto::from($lead->toArray());
+        return Arr::get($data, 'auto_login_url', '');
     }
 }

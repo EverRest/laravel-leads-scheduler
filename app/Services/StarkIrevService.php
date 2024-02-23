@@ -5,6 +5,7 @@ namespace App\Services;
 
 use App\Dto\StarkIrevDto;
 use App\Models\Lead;
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
@@ -14,23 +15,36 @@ use Spatie\LaravelData\Data;
 class StarkIrevService extends LeadService implements ILeadService
 {
     /**
+     * @param int $leadId
+     *
+     * @return Data
+     */
+    protected function createDtoByLeadId(int $leadId): Data
+    {
+        $lead = $this->leadRepository->findOrFail($leadId);
+
+        return StarkIrevDto::from($lead->toArray());
+    }
+
+    /**
+     * @param Data $dto
      * @param Lead $lead
      *
-     * @return string
+     * @return Response
      */
-    public function send(Lead $lead): string
+    protected function sendRequest(Data $dto, Lead $lead): Response
     {
-        $dto = $this->createDtoByLeadId($lead->id);
         $url = Config::get('services.startkirev.url');
-        $response = Http::withHeaders([
+        return Http::withHeaders([
             'Accept' => '*/*',
             'Accept-Encoding' => 'gzip, deflate',
             'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
             'Content-Type' => 'application/x-www-form-urlencoded',
             'Host' => 'stark-ld.platform500.com',
         ])->withOptions([
-            'proxy' => "http://{$lead->leadProxy->username}:{$lead->leadProxy->password}@{$lead->leadProxy->ip}:{$lead->leadProxy->port}",
+            'proxy' => "http://{$lead->leadProxy->username}:{$lead->leadProxy->password}@{$lead->leadProxy->host}:{$lead->leadProxy->port}",
             'verify' => false,
+            'timeout' => 20000,
             'curl' => [
                 CURLOPT_FOLLOWLOCATION => true,
             ],
@@ -38,31 +52,15 @@ class StarkIrevService extends LeadService implements ILeadService
         ])
             ->asForm()
             ->post($url, [...$dto->toArray(), 'ip' => $lead->leadProxy->ip,]);
-        $this->leadResultRepository
-            ->firstOrCreate(
-                [
-                    'lead_id' => $lead->id,
-                    'status' => $response->status(),
-                    'data' => $response->json(),
-                ]
-            );
-        if ($response->failed()) {
-            Log::error($response->status() . ' Partner is not available.');
-        }
-        $json = $response->json();
-
-        return Arr::get($json, 'auto_login_url', '');
     }
 
     /**
-     * @param int $leadId
+     * @param array $data
      *
-     * @return Data
+     * @return string
      */
-    public function createDtoByLeadId(int $leadId): Data
+    protected function getAutoLoginUrl(array $data): string
     {
-        $lead = $this->leadRepository->findOrFail($leadId);
-
-        return StarkIrevDto::from($lead->toArray());
+        return Arr::get($data, 'auto_login_url', '');
     }
 }

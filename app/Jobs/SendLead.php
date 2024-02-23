@@ -45,9 +45,12 @@ class SendLead implements ShouldQueue
         try {
             /** @var Lead $lead */
             $lead = $leadRepository->findOrFail($this->leadId);
-            $proxy = $this->pickUpProxyByCountry($astroService, $leadProxyRepository, $lead);
+//            $proxy = $this->pickUpProxyByCountry($astroService, $leadProxyRepository, $lead);
+            Log::info('Set proxy for lead: ' . $lead->leadProxy?->external_id);
             $this->sendLead($lead, $leadResultService);
-            $astroService->deletePort(Arr::get($proxy, 'id'));
+            Log::info('Lead sent: ' . $lead->id);
+            $astroService->deletePort(Arr::get($lead->leadProxy?->external_id, 'id'));
+            Log::info('Port deleted: ' . $lead->leadProxy?->external_id);
         } catch (Exception $e) {
             $this->fail($e);
         }
@@ -108,7 +111,7 @@ class SendLead implements ShouldQueue
         Log::info($lead->id . ' Picked up proxy: ' . Arr::get($proxy, 'host') . '' . Arr::get($proxy, 'port') . ' for country: ' . $country);
         $ip = $astroService->newIp(Arr::get($port, 'id'));
         Log::info($lead->id . ' Picked up ip: ' . $ip);
-        Arr::set($proxy, 'ip', $ip);
+//        Arr::set($proxy, 'ip', $ip);
         $leadProxyRepository->firstOrCreate([
             'lead_id' => $lead->id,
             'ip' => $ip,
