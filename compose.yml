@@ -19,7 +19,6 @@ services:
       - .:/var/www/html
       - ./docker/nginx:/etc/nginx/conf.d
     ports:
-#      - "4000:4000"
       - "8080:80"
       - "443:443"
     depends_on:
@@ -35,11 +34,11 @@ services:
       dockerfile: ./Dockerfile
     working_dir: /app
     restart: unless-stopped
-    command: "npm install && npm start"
+#    command: "npm install && node index.js | pino-pretty"
     volumes:
       - ./browser:/app
     ports:
-      - "3000:4000"
+      - "4000:4000"
     networks:
       - leads-scheduler-network
 

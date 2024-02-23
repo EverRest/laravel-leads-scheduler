@@ -6,7 +6,9 @@ namespace App\Jobs;
 use App\Models\Lead;
 use App\Repositories\LeadProxyRepository;
 use App\Repositories\LeadRepository;
+use App\Repositories\LeadResultRepository;
 use App\Services\AstroService;
+use App\Services\LeadResultService;
 use App\Services\LeadServiceFactory;
 use Exception;
 use GuzzleHttp\Exception\GuzzleException;
@@ -39,33 +41,51 @@ class SendLead implements ShouldQueue
         LeadRepository    $leadRepository,
         AstroService      $astroService,
         LeadProxyRepository $leadProxyRepository,
+        LeadResultService $leadResultService,
     ): void
     {
         try {
             /** @var Lead $lead */
             $lead = $leadRepository->findOrFail($this->leadId);
             $proxy = $this->pickUpProxyByCountry($astroService, $leadProxyRepository, $lead);
-            $this->sendLead($lead);
+            $this->sendLead($lead, $leadResultService);
             $astroService->deletePort(Arr::get($proxy, 'id'));
-        } catch (Exception|GuzzleException $e) {
+        } catch (Exception $e) {
             $this->fail($e);
         }
     }
 
     /**
      * @param Lead $lead
+     * @param LeadResultService $leadResultService
      *
      * @return void
+     * @throws Exception
      */
-    private function sendLead(Lead $lead): void
+    private function sendLead(Lead $lead, LeadResultService $leadResultService): void
     {
         if(!$lead->leadProxy->ip) {
             Log::error("$lead->id Lead proxy not found.");
         }
         $service = LeadServiceFactory::createService($lead->partner->external_id);
         $tmpLink = $service->send($lead);
-        Http::get('localhost:4000', [
+        $response = Http::get('localhost:4000/browser', [
             'url' => $tmpLink,
+        ]);
+        Log::info('Response: ' . $response->body());
+        if($response->failed()){
+            Log::error('Failed to send lead: ' . $lead->id);
+        }
+        $json = $response->json();
+        $screenShot = Arr::get($json, 'screenshot');
+        $leadResultService->store([
+            'lead_id' => $lead->id,
+            'file' => $screenShot,
+            'status' => 200,
+            'data' => [
+                'response' => $response->body(),
+                'link' => $tmpLink,
+            ],
         ]);
     }
 

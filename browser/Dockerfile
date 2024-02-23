@@ -11,6 +11,7 @@ RUN apk --no-cache add \
     harfbuzz \
     ca-certificates \
     ttf-freefont \
+    udev \
     nodejs \
     npm
 
@@ -22,11 +23,13 @@ ENV CHROME_BIN=/usr/bin/chromium-browser
 WORKDIR /app
 
 # Copy package.json and install npm packages
-COPY package.json /app
+COPY package*.json /app
 RUN npm install
 
 # Copy the rest of the application files
-COPY . /app
+COPY . .
 
 # Expose ports
-EXPOSE 3000
+EXPOSE 4000
+
+CMD ["npm", "run", "start"]
