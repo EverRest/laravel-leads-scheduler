@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Jobs\CreateProxy;
+use App\Jobs\DeleteProxy;
 use App\Jobs\FinalizeBatch;
 use App\Jobs\SendLead;
+use App\Models\Lead;
 use App\Repositories\LeadRepository;
-use Illuminate\Bus\Batch;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Bus;
-use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class SendLeads extends Command
@@ -46,24 +46,18 @@ class SendLeads extends Command
     public function handle(): void
     {
         $leads = $this->leadRepository->getLeadsToSend();
-        $batch = [];
-        foreach ($leads as $lead) {
-            $batch[] = [
-                new SendLead($lead->id),
-                new FinalizeBatch($lead->import),
-            ];
-        }
-        $this->sendLead($batch);
+        $leads->each(fn(Lead $lead) => $this->sendLead($lead));
     }
 
     /**
-     * @param array $batch
-     * @throws Throwable
+     * @param Lead $lead
      */
-    private function sendLead(array $batch): void
+    private function sendLead(Lead $lead): void
     {
-        Bus::batch($batch)
-            ->then(fn (Batch $batch) => Log::info($batch->name . ': Batch finished.'))
-            ->dispatch();
+        CreateProxy::withChain([
+            new SendLead($lead->id),
+            new DeleteProxy($lead->id),
+            new FinalizeBatch($lead->import),
+        ])->dispatch($lead->id);
     }
 }

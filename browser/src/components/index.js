@@ -26,8 +26,6 @@ class Browser {
     }
     async createPage (url) {
         const USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36';
-
-        //Randomize User agent or Set a valid one
         const userAgent = randomUseragent.getRandom();
         const UA = userAgent || USER_AGENT;
         const page = await this.browser.newPage();
@@ -40,7 +38,6 @@ class Browser {
             console.log(this.proxy)
         }
 
-        //Randomize viewport size
         await page.setViewport({
             width: 1920 + Math.floor(Math.random() * 100),
             height: 1280 + Math.floor(Math.random() * 100),
@@ -55,14 +52,12 @@ class Browser {
         await page.setDefaultNavigationTimeout(0);
 
         await page.evaluateOnNewDocument(() => {
-            // Pass webdriver check
             Object.defineProperty(navigator, 'webdriver', {
                 get: () => false,
             });
         });
 
         await page.evaluateOnNewDocument(() => {
-            // Pass chrome check
 
             // @ts-ignore
             window.chrome = {
@@ -103,7 +98,6 @@ class Browser {
         try {
             await page.goto(url, {waitUntil: 'networkidle0', timeout: 0}).then(async () => {
                 screenshot = await page.screenshot({
-                    // path: './example.png'
                     omitBackground: true,
                     encoding: 'binary'
                 });
@@ -112,7 +106,6 @@ class Browser {
             if (error.name === "TimeoutError") {
                 console.log (error)
                 screenshot = await page.screenshot({
-                    // path: './example.png'
                     omitBackground: true,
                     encoding: 'binary'
                 });

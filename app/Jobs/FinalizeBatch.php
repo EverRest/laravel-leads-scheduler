@@ -31,10 +31,10 @@ class FinalizeBatch implements ShouldQueue
     public function handle(LeadRepository $leadRepository): void
     {
         try {
-            Log::info(class_basename($this) . ' started.');
             $chatId = '';
             if ($leadRepository->getBatchResult($this->import)) {
                 $leads = $leadRepository->getLeadsByImport($this->import);
+                Log::info(get_class($this) . ': Batch ' . $this->import . ' has been finalized with ' . $leads->count() . ' leads.');
                 Telegram::sendMessage(
                     [
                         'chat_id' => $chatId,
@@ -42,6 +42,7 @@ class FinalizeBatch implements ShouldQueue
                     ]
                 );
             }
+            Log::info(get_class($this) . ': Job batch finished.');
         } catch (Exception $e) {
             $this->fail($e);
         }

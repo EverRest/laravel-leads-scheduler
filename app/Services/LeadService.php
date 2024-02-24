@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\Lead;
+use App\Repositories\LeadProxyRepository;
 use App\Repositories\LeadRepository;
 use App\Repositories\LeadResultRepository;
 use Exception;
@@ -25,6 +26,11 @@ abstract class LeadService
     protected LeadResultRepository $leadResultRepository;
 
     /**
+     * @var LeadProxyRepository $leadProxyRepository
+     */
+    protected LeadProxyRepository $leadProxyRepository;
+
+    /**
      * @var AstroService $astroService
      */
     protected AstroService $astroService;
@@ -37,6 +43,7 @@ abstract class LeadService
         $this->leadRepository = App::make(LeadRepository::class);
         $this->leadResultRepository = App::make(LeadResultRepository::class);
         $this->astroService = App::make(AstroService::class);
+        $this->leadProxyRepository = App::make(LeadProxyRepository::class);
     }
 
     /**
@@ -49,11 +56,13 @@ abstract class LeadService
     {
         $dto = $this->createDtoByLeadId($lead->id);
         $response = $this->sendRequest($dto, $lead);
-        if ($response->failed()) {
-            $this->astroService->deletePort($lead->leadProxy->external_id);
-            Log::error($response->status() . " Partner $lead->partner_id is not available.");
-        }
         $this->saveLeadResult($lead, $response);
+        if ($response->failed()) {
+//            $this->astroService->deletePort($lead->leadProxy->external_id);
+//            $this->leadProxyRepository->delete($lead->leadProxy->id);
+            Log::error($response->status() . " Partner $lead->partner_id is not available.");
+            throw new Exception($response->status() . " Partner $lead->partner_id is not available.");
+        }
 
         return $this->getAutoLoginUrl($response->json());
     }

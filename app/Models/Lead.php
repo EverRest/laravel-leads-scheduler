@@ -10,6 +10,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
+/**
+ * Class Lead
+ * @package App\Models
+ */
 class Lead extends Model
 {
     use HasFactory;
@@ -37,6 +41,14 @@ class Lead extends Model
     protected $hidden = [
         'created_at',
         'updated_at',
+    ];
+
+    /**
+     * @var string[] $casts
+     */
+    protected $casts = [
+        'scheduled_at' => 'datetime',
+        'is_sent' => 'boolean',
     ];
 
     /**

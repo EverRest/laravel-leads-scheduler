@@ -38,6 +38,11 @@ class AppServiceProvider extends ServiceProvider
             PartnerRepository::class,
             fn() => new PartnerRepository()
         );
+
+        if (!$this->app->environment('production')) {
+            $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
+            $this->app->register(TelescopeServiceProvider::class);
+        }
     }
 
     /**
