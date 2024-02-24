@@ -10,11 +10,11 @@ router.post('/browser', async (req, res, next) => {
     const {proxy, url} = req.body
     let base64screenshot = "";
     try {
+        console.log(proxy, url, "Proxy and URL");
         const browser = await new Browser(proxy)
         console.log($browser, "Browser created");
-        const {page, screenshot} = await browser.createPage(url)
-        console.log(page, screenshot, "Page and Screenshot created");
         base64screenshot = screenshot.toString("base64")
+        console.log(page, base64screenshot, "Page and Screenshot created");
         await browser.close();
         return res.send({status: 200, screenshot: base64screenshot})
     }catch (e) {

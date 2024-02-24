@@ -124,13 +124,12 @@ final                                                                           
     }
 
     /**
-     * @param string|int $partnerId
      * @param Carbon $fromDate
      * @param Carbon $toDate
      *
      * @return Collection
      */
-    private function findFreeSlots(string|int $partnerId, Carbon $fromDate, Carbon $toDate): Collection
+    private function generateAvailableSlots(Carbon $fromDate, Carbon $toDate): Collection
     {
         $timeInterval = self::MIN_TIME_INTERVAL_BETWEEN_LEADS;
         $minDifference = self::MIN_TIME_INTERVAL_BETWEEN_LEADS + 1;
@@ -142,7 +141,18 @@ final                                                                           
             $slot = $fromDate->copy()->addMinutes(($i * $timeInterval) + $randomOffset);
             $availableSlots->push($slot);
         }
-        $scheduledSlots = $this->leadRepository->getScheduledLeadSlots($partnerId, $fromDate, $toDate);
+
+        return $availableSlots;
+    }
+
+    /**
+     * @param Collection $scheduledSlots
+     *
+     * @return Collection
+     */
+    private function shapeScheduledSlots(Collection $scheduledSlots): Collection
+    {
+        $timeInterval = self::MIN_TIME_INTERVAL_BETWEEN_LEADS;
         $shapedSlots = Collection::make();
         foreach ($scheduledSlots as $scheduledSlot) {
             $scheduledTime = Carbon::parse($scheduledSlot);
@@ -153,6 +163,22 @@ final                                                                           
                 $shapedSlots->push($closedNextSlot->format(self::DEFAULT_TIME_FORMAT));
             }
         }
+
+        return $shapedSlots;
+    }
+
+    /**
+     * @param string|int $partnerId
+     * @param Carbon $fromDate
+     * @param Carbon $toDate
+     *
+     * @return Collection
+     */
+    private function findFreeSlots(string|int $partnerId, Carbon $fromDate, Carbon $toDate): Collection
+    {
+        $availableSlots = $this->generateAvailableSlots($fromDate, $toDate);
+        $scheduledSlots = $this->leadRepository->getScheduledLeadSlots($partnerId, $fromDate, $toDate);
+        $shapedSlots = $this->shapeScheduledSlots($scheduledSlots);
         $scheduledSlots = $scheduledSlots->merge($shapedSlots)->unique();
 
         return $availableSlots->diff($scheduledSlots);

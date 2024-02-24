@@ -17,7 +17,9 @@ class Browser {
                     `--proxy-server=${proxy.protocol}://${proxy.host}:${proxy.port}`,
                 ] : [...arg],
             });
-
+            const executablePath = this.browser.process().spawnargs[0];
+            console.log('Chromium executable path:', executablePath);
+            console.log('Browser successfully created.');
             return this;
         })();
     }
