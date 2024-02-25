@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Spatie\LaravelData\Data;
 
-abstract class LeadService
+abstract class PartnerService
 {
     /**
      * @var LeadRepository $leadRepository
@@ -58,10 +58,7 @@ abstract class LeadService
         $response = $this->sendRequest($dto, $lead);
         $this->saveLeadResult($lead, $response);
         if ($response->failed()) {
-//            $this->astroService->deletePort($lead->leadProxy->external_id);
-//            $this->leadProxyRepository->delete($lead->leadProxy->id);
             Log::error($response->status() . " Partner $lead->partner_id is not available.");
-            throw new Exception($response->status() . " Partner $lead->partner_id is not available.");
         }
 
         return $this->getAutoLoginUrl($response->json());

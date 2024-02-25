@@ -3,12 +3,15 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Jobs\CreateProxy;
-use App\Jobs\DeleteProxy;
-use App\Jobs\FinalizeBatch;
-use App\Jobs\SendLead;
 use App\Models\Lead;
+use App\Models\LeadRedirect;
+use App\Repositories\LeadProxyRepository;
 use App\Repositories\LeadRepository;
+use App\Services\AstroService;
+use App\Services\LeadBatchService;
+use App\Services\LeadProxyService;
+use App\Services\LeadRedirectService;
+use Exception;
 use Illuminate\Console\Command;
 use Throwable;
 
@@ -22,11 +25,19 @@ class SendLeads extends Command
     protected $signature = 'leads:send';
 
     /**
-     * Create a new command instance.
-     *
      * @param LeadRepository $leadRepository
+     * @param LeadProxyRepository $leadProxyRepository
+     * @param AstroService $astroService
+     * @param LeadProxyService $leadProxyService
+     * @param LeadRedirectService $leadRedirectService
+     * @param LeadBatchService $leadBatchService
      */
-    public function __construct(private readonly LeadRepository $leadRepository)
+    public function __construct(
+        private readonly LeadRepository      $leadRepository,
+        private readonly LeadProxyService $leadProxyService,
+        private readonly LeadRedirectService $leadRedirectService,
+        private readonly LeadBatchService $leadBatchService,
+    )
     {
         parent::__construct();
     }
@@ -51,13 +62,17 @@ class SendLeads extends Command
 
     /**
      * @param Lead $lead
+     *
+     * @throws Exception
+     * @throws Throwable
      */
     private function sendLead(Lead $lead): void
     {
-        CreateProxy::withChain([
-            new SendLead($lead->id),
-            new DeleteProxy($lead->id),
-            new FinalizeBatch($lead->import),
-        ])->dispatch($lead->id);
+        $proxy= $this->leadProxyService->createProxyByLead($lead);
+        /** @var LeadRedirect $leadRedirect */
+        $leadRedirect = $this->leadRedirectService->getRedirectLink($proxy->lead);
+        $result = $this->leadRedirectService->generateScreenshotByLeadRedirect($leadRedirect);
+        $this->leadProxyService->deleteProxyByLead($result->lead);
+        $this->leadBatchService->closeBatchByLead($lead);
     }
 }

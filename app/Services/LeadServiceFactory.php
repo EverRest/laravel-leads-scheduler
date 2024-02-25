@@ -10,9 +10,9 @@ class LeadServiceFactory
     /**
      * @param string $externalPartnerId
      *
-     * @return ILeadService
+     * @return IPartnerService
      */
-    public static function createService(string $externalPartnerId): ILeadService
+    public static function createService(string $externalPartnerId): IPartnerService
     {
         return match ($externalPartnerId) {
             "1" => new AffiliateKingzService(),

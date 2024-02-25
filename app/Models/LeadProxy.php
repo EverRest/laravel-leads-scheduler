@@ -3,13 +3,16 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Traits\HasLeadRelation;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class LeadProxy extends Model
 {
     use HasFactory;
+    use SoftDeletes;
+    use HasLeadRelation;
 
     /**
      * @var string[] $fillable
@@ -33,12 +36,4 @@ class LeadProxy extends Model
         'created_at',
         'updated_at',
     ];
-
-    /**
-     * @return BelongsTo
-     */
-    public function lead(): BelongsTo
-    {
-        return $this->belongsTo(Lead::class);
-    }
 }

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Lead
@@ -17,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Lead extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     /**
      * @var string[] $fillable
@@ -25,13 +27,13 @@ class Lead extends Model
         'import',
         'first_name',
         'last_name',
+        'is_sent',
         'email',
         'phone',
         'phone_code',
         'password',
         'country',
         'partner_id',
-        'is_sent',
         'scheduled_at',
     ];
 
@@ -65,6 +67,14 @@ class Lead extends Model
     public function leadProxy(): HasOne
     {
         return $this->hasOne(LeadProxy::class);
+    }
+
+    /**
+     * @return HasOne
+     */
+    public function leadRedirect(): HasOne
+    {
+        return $this->hasOne(LeadRedirect::class);
     }
 
     /**

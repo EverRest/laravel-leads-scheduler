@@ -5,7 +5,7 @@ namespace App\Services;
 
 use App\Models\Lead;
 
-interface ILeadService
+interface IPartnerService
 {
     /**
      * @param Lead $lead

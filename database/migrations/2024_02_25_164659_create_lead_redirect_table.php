@@ -11,16 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('lead_proxies', function (Blueprint $table) {
+        Schema::create('lead_redirects', function (Blueprint $table) {
             $table->id();
-            $table->string('protocol', 255);
-            $table->string('country', 50);
-            $table->string('ip', 100);
-            $table->string('external_id', 100)->nullable();
-            $table->string('host', 100);
-            $table->string('port', 255)->nullable();
-            $table->string('username', 50);
-            $table->string('password', 255)->nullable();
+            $table->string('link', 255)->nullable();
+            $table->text('file')->nullable();
             $table->unsignedBigInteger('lead_id');
             $table->foreign('lead_id')->references('id')
                 ->on('leads')
@@ -35,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('leads');
+        Schema::dropIfExists('lead_redirects');
     }
 };

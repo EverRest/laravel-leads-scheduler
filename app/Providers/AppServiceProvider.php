@@ -3,9 +3,15 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Repositories\LeadProxyRepository;
+use App\Repositories\LeadRedirectRepository;
 use App\Repositories\LeadRepository;
 use App\Repositories\LeadResultRepository;
 use App\Repositories\PartnerRepository;
+use App\Services\AstroService;
+use App\Services\LeadBatchService;
+use App\Services\LeadProxyService;
+use App\Services\LeadRedirectService;
 use App\Services\LeadResultService;
 use App\Services\ScheduleService;
 use Illuminate\Support\Facades\Response;
@@ -35,8 +41,28 @@ class AppServiceProvider extends ServiceProvider
             fn() => new LeadResultRepository()
         );
         $this->app->singleton(
+            LeadRedirectRepository::class,
+            fn() => new LeadRedirectRepository()
+        );
+        $this->app->singleton(
             PartnerRepository::class,
             fn() => new PartnerRepository()
+        );;
+        $this->app->singleton(
+            LeadResultService::class,
+            fn() => new LeadResultService(new LeadResultRepository(), new LeadRepository())
+        );
+        $this->app->singleton(
+            LeadRedirectService::class,
+            fn() => new LeadRedirectService(new LeadRedirectRepository())
+        );
+        $this->app->singleton(
+            LeadProxyService::class,
+            fn() => new LeadProxyService(new LeadRepository(), new LeadProxyRepository(), new AstroService())
+        );
+        $this->app->singleton(
+            LeadBatchService::class,
+            fn() => new LeadProxyService(new LeadRepository(), new LeadProxyRepository(), new AstroService())
         );
 
         if (!$this->app->environment('production')) {

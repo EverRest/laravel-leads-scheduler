@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class LeadResult extends Model
+class LeadRedirect extends Model
 {
     use HasFactory;
     use SoftDeletes;
@@ -19,8 +19,8 @@ class LeadResult extends Model
      */
     protected $fillable = [
         'lead_id',
-        'data',
-        'status',
+        'link',
+        'file',
     ];
 
     /**
@@ -29,13 +29,5 @@ class LeadResult extends Model
     protected $hidden = [
         'created_at',
         'updated_at',
-    ];
-
-    /**
-     * @var string[] $casts
-     */
-    protected $casts = [
-        'data' => 'json',
-        'status' => 'integer',
     ];
 }

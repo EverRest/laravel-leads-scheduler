@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use Spatie\LaravelData\Data;
 
-class CmAffsService extends LeadService implements ILeadService
+class CmAffsService extends PartnerService implements IPartnerService
 {
     /**
      * @param int $leadId

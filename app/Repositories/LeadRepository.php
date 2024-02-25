@@ -20,7 +20,6 @@ class LeadRepository extends Repository
     public function getLeadsToSend(): Collection
     {
         return $this->query()
-            ->where('is_sent', false)
             ->whereBetween(
                 'scheduled_at',
                 [
@@ -83,7 +82,6 @@ class LeadRepository extends Repository
     public function getScheduledLeadSlots(int|string $partnerId, Carbon $fromDate, Carbon $toDate): Collection
     {
         return $this->query()
-            ->where('is_sent', false)
             ->where('partner_id', $partnerId)
             ->whereBetween('scheduled_at', [$fromDate, $toDate])
             ->pluck('scheduled_at');

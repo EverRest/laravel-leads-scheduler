@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Spatie\LaravelData\Data;
 
-class StarkIrevService extends LeadService implements ILeadService
+class StarkIrevService extends PartnerService implements IPartnerService
 {
     /**
      * @param int $leadId

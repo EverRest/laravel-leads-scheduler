@@ -27,6 +27,7 @@ return new class extends Migration
                 ->onDelete('cascade');
             $table->boolean('is_sent')->default(false);
             $table->timestamp('scheduled_at');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
