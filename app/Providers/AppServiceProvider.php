@@ -62,7 +62,7 @@ class AppServiceProvider extends ServiceProvider
         );
         $this->app->singleton(
             LeadBatchService::class,
-            fn() => new LeadProxyService(new LeadRepository(), new LeadProxyRepository(), new AstroService())
+            fn() => new LeadBatchService(new LeadRepository())
         );
 
         if (!$this->app->environment('production')) {

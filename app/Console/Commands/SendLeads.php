@@ -5,9 +5,7 @@ namespace App\Console\Commands;
 
 use App\Models\Lead;
 use App\Models\LeadRedirect;
-use App\Repositories\LeadProxyRepository;
 use App\Repositories\LeadRepository;
-use App\Services\AstroService;
 use App\Services\LeadBatchService;
 use App\Services\LeadProxyService;
 use App\Services\LeadRedirectService;
@@ -26,8 +24,6 @@ class SendLeads extends Command
 
     /**
      * @param LeadRepository $leadRepository
-     * @param LeadProxyRepository $leadProxyRepository
-     * @param AstroService $astroService
      * @param LeadProxyService $leadProxyService
      * @param LeadRedirectService $leadRedirectService
      * @param LeadBatchService $leadBatchService
@@ -68,11 +64,13 @@ class SendLeads extends Command
      */
     private function sendLead(Lead $lead): void
     {
-        $proxy= $this->leadProxyService->createProxyByLead($lead);
+//        $proxy= $this->leadProxyService->createProxyByLead($lead);
         /** @var LeadRedirect $leadRedirect */
-        $leadRedirect = $this->leadRedirectService->getRedirectLink($proxy->lead);
+//        $leadRedirect = $this->leadRedirectService->getRedirectLink($proxy->lead);
+        $leadRedirect = LeadRedirect::first();
         $result = $this->leadRedirectService->generateScreenshotByLeadRedirect($leadRedirect);
-        $this->leadProxyService->deleteProxyByLead($result->lead);
+//        dd($result->toArray());
+//        $this->leadProxyService->deleteProxyByLead($result->lead);
         $this->leadBatchService->closeBatchByLead($lead);
     }
 }

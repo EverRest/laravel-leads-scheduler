@@ -15,26 +15,16 @@ final class Base64ToUploadedFile
     private string $fileType;
     private UploadedFile $fileUploaded;
 
-    /**
-     * Base64ToUploadedFile constructor.
-     *
-     * @param string $base64
-     *
-     * @throws Exception
-     */
     public function __construct(private readonly string $base64)
     {
-        $this->getFileOfBase64();
+        $this->convertBase64ToFile();
     }
 
-    /**
-     * @throws Exception
-     */
-    private function getFileOfBase64 (): void
+    private function convertBase64ToFile(): void
     {
         try {
             $base_to_php = explode(',', $this->base64);
-            $fileData = base64_decode($base_to_php[1]);
+            $fileData = base64_decode($base_to_php[0]);
             $tmpFilePath = sys_get_temp_dir() . '/' . Str::uuid()->toString();
             file_put_contents($tmpFilePath, $fileData);
             $tmpFile = new File($tmpFilePath);
@@ -43,67 +33,28 @@ final class Base64ToUploadedFile
                 $tmpFile->getFilename(),
                 $tmpFile->getMimeType(),
                 0,
-                true // Mark it as test, since the file isn't from real HTTP POST.
+                true
             );
             $this->ext = $this->fileUploaded->clientExtension();
             $this->filename = $this->fileUploaded->getClientOriginalName();
             $this->fileType = $this->fileUploaded->getMimeType();
         } catch (Exception $e) {
-            throw new Exception('Base64 File is Invallid.!');
+            throw new Exception('Invalid Base64 file.');
         }
     }
 
-    /**
-     * @return UploadedFile
-     */
-    public function file (): UploadedFile
+    public function file(): UploadedFile
     {
         return $this->fileUploaded;
     }
 
-    /**
-     * @return string
-     */
-    public function getExtension (): string
+    public function getExtension(): string
     {
         return $this->ext;
     }
 
-    /**
-     * @return string
-     */
-    public function getFilename (): string
+    public function getFilename(): string
     {
         return $this->filename;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFullPath (): string
-    {
-        return $this->filename.'.'.$this->ext;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFileType (): string
-    {
-        return $this->fileType;
-    }
-
-    /**
-     * @return array
-     */
-    public function getAllinfo (): array
-    {
-        return [
-            'file'      => $this->file(),
-            'extension' => $this->getExtension(),
-            'filename'  => $this->getFilename(),
-            'full_path' => $this->getFullPath(),
-            'file_type' => $this->getFileType()
-        ];
     }
 }
