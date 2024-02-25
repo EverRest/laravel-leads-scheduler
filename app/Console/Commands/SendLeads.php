@@ -64,13 +64,11 @@ class SendLeads extends Command
      */
     private function sendLead(Lead $lead): void
     {
-//        $proxy= $this->leadProxyService->createProxyByLead($lead);
+        $proxy= $this->leadProxyService->createProxyByLead($lead);
         /** @var LeadRedirect $leadRedirect */
-//        $leadRedirect = $this->leadRedirectService->getRedirectLink($proxy->lead);
-        $leadRedirect = LeadRedirect::first();
+        $leadRedirect = $this->leadRedirectService->getRedirectLink($proxy->lead);
         $result = $this->leadRedirectService->generateScreenshotByLeadRedirect($leadRedirect);
-//        dd($result->toArray());
-//        $this->leadProxyService->deleteProxyByLead($result->lead);
+        $this->leadProxyService->deleteProxyByLead($result->lead);
         $this->leadBatchService->closeBatchByLead($lead);
     }
 }
