@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\File\File;
 
 final class Base64ToUploadedFile
 {
-    private string $ext;
+    private ?string $ext = null;
     private string $filename;
     private string $fileType;
     private UploadedFile $fileUploaded;

@@ -70,8 +70,8 @@ class LeadRedirectService
                 'url' => $leadRedirect->link,
             ]);
             $screenShot = Arr::get($response?->json(), 'screenshot');
-            $uploadedFile = (new Base64ToUploadedFile($screenShot))->file();
-            if ($uploadedFile->isValid()) {
+            $uploadedFile = $screenShot ? (new Base64ToUploadedFile($screenShot))->file() : null;
+            if ($uploadedFile && $uploadedFile->isValid()) {
                 $fileName = "screenshots/$lead->id.png";
                 Storage::disk('public')->exists($fileName) && Storage::disk('public')->delete($fileName);
                 Storage::disk('public')->put($fileName, $uploadedFile->get());

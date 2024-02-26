@@ -47,4 +47,8 @@ return [
     'affiliatekingz' => [
         'url' => env('AFFILIATE_KINGS_URL'),
     ],
+
+    'telegram' => [
+        'chat_id' => env('TELEGRAM_CHAT_ID'),
+    ],
 ];
