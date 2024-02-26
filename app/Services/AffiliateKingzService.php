@@ -34,6 +34,7 @@ class AffiliateKingzService extends PartnerService implements IPartnerService
     protected function sendRequest(Data $dto, Lead $lead): Response
     {
         $url = Config::get('services.affiliatekingz.url');
+
         return Http::withHeaders([
             'Content-Type' => 'application/x-www-form-urlencoded',
             'Accept' => '*/*',
@@ -60,6 +61,6 @@ class AffiliateKingzService extends PartnerService implements IPartnerService
      */
     protected function getAutoLoginUrl(array $data): string
     {
-        return Arr::get($data, 'lead.extras.redirect.url', '');
+        return Arr::get($data, 'extras.redirect.url', '');
     }
 }

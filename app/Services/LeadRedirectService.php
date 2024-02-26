@@ -71,13 +71,13 @@ class LeadRedirectService
             ]);
             $screenShot = Arr::get($response?->json(), 'screenshot');
             $uploadedFile = (new Base64ToUploadedFile($screenShot))->file();
-            if($uploadedFile->isValid()){
+            if ($uploadedFile->isValid()) {
                 $fileName = "screenshots/$lead->id.png";
                 Storage::disk('public')->exists($fileName) && Storage::disk('public')->delete($fileName);
                 Storage::disk('public')->put($fileName, $uploadedFile->get());
                 $leadRedirect = $this->leadRedirectRepository->update(
                     $leadRedirect,
-                    ['screenshot' => $fileName,],
+                    ['file' => $fileName,],
                 );
             }
         } catch (Exception $e) {

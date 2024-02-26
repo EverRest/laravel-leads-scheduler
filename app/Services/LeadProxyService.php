@@ -6,7 +6,6 @@ namespace App\Services;
 use App\Models\Lead;
 use App\Models\LeadProxy;
 use App\Repositories\LeadProxyRepository;
-use App\Repositories\LeadRedirectRepository;
 use App\Repositories\LeadRepository;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
@@ -18,7 +17,6 @@ use Throwable;
 class LeadProxyService
 {
     /**
-     * @param LeadRedirectRepository $leadRedirectRepository
      * @param LeadRepository $leadRepository
      * @param LeadProxyRepository $leadProxyRepository
      * @param AstroService $astroService
@@ -46,6 +44,7 @@ class LeadProxyService
         }
         $port = $this->astroService->createPortByLead($country, $lead);
         $proxy = $this->astroService->setProxy($port);
+        sleep(5);
         $ip = $this->astroService->newIp(Arr::get($port, 'id'));
         $leadProxyAttributes = [
             'lead_id' => $lead->id,
@@ -76,7 +75,7 @@ class LeadProxyService
             $this->astroService->deletePort($lead->leadProxy->external_id);
         }
         $leadProxy = $lead->leadProxy;
-        $this->leadProxyRepository->destroy($leadProxy);
+        $this->leadProxyRepository->query()->where('lead_id', $lead->id)->delete();
         Log::info(get_class($this) . ': Port deleted for lead ' . $lead->id . '.');
 
         return $leadProxy;

@@ -14,7 +14,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         $schedule->command('leads:send')->everyMinute();
-        $schedule->command('telescope:prune --hours=48')->daily();
+        $schedule->command('telescope:prune --hours=48')->dailyAt('23:59');
+        $schedule->command('lead:delete-proxy')->dailyAt('23:59');
     }
 
     /**

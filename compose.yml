@@ -9,8 +9,6 @@ services:
       - ./docker/nginx:/etc/nginx/conf.d
     depends_on:
       - db
-    networks:
-      - leads-scheduler-network
 
   web:
     image: nginx:latest
@@ -24,8 +22,6 @@ services:
     depends_on:
       - app
       - browser
-    networks:
-      - leads-scheduler-network
 
   browser:
     container_name: browser
@@ -38,8 +34,6 @@ services:
       - ./browser:/app
     ports:
       - "4000:4000"
-    networks:
-      - leads-scheduler-network
 
   db:
     image: mysql:8.0
@@ -54,12 +48,6 @@ services:
     volumes:
       - dbdata:/var/lib/mysql/
       - ./docker/mysql/my.cnf:/etc/mysql/my.cnf
-    networks:
-      - leads-scheduler-network
-
-networks:
-  leads-scheduler-network:
-    driver: bridge
 
 volumes:
   dbdata:
