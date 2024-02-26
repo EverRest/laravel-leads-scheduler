@@ -6,12 +6,14 @@
 
 ## Local Set UP
 
+- cp .env.example .env
 - docker-compose up -d
 - docker-compose run app php artisan migrate:fresh
 - docker-compose run app php artisan db:seed
 
 ## Server Set Up
 
+- cp .env.example .env
 - docker-compose up -d
 - docker-compose run app php artisan migrate:fresh
 - docker-compose run app php artisan db:seed
