@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Services\Partner;
 
-use App\Services\AffiliateKingzService;
 use InvalidArgumentException;
 
 final class PartnerServiceFactory

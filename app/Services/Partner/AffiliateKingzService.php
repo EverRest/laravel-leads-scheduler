@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Services;
+namespace App\Services\Partner;
 
 use App\Dto\AffiliateKingzDto;
 use App\Models\Lead;
