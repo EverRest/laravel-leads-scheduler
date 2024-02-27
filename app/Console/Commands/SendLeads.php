@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Models\Lead;
+use App\Models\LeadProxy;
 use App\Models\LeadRedirect;
 use App\Repositories\LeadRepository;
 use App\Services\LeadBatchService;
