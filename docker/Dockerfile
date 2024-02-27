@@ -43,8 +43,10 @@ RUN apk --no-cache add \
 COPY . /var/www/html
 
 # Set permissions
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+RUN  chmod -R 775 /var/www/html/storage
+RUN chmod -R 775 /var/www/html/bootstrap
+RUN chown -R www-data:www-data /var/www/html/storage
+RUN chown -R www-data:www-data /var/www/html/bootstrap
 
 # Nginx configuration
 COPY docker/nginx/default.conf /etc/nginx/conf.d/default.conf

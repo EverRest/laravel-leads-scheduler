@@ -24,10 +24,10 @@ final class LeadRepository extends Repository
             ->whereBetween(
                 'scheduled_at',
                 [
-                    Carbon::now()->subMonth(),
-                    Carbon::now()->addMonth(),
-//                    Carbon::now()->subMinute(),
-//                    Carbon::now()->addMinute()
+//                    Carbon::now()->subMonth(),
+//                    Carbon::now()->addMonth(),
+                    Carbon::now()->subMinute(),
+                    Carbon::now()->addMinute()
                 ]
             )->get();
     }
