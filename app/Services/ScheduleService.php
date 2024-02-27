@@ -6,24 +6,20 @@ namespace App\Services;
 use App\Models\Partner;
 use App\Repositories\LeadRepository;
 use App\Repositories\PartnerRepository;
-use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
 use RuntimeException;
 
-final                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  class ScheduleService
+final class ScheduleService
 {
     private const DEFAULT_TIME_FORMAT = 'Y-m-d H:i:s';
     private const MIN_TIME_INTERVAL_BETWEEN_LEADS = 5;
 
     /**
-     * ScheduleService constructor.
-     *
      * @param PartnerRepository $partnerRepository
-     * @param LeadRepository $leadRepository
+     * @param LeadRepository    $leadRepository
      */
     public function __construct(
         private readonly PartnerRepository $partnerRepository,
@@ -39,7 +35,6 @@ final                                                                           
      * @param Carbon $toDate
      *
      * @return Collection
-     * @throws Exception
      */
     public function scheduleLeads(
         array      $importedLeads,
@@ -49,9 +44,6 @@ final                                                                           
     ): Collection
     {
         $leadModels = Collection::make();
-        /**
-         * @var Partner $partner
-         */
         $partner = $this->partnerRepository->findByExternalId($partnerId);
         foreach ($importedLeads as $importedLead) {
             $leadModel = $this->scheduleLead($importedLead, $partner, $fromDate, $toDate);
@@ -84,23 +76,11 @@ final                                                                           
      * @param Carbon $toDate
      *
      * @return Model
-     * @throws Exception
      */
     private function scheduleLead(array $importedLead, Partner $partner, Carbon $fromDate, Carbon $toDate): Model
     {
         $freeSlot = $this->findFreeSlot($partner->id, $fromDate, $toDate);
-        $attributes = [
-            'partner_id' => $partner->id,
-            'scheduled_at' => $freeSlot,
-            'first_name' => Arr::get($importedLead, 'first_name'),
-            'last_name' => Arr::get($importedLead, 'last_name'),
-            'email' => Arr::get($importedLead, 'email'),
-            'phone' => Arr::get($importedLead, 'phone'),
-            'phone_code' => Arr::get($importedLead, 'phone_phoneCode'),
-            'password' => Arr::get($importedLead, 'password'),
-            'country' => Arr::get($importedLead, 'ip_data.country'),
-            'import' => $partner->id . '-' . Carbon::now()->format(self::DEFAULT_TIME_FORMAT),
-        ];
+        $attributes = $this->getLeadAttributes($importedLead, $partner, $freeSlot);
 
         return $this->leadRepository
             ->store($attributes);
@@ -182,5 +162,28 @@ final                                                                           
         $scheduledSlots = $scheduledSlots->merge($shapedSlots)->unique();
 
         return $availableSlots->diff($scheduledSlots);
+    }
+
+    /**
+     * @param array  $importedLead
+     * @param Partner $partner
+     * @param Carbon $freeSlot
+     *
+     * @return array
+     */
+    private function getLeadAttributes(array $importedLead, Partner $partner, Carbon $freeSlot): array
+    {
+        return [
+            'partner_id' => $partner->id,
+            'scheduled_at' => $freeSlot,
+            'first_name' => Arr::get($importedLead, 'first_name'),
+            'last_name' => Arr::get($importedLead, 'last_name'),
+            'email' => Arr::get($importedLead, 'email'),
+            'phone' => Arr::get($importedLead, 'phone'),
+            'phone_code' => Arr::get($importedLead, 'phone_phoneCode'),
+            'password' => Arr::get($importedLead, 'password'),
+            'country' => Arr::get($importedLead, 'ip_data.country'),
+            'import' => $partner->id . '-' . Carbon::now()->format(self::DEFAULT_TIME_FORMAT),
+        ];
     }
 }

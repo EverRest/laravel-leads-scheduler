@@ -14,7 +14,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
-class LeadProxyService
+final class LeadProxyService
 {
     /**
      * @param LeadRepository $leadRepository
@@ -22,9 +22,9 @@ class LeadProxyService
      * @param AstroService $astroService
      */
     public function __construct(
-        private readonly LeadRepository $leadRepository,
+        private readonly LeadRepository      $leadRepository,
         private readonly LeadProxyRepository $leadProxyRepository,
-        private readonly AstroService $astroService,
+        private readonly AstroService        $astroService,
     )
     {
     }
@@ -39,25 +39,14 @@ class LeadProxyService
     {
         $country = $this->astroService->getCountryByISO2($lead->country);
         if (!$country) {
-            $message = Carbon::now()->format('Y-m-d H:i:s') . ' Country not found in the proxy list.';
-            Log::error($message);
+            $this->logCountryNotFoundError();
         }
         $port = $this->astroService->createPortByLead($country, $lead);
         $proxy = $this->astroService->setProxy($port);
-        sleep(5);
         $ip = $this->astroService->newIp(Arr::get($port, 'id'));
-        $leadProxyAttributes = [
-            'lead_id' => $lead->id,
-            'ip' => $ip,
-            'external_id' => Arr::get($proxy, 'id'),
-            'port' => Arr::get($proxy, 'port'),
-            'protocol' => Arr::get($proxy, 'protocol'),
-            'username' => Arr::get($proxy, 'username'),
-            'password' => Arr::get($proxy, 'password'),
-            'host' => Arr::get($proxy, 'host'),
-            'country' => $country,
-        ];
-        Log::info(get_class($this) . ': Port created for lead ' . $lead->id . '.');
+        $leadProxyAttributes = $this->getLeadProxyAttributes($lead, $proxy, $ip, $country);
+        $this->logProxyCreation($lead);
+        sleep(5);
 
         return $this->leadProxyRepository->firstOrCreate($leadProxyAttributes);
     }
@@ -71,13 +60,66 @@ class LeadProxyService
     public function deleteProxyByLead(Lead $lead): LeadProxy
     {
         $this->leadRepository->patch($lead, 'is_sent', true);
-        if($lead->leadRedirect?->file) {
+        if ($lead->leadRedirect?->file) {
             $this->astroService->deletePort($lead->leadProxy->external_id);
         }
         $leadProxy = $lead->leadProxy;
         $this->leadProxyRepository->query()->where('lead_id', $lead->id)->delete();
-        Log::info(get_class($this) . ': Port deleted for lead ' . $lead->id . '.');
+        $this->logProxyDeletion($lead);
+        sleep(5);
 
         return $leadProxy;
+    }
+
+    /**
+     * @return void
+     */
+    private function logCountryNotFoundError(): void
+    {
+        $message = Carbon::now()->format('Y-m-d H:i:s') . ' Country not found in the proxy list.';
+        Log::error($message);
+    }
+
+    /**
+     * @param Lead $lead
+     * @param array $proxy
+     * @param string $ip
+     * @param string $country
+     *
+     * @return array
+     */
+    private function getLeadProxyAttributes(Lead $lead, array $proxy, string $ip, string $country): array
+    {
+        return [
+            'lead_id' => $lead->id,
+            'ip' => $ip,
+            'external_id' => Arr::get($proxy, 'id'),
+            'port' => Arr::get($proxy, 'port'),
+            'protocol' => Arr::get($proxy, 'protocol'),
+            'username' => Arr::get($proxy, 'username'),
+            'password' => Arr::get($proxy, 'password'),
+            'host' => Arr::get($proxy, 'host'),
+            'country' => $country,
+        ];
+    }
+
+    /**
+     * @param Lead $lead
+     *
+     * @return void
+     */
+    private function logProxyCreation(Lead $lead): void
+    {
+        Log::info(get_class($this) . ": Proxy created for lead $lead->id .");
+    }
+
+    /**
+     * @param Lead $lead
+     *
+     * @return void
+     */
+    private function logProxyDeletion(Lead $lead): void
+    {
+        Log::info(get_class($this) . ": Proxy deleted for lead $lead->id .");
     }
 }

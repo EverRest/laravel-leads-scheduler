@@ -7,7 +7,7 @@ use App\Models\Lead;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
-class LeadRepository extends Repository
+final class LeadRepository extends Repository
 {
     /**
      * @var string $model
@@ -20,6 +20,7 @@ class LeadRepository extends Repository
     public function getLeadsToSend(): Collection
     {
         return $this->query()
+            ->where('is_sent', false)
             ->whereBetween(
                 'scheduled_at',
                 [

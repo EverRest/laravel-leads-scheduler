@@ -6,7 +6,7 @@ namespace App\Dto;
 use Spatie\LaravelData\Attributes\MapInputName;
 use Spatie\LaravelData\Data;
 
-class StarkIrevDto extends Data
+final class StarkIrevDto extends Data
 {
     /**
      * @param string $first_name

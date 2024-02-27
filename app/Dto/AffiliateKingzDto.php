@@ -6,7 +6,7 @@ namespace App\Dto;
 use Spatie\LaravelData\Attributes\MapInputName;
 use Spatie\LaravelData\Data;
 
-class AffiliateKingzDto extends Data
+final class AffiliateKingzDto extends Data
 {
     /**
      * @param string $first_name

@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use Spatie\LaravelData\Data;
 
-class CmAffsService extends PartnerService implements IPartnerService
+final class CmAffsService extends PartnerService implements IPartnerService
 {
     /**
      * @param int $leadId
@@ -25,9 +25,16 @@ class CmAffsService extends PartnerService implements IPartnerService
         return CmAffsDto::from($lead->toArray());
     }
 
+    /**
+     * @param Data $dto
+     * @param Lead $lead
+     *
+     * @return Response
+     */
     protected function sendRequest(Data $dto, Lead $lead): Response
     {
         $url = Config::get('services.cmaffs.url');
+
         return Http::withHeaders([
             'Content-Length' => '239',
             'Accept' => '*/*',

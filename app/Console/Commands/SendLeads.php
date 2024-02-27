@@ -65,7 +65,6 @@ class SendLeads extends Command
     private function sendLead(Lead $lead): void
     {
         $proxy= $this->leadProxyService->createProxyByLead($lead);
-        sleep(10);
         /** @var LeadRedirect $leadRedirect */
         $leadRedirect = $this->leadRedirectService->getRedirectLink($proxy->lead);
         $result = $this->leadRedirectService->generateScreenshotByLeadRedirect($leadRedirect);

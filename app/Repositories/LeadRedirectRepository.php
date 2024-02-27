@@ -5,7 +5,7 @@ namespace App\Repositories;
 
 use App\Models\LeadRedirect;
 
-class LeadRedirectRepository extends Repository
+final class LeadRedirectRepository extends Repository
 {
     /**
      * @var string $model

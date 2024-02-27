@@ -6,7 +6,7 @@ namespace App\Dto;
 use Spatie\LaravelData\Attributes\MapInputName;
 use Spatie\LaravelData\Data;
 
-class CmAffsDto extends Data
+final class CmAffsDto extends Data
 {
     /**
      * @param string $first_name

@@ -5,7 +5,7 @@ namespace App\Repositories;
 
 use App\Models\LeadProxy;
 
-class LeadProxyRepository extends Repository
+final class LeadProxyRepository extends Repository
 {
     /**
      * @var string $model

@@ -8,14 +8,17 @@ use App\Models\Lead;
 use App\Models\LeadRedirect;
 use App\Repositories\LeadRedirectRepository;
 use Exception;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Client\Response;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
-class LeadRedirectService
+final class LeadRedirectService
 {
     /**
      * @param LeadRedirectRepository $leadRedirectRepository
@@ -34,16 +37,38 @@ class LeadRedirectService
      */
     public function getRedirectLink(Lead $lead): Model
     {
+        $redirectLink = $this->generateRedirectLink($lead);
+        return $this->storeRedirectLink($lead, $redirectLink);
+    }
+
+    /**
+     * @param Lead $lead
+     *
+     * @return string|null
+     */
+    private function generateRedirectLink(Lead $lead): ?string
+    {
         try {
             $service = LeadServiceFactory::createService($lead->partner->external_id);
-            $redirectLink = $service->send($lead);
+            return $service->send($lead);
         } catch (Exception $e) {
             Log::error(get_class($this) . ": Redirect link was not generated for lead $lead->id. Reason: {$e->getMessage()}");
+            return null;
         }
+    }
 
+    /**
+     * @param Lead $lead
+     * @param string|null $redirectLink
+     *
+     * @return Model
+     */
+    private function storeRedirectLink(Lead $lead, ?string $redirectLink): Model
+    {
+        sleep(5);
         return $this->leadRedirectRepository->store([
             'lead_id' => $lead->id,
-            'link' => $redirectLink ?? null,
+            'link' => $redirectLink,
         ]);
     }
 
@@ -54,35 +79,76 @@ class LeadRedirectService
      */
     public function generateScreenshotByLeadRedirect(LeadRedirect $leadRedirect): Model
     {
+        if (!$this->validateLeadRedirect($leadRedirect)) {
+            return $leadRedirect;
+        }
+
+        $response = $this->getBrowserResponse($leadRedirect);
+        $screenShot = Arr::get($response?->json(), 'screenshot');
+        $uploadedFile = $screenShot ? (new Base64ToUploadedFile($screenShot))->file() : null;
+
+        if ($uploadedFile && $uploadedFile->isValid()) {
+            return $this->storeScreenshot($leadRedirect, $uploadedFile);
+        }
+
+        return $leadRedirect;
+    }
+
+    /**
+     * @param LeadRedirect $leadRedirect
+     *
+     * @return bool
+     */
+    private function validateLeadRedirect(LeadRedirect $leadRedirect): bool
+    {
         $lead = $leadRedirect->lead;
         if (!$leadRedirect->link) {
-            $message = "Can't find redirect link for lead: {$lead->id}";
-            Log::error($message);
+            Log::error("Can't find redirect link for lead: {$lead->id}");
+            return false;
         }
-        $leadProxy = $lead->leadProxy;
-        if (!$leadProxy) {
-            $message = "Can't find proxy for lead: $lead->id";
-            Log::error($message);
+        if (!$lead->leadProxy) {
+            Log::error("Can't find proxy for lead: $lead->id");
+            return false;
         }
+        return true;
+    }
+
+    /**
+     * @param LeadRedirect $leadRedirect
+     *
+     * @return Response|null
+     */
+    private function getBrowserResponse(LeadRedirect $leadRedirect): ?Response
+    {
         ['host' => $host, 'port' => $port] = Config::get('browser');
         try {
-            $response = Http::post("$host:$port/browser", [
+            return Http::post("$host:$port/browser", [
                 'url' => $leadRedirect->link,
             ]);
-            $screenShot = Arr::get($response?->json(), 'screenshot');
-            $uploadedFile = $screenShot ? (new Base64ToUploadedFile($screenShot))->file() : null;
-            if ($uploadedFile && $uploadedFile->isValid()) {
-                $fileName = "screenshots/$lead->id.png";
-                Storage::disk('public')->exists($fileName) && Storage::disk('public')->delete($fileName);
-                Storage::disk('public')->put($fileName, $uploadedFile->get());
-                $leadRedirect = $this->leadRedirectRepository->update(
-                    $leadRedirect,
-                    ['file' => $fileName,],
-                );
-            }
         } catch (Exception $e) {
-            Log::error(get_class($this) . ": Screenshot was not generated for lead $lead->id. Reason: {$e->getMessage()}");
+            Log::error(get_class($this) . ": Screenshot was not generated for lead {$leadRedirect->lead->id}. Reason: {$e->getMessage()}");
+            return null;
         }
-        return $leadRedirect;
+    }
+
+    /**
+     * @param LeadRedirect $leadRedirect
+     * @param UploadedFile $uploadedFile
+     *
+     * @return Model
+     * @throws FileNotFoundException
+     */
+    private function storeScreenshot(LeadRedirect $leadRedirect, UploadedFile $uploadedFile): Model
+    {
+        $lead = $leadRedirect->lead;
+        $fileName = "screenshots/$lead->id.png";
+        Storage::disk('public')->exists($fileName) && Storage::disk('public')->delete($fileName);
+        Storage::disk('public')->put($fileName, $uploadedFile->get());
+        sleep(5);
+
+        return $this->leadRedirectRepository->update(
+            $leadRedirect,
+            ['file' => $fileName,],
+        );
     }
 }

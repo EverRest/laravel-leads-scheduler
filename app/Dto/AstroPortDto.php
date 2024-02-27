@@ -6,7 +6,7 @@ namespace App\Dto;
 use Spatie\LaravelData\Attributes\MapInputName;
 use Spatie\LaravelData\Data;
 
-class AstroPortDto extends Data
+final class AstroPortDto extends Data
 {
     /**
      * @param string $external_id

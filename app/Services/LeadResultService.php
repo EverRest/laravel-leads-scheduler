@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 
-class LeadResultService
+final class LeadResultService
 {
     public function __construct(
         private readonly LeadResultRepository $leadResultRepository,

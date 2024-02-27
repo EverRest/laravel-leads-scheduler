@@ -6,7 +6,7 @@ namespace App\Repositories;
 use App\Models\LeadResult;
 use Illuminate\Database\Eloquent\Model;
 
-class LeadResultRepository extends Repository
+final class LeadResultRepository extends Repository
 {
     /**
      * @var string $model

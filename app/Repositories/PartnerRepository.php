@@ -6,7 +6,7 @@ namespace App\Repositories;
 use App\Models\Partner;
 use Illuminate\Database\Eloquent\Model;
 
-class PartnerRepository extends Repository
+final class PartnerRepository extends Repository
 {
     /**
      * @var string $model

@@ -9,10 +9,9 @@ use Illuminate\Http\Client\Response;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 use Spatie\LaravelData\Data;
 
-class StarkIrevService extends PartnerService implements IPartnerService
+final class StarkIrevService extends PartnerService implements IPartnerService
 {
     /**
      * @param int $leadId
@@ -35,6 +34,7 @@ class StarkIrevService extends PartnerService implements IPartnerService
     protected function sendRequest(Data $dto, Lead $lead): Response
     {
         $url = Config::get('services.startkirev.url');
+
         return Http::withHeaders([
             'Accept' => '*/*',
             'Accept-Encoding' => 'gzip, deflate',

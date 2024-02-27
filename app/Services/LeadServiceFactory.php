@@ -5,7 +5,7 @@ namespace App\Services;
 
 use InvalidArgumentException;
 
-class LeadServiceFactory
+final class LeadServiceFactory
 {
     /**
      * @param string $externalPartnerId
