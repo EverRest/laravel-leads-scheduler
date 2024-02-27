@@ -5,6 +5,8 @@
 - MYSQL 8
 - Laravel 10
 - NodeJS 18
+- Express ^4
+- Pupeteer ^22 
 
 ## Local Set UP
 
