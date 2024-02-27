@@ -77,6 +77,7 @@ final class LeadRedirectService
      * @param LeadRedirect $leadRedirect
      *
      * @return Model
+     * @throws FileNotFoundException
      */
     public function generateScreenshotByLeadRedirect(LeadRedirect $leadRedirect): Model
     {
