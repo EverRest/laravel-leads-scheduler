@@ -1,6 +1,8 @@
 
 ## Stack
 
+- PHP ^8.1
+- MYSQL 8
 - Laravel 10
 - NodeJS 18
 
