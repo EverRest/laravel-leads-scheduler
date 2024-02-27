@@ -24,11 +24,11 @@ services:
 
   browser:
     container_name: browser
+    restart: always
     build:
       context: ./browser
       dockerfile: ./Dockerfile
     working_dir: /app
-    restart: unless-stopped
     volumes:
       - ./browser:/app
     ports:
