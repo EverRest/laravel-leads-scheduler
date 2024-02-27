@@ -27,7 +27,7 @@ services:
     restart: always
     build:
       context: ./browser
-      dockerfile: ./browser/Dockerfile
+      dockerfile: ./Dockerfile
     working_dir: /app
     volumes:
       - ./browser:/app
