@@ -266,6 +266,119 @@
 				"description": "This is a PUT request and it is used to overwrite an existing piece of data. For instance, after you create an entity with a POST request, you may want to modify that later. You can do that using a PUT request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful PUT request typically returns a `200 OK`, `201 Created`, or `204 No Content` response code."
 			},
 			"response": []
+		},
+		{
+			"name": "SendLeadToAK",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful PUT request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "first_name",
+							"value": "devdev2",
+							"type": "text"
+						},
+						{
+							"key": "last_name",
+							"value": "devdev2",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "cyhsEZ209",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "dev.de22v@gmail.test",
+							"type": "text"
+						},
+						{
+							"key": "funnel",
+							"value": "QuantumProject3394",
+							"type": "text"
+						},
+						{
+							"key": "affid",
+							"value": "22",
+							"type": "text"
+						},
+						{
+							"key": "phone",
+							"value": "704123413",
+							"type": "text"
+						},
+						{
+							"key": "area_code",
+							"value": "+46",
+							"type": "text"
+						},
+						{
+							"key": "hitid",
+							"value": "9e5b40ba27c04c4ffe073437cf1e3a5a",
+							"type": "text"
+						},
+						{
+							"key": "_ip",
+							"value": "89.233.238.80",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://api.clickmasters.net/leads",
+					"protocol": "https",
+					"host": [
+						"api",
+						"clickmasters",
+						"net"
+					],
+					"path": [
+						"leads"
+					]
+				},
+				"description": "This is a PUT request and it is used to overwrite an existing piece of data. For instance, after you create an entity with a POST request, you may want to modify that later. You can do that using a PUT request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful PUT request typically returns a `200 OK`, `201 Created`, or `204 No Content` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "http://google.com.ua",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://google.com.ua",
+					"protocol": "http",
+					"host": [
+						"google",
+						"com",
+						"ua"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [
