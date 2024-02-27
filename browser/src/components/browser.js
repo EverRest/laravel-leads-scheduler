@@ -25,11 +25,20 @@ class Browser {
         this.browser.close();
     }
     async createPage (url) {
-        const USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36';
-        const userAgent = randomUseragent.getRandom();
-        const UA = userAgent || USER_AGENT;
-        const page = await this.browser.newPage();
+        const page = await this.setupPage();
+        await this.setPageProxy(page);
+        await this.setPageViewPort(page);
+        await this.setUserAgent(page);
+        await this.setPageSettings(page);
+        let screenshot = await this.captureScreenshot(page, url);
+        return {page, screenshot};
+    }
 
+    async setupPage() {
+        return await this.browser.newPage();
+    }
+
+    async setPageProxy(page) {
         if(this.proxy){
             await page.authenticate({
                 username: this.proxy.username,
@@ -37,7 +46,9 @@ class Browser {
             });
             console.log(this.proxy)
         }
+    }
 
+    async setPageViewPort(page) {
         await page.setViewport({
             width: 1920 + Math.floor(Math.random() * 100),
             height: 1280 + Math.floor(Math.random() * 100),
@@ -46,11 +57,18 @@ class Browser {
             isLandscape: false,
             isMobile: false,
         });
+    }
 
+    async setUserAgent(page) {
+        const USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36';
+        const userAgent = randomUseragent.getRandom();
+        const UA = userAgent || USER_AGENT;
         await page.setUserAgent(UA);
         await page.setJavaScriptEnabled(true);
         await page.setDefaultNavigationTimeout(0);
+    }
 
+    async setPageSettings(page) {
         await page.evaluateOnNewDocument(() => {
             Object.defineProperty(navigator, 'webdriver', {
                 get: () => false,
@@ -58,7 +76,6 @@ class Browser {
         });
 
         await page.evaluateOnNewDocument(() => {
-
             // @ts-ignore
             window.chrome = {
                 runtime: {},
@@ -92,9 +109,10 @@ class Browser {
                 get: () => ['en-US', 'en'],
             });
         });
+    }
 
-        let screenshot
-
+    async captureScreenshot(page, url) {
+        let screenshot;
         try {
             await page.goto(url, {waitUntil: 'networkidle0', timeout: 0}).then(async () => {
                 screenshot = await page.screenshot({
@@ -113,11 +131,8 @@ class Browser {
                 console.log (error)
             }
         }
-
-
-        return {page, screenshot};
+        return screenshot;
     }
-
 }
 
 module.exports = Browser

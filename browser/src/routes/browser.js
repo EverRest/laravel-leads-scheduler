@@ -1,5 +1,5 @@
 const { Router } = require('express')
-const Browser = require('../components/index')
+const Browser = require('../components/browser')
 const router = Router()
 
 router.get('/browser', (req, res, next) => {
@@ -8,16 +8,20 @@ router.get('/browser', (req, res, next) => {
 
 router.post('/browser', async (req, res, next) => {
     const {proxy, url} = req.body
-    let base64screenshot = ''
     try {
-        const browser = await new Browser(proxy)
-        const {screenshot} = await browser.createPage(url)
-        base64screenshot = screenshot.toString('base64')
-        await browser.close();
+        const base64screenshot = await getScreenshot(proxy, url);
         return res.send({status: 200, screenshot: base64screenshot, message: 'success'})
     }catch (e) {
-        return res.send({status: 400, message: e.message, screenshot: base64screenshot})
+        return res.send({status: 400, message: e.message, screenshot: ''})
     }
 })
+
+async function getScreenshot(proxy, url) {
+    const browser = await new Browser(proxy)
+    const {screenshot} = await browser.createPage(url)
+    const base64screenshot = screenshot.toString('base64')
+    await browser.close();
+    return base64screenshot;
+}
 
 module.exports = router
