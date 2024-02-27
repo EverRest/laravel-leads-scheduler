@@ -21,16 +21,15 @@ RUN apk --no-cache add \
 # Set environment variables
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 ENV CHROME_BIN=/usr/bin/chromium
-ENV PUPPETEER_EXECUTABLE_PATH /usr/bin/chromium-browser
 
 # Copy package.json and install npm packages
 COPY package*.json /app/
 RUN npm install
 
 # Copy the rest of the application files
-COPY . /app
+COPY . /app/
 
 # Expose ports
 EXPOSE 4000
 
-#CMD ["npm", "run", "start"]
+CMD ["npm", "run", "start"]
