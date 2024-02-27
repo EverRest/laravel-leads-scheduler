@@ -23,7 +23,7 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 ENV CHROME_BIN=/usr/bin/chromium
 
 # Copy package.json and install npm packages
-COPY package*.json  /app/
+COPY package*.json ./
 RUN npm install
 
 # Copy the rest of the application files
