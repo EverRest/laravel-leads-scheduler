@@ -30,13 +30,13 @@ services:
 
   browser:
     container_name: browser
-    restart: always
+    restart: on-failure
     build:
-#      context: ./browser
+      context: ./browser
       dockerfile: ./Dockerfile
     working_dir: /app
-#    volumes:
-#      - ./browser:/app
+    volumes:
+      - ./browser:/app
     ports:
       - "4000:4000"
     networks:
