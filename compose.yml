@@ -29,7 +29,7 @@ services:
 
   browser:
     container_name: browser
-    restart: on-failure
+    restart: always
     build:
       context: ./browser
       dockerfile: ./Dockerfile
