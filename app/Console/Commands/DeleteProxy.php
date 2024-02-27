@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 
 use App\Dto\AstroPortDto;
 use App\Models\LeadProxy;
-use App\Services\AstroService;
+use App\Services\Proxy\AstroService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 

@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Services;
+namespace App\Services\Partner;
 
-use App\Dto\CmAffsDto;
+use App\Dto\StarkIrevDto;
 use App\Models\Lead;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Arr;
@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use Spatie\LaravelData\Data;
 
-final class CmAffsService extends PartnerService implements IPartnerService
+final class StarkIrevService extends PartnerService implements IPartnerService
 {
     /**
      * @param int $leadId
@@ -22,7 +22,7 @@ final class CmAffsService extends PartnerService implements IPartnerService
     {
         $lead = $this->leadRepository->findOrFail($leadId);
 
-        return CmAffsDto::from($lead->toArray());
+        return StarkIrevDto::from($lead->toArray());
     }
 
     /**
@@ -33,16 +33,14 @@ final class CmAffsService extends PartnerService implements IPartnerService
      */
     protected function sendRequest(Data $dto, Lead $lead): Response
     {
-        $url = Config::get('services.cmaffs.url');
+        $url = Config::get('services.startkirev.url');
 
         return Http::withHeaders([
-            'Content-Length' => '239',
             'Accept' => '*/*',
             'Accept-Encoding' => 'gzip, deflate',
             'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
-            'Host' => 'api.lead2trk.online',
-            'x-api-key' => '426ab522-a627-4d46-a792-7ac4ec68ab08',
             'Content-Type' => 'application/x-www-form-urlencoded',
+            'Host' => 'stark-ld.platform500.com',
         ])->withOptions([
             'proxy' => "http://{$lead->leadProxy->username}:{$lead->leadProxy->password}@{$lead->leadProxy->host}:{$lead->leadProxy->port}",
             'verify' => false,

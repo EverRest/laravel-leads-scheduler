@@ -1,12 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Services;
+namespace App\Services\Lead;
 
 use App\Helpers\Base64ToUploadedFile;
 use App\Models\Lead;
 use App\Models\LeadRedirect;
 use App\Repositories\LeadRedirectRepository;
+use App\Services\Partner\PartnerServiceFactory;
 use Exception;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Database\Eloquent\Model;
@@ -49,7 +50,7 @@ final class LeadRedirectService
     private function generateRedirectLink(Lead $lead): ?string
     {
         try {
-            $service = LeadServiceFactory::createService($lead->partner->external_id);
+            $service = PartnerServiceFactory::createService($lead->partner->external_id);
             return $service->send($lead);
         } catch (Exception $e) {
             Log::error(get_class($this) . ": Redirect link was not generated for lead $lead->id. Reason: {$e->getMessage()}");

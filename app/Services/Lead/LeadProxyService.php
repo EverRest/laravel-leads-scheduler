@@ -1,12 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Services;
+namespace App\Services\Lead;
 
 use App\Models\Lead;
 use App\Models\LeadProxy;
 use App\Repositories\LeadProxyRepository;
 use App\Repositories\LeadRepository;
+use App\Services\Proxy\AstroService;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;

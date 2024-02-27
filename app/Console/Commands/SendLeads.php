@@ -4,12 +4,11 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Models\Lead;
-use App\Models\LeadProxy;
 use App\Models\LeadRedirect;
 use App\Repositories\LeadRepository;
-use App\Services\LeadBatchService;
-use App\Services\LeadProxyService;
-use App\Services\LeadRedirectService;
+use App\Services\Lead\LeadBatchService;
+use App\Services\Lead\LeadProxyService;
+use App\Services\Lead\LeadRedirectService;
 use Exception;
 use Illuminate\Console\Command;
 use Throwable;

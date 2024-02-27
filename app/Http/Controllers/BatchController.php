@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Http\Requests\BatchRequest;
-use App\Services\ScheduleService;
+use App\Services\Schedule\ScheduleService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Carbon;

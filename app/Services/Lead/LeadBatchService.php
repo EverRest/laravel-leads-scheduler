@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Services;
+namespace App\Services\Lead;
 
 use App\Models\Lead;
 use App\Repositories\LeadRepository;
