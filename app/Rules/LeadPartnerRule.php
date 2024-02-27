@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Rules;
 
-use App\Services\ScheduleService;
+use App\Services\Schedule\ScheduleService;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Carbon;
