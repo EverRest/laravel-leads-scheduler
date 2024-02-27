@@ -8,12 +8,12 @@ use App\Repositories\LeadRedirectRepository;
 use App\Repositories\LeadRepository;
 use App\Repositories\LeadResultRepository;
 use App\Repositories\PartnerRepository;
-use App\Services\AstroService;
-use App\Services\LeadBatchService;
-use App\Services\LeadProxyService;
-use App\Services\LeadRedirectService;
-use App\Services\LeadResultService;
-use App\Services\ScheduleService;
+use App\Services\Proxy\AstroService;
+use App\Services\Lead\LeadBatchService;
+use App\Services\Lead\LeadProxyService;
+use App\Services\Lead\LeadRedirectService;
+use App\Services\Lead\LeadResultService;
+use App\Services\Schedule\ScheduleService;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\ServiceProvider;
 
