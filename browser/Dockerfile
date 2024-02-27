@@ -1,5 +1,8 @@
 FROM node:18-alpine
 
+# Set working directory
+WORKDIR /app
+
 # Install dependencies
 RUN apk --no-cache add \
     gnupg \
@@ -20,9 +23,6 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 ENV CHROME_BIN=/usr/bin/chromium
 ENV PUPPETEER_EXECUTABLE_PATH /usr/bin/chromium-browser
 
-# Set working directory
-WORKDIR /app
-
 # Copy package.json and install npm packages
 COPY package*.json /app/
 RUN npm install
@@ -33,4 +33,4 @@ COPY . /app
 # Expose ports
 EXPOSE 4000
 
-CMD ["npm", "run", "start"]
+#CMD ["npm", "run", "start"]
