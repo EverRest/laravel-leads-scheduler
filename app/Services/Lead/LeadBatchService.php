@@ -45,8 +45,7 @@ final class LeadBatchService
      */
     private function getChatId(): string
     {
-        $updates = Telegram::getUpdates();
-        return data_get($updates, 'result.0.message.chat.id')?? Config::get('services.telegram.chat_id');
+        return Config::get('services.telegram.chat_id');
     }
 
     /**
