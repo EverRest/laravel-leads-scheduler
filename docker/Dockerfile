@@ -27,7 +27,11 @@ RUN docker-php-ext-install pdo pdo_mysql zip exif gd
 # Set the working directory
 WORKDIR /var/www/html
 
+# Copy Laravel files
+COPY .   .
+
 # Install Composer
+ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Install npm packages
@@ -38,9 +42,6 @@ RUN apk --no-cache add \
     libwebp-dev \
     zlib-dev \
     && npm install -g npm
-
-# Copy Laravel files
-COPY . /var/www/html
 
 # Set permissions
 RUN  chmod -R 775 /var/www/html/storage
@@ -53,3 +54,5 @@ COPY docker/nginx/default.conf /etc/nginx/conf.d/default.conf
 
 # Expose ports
 EXPOSE 9000
+
+ENTRYPOINT ["composer", "install", "--no-interaction"]
