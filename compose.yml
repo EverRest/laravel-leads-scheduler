@@ -10,6 +10,7 @@ services:
       - ./docker/nginx:/etc/nginx/conf.d
     depends_on:
       - db
+    entrypoint: ["composer", "install"]
 
   web:
     image: nginx:latest
@@ -30,7 +31,7 @@ services:
       dockerfile: ./Dockerfile
     working_dir: /app
     volumes:
-      - ./browser:/app
+      - .:/app
     ports:
       - "4000:4000"
 
