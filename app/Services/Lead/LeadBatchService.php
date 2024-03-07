@@ -30,13 +30,11 @@ final class LeadBatchService
     public function closeBatchByLead(Lead $lead): void
     {
         $chatId = $this->getChatId();
-//        if ($this->leadRepository->getBatchResult($lead->import)) {
-            $leads = $this->leadRepository->getLeadsByImport($lead->import);
-            $failedLeadsCount = $this->countFailedLeads($leads);
-            $successfulLeadsCount = $this->countSuccessfulLeads($leads);
-            $this->logBatchFinalization($lead, $leads);
-            $this->sendBatchFinalizationMessage($chatId, $lead, $leads, $successfulLeadsCount, $failedLeadsCount);
-//        }
+        $leads = $this->leadRepository->getLeadsByImport($lead->import);
+        $failedLeadsCount = $this->countFailedLeads($leads);
+        $successfulLeadsCount = $this->countSuccessfulLeads($leads);
+        $this->logBatchFinalization($lead, $leads);
+        $this->sendBatchFinalizationMessage($chatId, $lead, $leads, $successfulLeadsCount, $failedLeadsCount);
         $this->logJobBatchFinished();
     }
 
@@ -55,7 +53,7 @@ final class LeadBatchService
      */
     private function countFailedLeads($leads): int
     {
-        return $leads->filter(fn(Lead $lead) => $lead->leadResult?->status === 201 )->count();
+        return $leads->filter(fn(Lead $lead) => !in_array($lead->leadResult?->status, ['200', '201']))->count();
     }
 
     /**
@@ -65,7 +63,7 @@ final class LeadBatchService
      */
     private function countSuccessfulLeads($leads): int
     {
-        return $leads->filter(fn(Lead $lead) => $lead->leadResult?->status !== 201 )->count();
+        return $leads->filter(fn(Lead $lead) => in_array($lead->leadResult?->status, ['200', '201']))->count();
     }
 
     /**
@@ -93,7 +91,7 @@ final class LeadBatchService
         Telegram::sendMessage(
             [
                 'chat_id' => $chatId,
-                'text' =>   "Batch $lead->import відправив партнеру {$lead->partner->name} {$leads->count()} лідів. Успішних: $successfulLeadsCount, Неуспішних: $failedLeadsCount",
+                'text' => "Batch $lead->import відправив партнеру {$lead->partner->name} {$leads->count()} лідів. Успішних: $successfulLeadsCount, Неуспішних: $failedLeadsCount",
             ]
         );
     }
