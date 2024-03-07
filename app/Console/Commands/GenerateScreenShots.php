@@ -6,6 +6,7 @@ namespace App\Console\Commands;
 use App\Repositories\LeadRepository;
 use App\Services\Lead\LeadRedirectService;
 use Illuminate\Console\Command;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Collection;
 use Throwable;
 
@@ -29,9 +30,9 @@ class GenerateScreenShots extends Command
      * Execute the console command.
      *
      * @param LeadRepository $leadRepository
-     *
+     * @param LeadRedirectService $leadRedirectService
      * @return void
-     * @throws Throwable
+     * @throws FileNotFoundException
      */
     public function handle(
         LeadRepository       $leadRepository,

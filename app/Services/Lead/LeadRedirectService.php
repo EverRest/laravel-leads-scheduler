@@ -80,7 +80,7 @@ final class LeadRedirectService
      */
     public function generateScreenshotByLeadRedirect(Lead $lead): Model
     {
-        if(!$leadRedirect = $lead->leadRedirect) {
+        if (!$leadRedirect = $lead->leadRedirect) {
             $leadRedirect = $this->leadRedirectRepository->store(['lead_id' => $lead->id]);
         }
         $response = $this->getBrowserResponse($leadRedirect);
@@ -125,7 +125,14 @@ final class LeadRedirectService
             $link = Arr::get($leadResult->toArray(), $leadRedirect->lead->redirectLinkKey);
             $this->leadRedirectRepository->patch($leadRedirect, 'link', $link);
 
-            return Http::post("$host:$port/browser", ['url' => $link,]);
+            return Http::post("$host:$port/browser", [
+                'url' => $link,
+                'proxy' => [
+                    'host' => $leadRedirect->lead->leadProxy->host,
+                    'port' => $leadRedirect->lead->leadProxy->port,
+                    'protocol' =>  $leadRedirect->lead->leadProxy->protocol,
+                ]
+            ]);
         } catch (Exception $e) {
             Log::error(get_class($this) . ": Screenshot was not generated for lead {$leadRedirect->lead->id}. Reason: {$e->getMessage()}");
             return null;
