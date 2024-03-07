@@ -10,7 +10,7 @@ services:
       - ./docker/nginx:/etc/nginx/conf.d
     depends_on:
       - db
-    entrypoint: ["composer", "install"]
+    entrypoint: ["sh", "-c", "composer install && php artisan migrate && php artisan db:seed"]
 
   web:
     image: nginx:latest

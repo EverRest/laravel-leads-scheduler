@@ -3,21 +3,20 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Repositories\LeadProxyRepository;
 use App\Repositories\LeadRepository;
-use App\Services\Proxy\AstroService;
+use App\Services\Lead\LeadRedirectService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 use Throwable;
 
-class DeleteProxy extends Command
+class GenerateScreenShots extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'lead:delete-proxy {leadId?}';
+    protected $signature = 'lead:generate-screen-shots {leadId?}';
 
     /**
      * The console command description.
@@ -29,27 +28,27 @@ class DeleteProxy extends Command
     /**
      * Execute the console command.
      *
-     * @param AstroService $astroService
      * @param LeadRepository $leadRepository
      *
      * @return void
      * @throws Throwable
      */
     public function handle(
-        AstroService     $astroService,
-        LeadRepository   $leadRepository,
+        LeadRepository       $leadRepository,
+        LeadRedirectService  $leadRedirectService,
     ): void
     {
+
         if($this->argument('leadId')) {
             $leadId = intval($this->argument('leadId'));
             $lead = $leadRepository->findOrFail($leadId);
             $leads = Collection::make();
             $leads->push($lead);
         } else {
-            $leads = $leadRepository->getLeadsWithoutProxy();
+            $leads = $leadRepository->getLeadsWithRedirects();
         }
         foreach ($leads as $lead) {
-            $astroService->deletePort($lead->leadProxy->external_id);
+            $leadRedirectService->generateScreenshotByLeadRedirect($lead->leadRedirect);
         }
     }
 }

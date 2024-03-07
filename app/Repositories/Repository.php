@@ -31,19 +31,19 @@ class Repository
     public function list(array $data = []): Collection
     {
         $query = $this->search($data);
-        $this->filter(
-            $query,
-            Arr::except(
-                $data,
-                [
-                    Config::get('pagination.search_key'),
-                    Config::get('pagination.sort_key'),
-                    Config::get('pagination.order_key'),
-                    Config::get('pagination.limit_key'),
-                    Config::get('pagination.page_key')
-                ]
-            )
-        );
+//        $this->filter(
+//            $query,
+//            Arr::except(
+//                $data,
+//                [
+//                    Config::get('pagination.search_key'),
+//                    Config::get('pagination.sort_key'),
+//                    Config::get('pagination.order_key'),
+//                    Config::get('pagination.limit_key'),
+//                    Config::get('pagination.page_key')
+//                ]
+//            )
+//        );
         $this->sort(
             $query,
             Arr::only(

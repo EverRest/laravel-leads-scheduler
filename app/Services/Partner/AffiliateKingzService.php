@@ -78,9 +78,7 @@ final class AffiliateKingzService extends PartnerService implements IPartnerServ
             'proxy' => "http://{$lead->leadProxy->username}:{$lead->leadProxy->password}@{$lead->leadProxy->host}:{$lead->leadProxy->port}",
             'verify' => false,
             'timeout' => 20000,
-            'curl' => [
-                CURLOPT_FOLLOWLOCATION => true,
-            ],
+            'curl' => [CURLOPT_FOLLOWLOCATION => true,],
             'debug' => true,
         ];
     }

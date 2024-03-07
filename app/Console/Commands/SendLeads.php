@@ -7,10 +7,14 @@ use App\Models\Lead;
 use App\Models\LeadRedirect;
 use App\Repositories\LeadRepository;
 use App\Services\Lead\LeadBatchService;
-use App\Services\Lead\LeadProxyService;
 use App\Services\Lead\LeadRedirectService;
+use App\Services\Partner\PartnerServiceFactory;
+use App\Services\Proxy\AstroService;
 use Exception;
 use Illuminate\Console\Command;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class SendLeads extends Command
@@ -20,19 +24,17 @@ class SendLeads extends Command
      *
      * @var string
      */
-    protected $signature = 'leads:send';
+    protected $signature     = 'leads:send  {leadId?}';
 
     /**
      * @param LeadRepository $leadRepository
-     * @param LeadProxyService $leadProxyService
-     * @param LeadRedirectService $leadRedirectService
      * @param LeadBatchService $leadBatchService
+     * @param LeadRedirectService $leadRedirectService
      */
     public function __construct(
-        private readonly LeadRepository      $leadRepository,
-        private readonly LeadProxyService $leadProxyService,
+        private readonly LeadRepository $leadRepository,
+        private readonly LeadBatchService    $leadBatchService,
         private readonly LeadRedirectService $leadRedirectService,
-        private readonly LeadBatchService $leadBatchService,
     )
     {
         parent::__construct();
@@ -52,23 +54,39 @@ class SendLeads extends Command
      */
     public function handle(): void
     {
-        $leads = $this->leadRepository->getLeadsToSend();
-        $leads->each(fn(Lead $lead) => $this->sendLead($lead));
+
+        if($this->argument('leadId')) {
+            $leadId = intval($this->argument('leadId'));
+            $lead = $this->leadRepository->findOrFail($leadId);
+            $leads = Collection::make();
+            $leads->push($lead);
+        } else {
+            $leads = $this->leadRepository->getLeadsWithoutProxy();
+        }
+        $leads->each(
+            fn(Lead $lead) => $this->sendLead($lead,)
+        );
     }
 
     /**
      * @param Lead $lead
      *
+     * @throws FileNotFoundException
      * @throws Exception
-     * @throws Throwable
      */
-    private function sendLead(Lead $lead): void
+    private function sendLead(
+        Lead                $lead,
+    ): void
     {
-        $proxy= $this->leadProxyService->createProxyByLead($lead);
         /** @var LeadRedirect $leadRedirect */
-        $leadRedirect = $this->leadRedirectService->getRedirectLink($proxy->lead);
-        $result = $this->leadRedirectService->generateScreenshotByLeadRedirect($leadRedirect);
-        $this->leadProxyService->deleteProxyByLead($result->lead);
-        $this->leadBatchService->closeBatchByLead($lead);
+        $service = PartnerServiceFactory::createService($lead->partner->external_id);
+        $leadRedirect =  $service->send($lead);
+        Log::info($leadRedirect);
+        $this->leadRedirectService->generateScreenshotByLeadRedirect($leadRedirect);
+        $isBatchClosed = $this->leadRepository->getBatchResult($lead->import);
+        $this->leadRepository->patch($lead, 'is_sent' , true);
+        if ($isBatchClosed) {
+            $this->leadBatchService->closeBatchByLead($lead);
+        }
     }
 }

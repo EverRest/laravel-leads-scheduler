@@ -47,7 +47,6 @@ final class LeadProxyService
         $ip = $this->astroService->newIp(Arr::get($port, 'id'));
         $leadProxyAttributes = $this->getLeadProxyAttributes($lead, $proxy, $ip, $country);
         $this->logProxyCreation($lead);
-        sleep(5);
 
         return $this->leadProxyRepository->firstOrCreate($leadProxyAttributes);
     }
@@ -67,7 +66,6 @@ final class LeadProxyService
         $leadProxy = $lead->leadProxy;
         $this->leadProxyRepository->query()->where('lead_id', $lead->id)->delete();
         $this->logProxyDeletion($lead);
-        sleep(5);
 
         return $leadProxy;
     }

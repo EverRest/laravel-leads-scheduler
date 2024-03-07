@@ -4,12 +4,18 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Helpers\PasswordGenerator;
+use App\Services\Partner\AffiliateKingzService;
+use App\Services\Partner\CmAffsService;
+use App\Services\Partner\StarkIrevService;
+use Exception;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use InvalidArgumentException;
+use PHPUnit\Framework\MockObject\RuntimeException;
 
 /**
  * Class Lead
@@ -80,7 +86,7 @@ class Lead extends Model
     /**
      * @return HasOne
      */
-    public function result(): HasOne
+    public function leadResult(): HasOne
     {
         return $this->hasOne(LeadResult::class);
     }
@@ -96,6 +102,26 @@ class Lead extends Model
                     return PasswordGenerator::generatePassword();
                 }
                 return $value;
+            },
+        );
+    }
+
+    /**
+     * @return Attribute
+     */
+    public function redirectLinkKey(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                if($this->leadResult) {
+                    return match ($this->partner->external_id) {
+                        '1' => 'data.extras.redirect.url',
+                        '2' => 'data.extras.redirect.url',
+                        '3' => 'data.extras.redirect.url',
+                        default => throw new InvalidArgumentException('Invalid partner_id'),
+                    };
+                }
+                throw new Exception('Lead result not found.');
             },
         );
     }

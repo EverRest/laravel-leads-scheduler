@@ -66,7 +66,6 @@ final class LeadRedirectService
      */
     private function storeRedirectLink(Lead $lead, ?string $redirectLink): Model
     {
-        sleep(5);
         return $this->leadRedirectRepository->store([
             'lead_id' => $lead->id,
             'link' => $redirectLink,
@@ -81,14 +80,9 @@ final class LeadRedirectService
      */
     public function generateScreenshotByLeadRedirect(LeadRedirect $leadRedirect): Model
     {
-        if (!$this->validateLeadRedirect($leadRedirect)) {
-            return $leadRedirect;
-        }
-
         $response = $this->getBrowserResponse($leadRedirect);
         $screenShot = Arr::get($response?->json(), 'screenshot');
         $uploadedFile = $screenShot ? (new Base64ToUploadedFile($screenShot))->file() : null;
-
         if ($uploadedFile && $uploadedFile->isValid()) {
             return $this->storeScreenshot($leadRedirect, $uploadedFile);
         }
@@ -122,11 +116,13 @@ final class LeadRedirectService
      */
     private function getBrowserResponse(LeadRedirect $leadRedirect): ?Response
     {
-        ['host' => $host, 'port' => $port] = Config::get('browser');
         try {
-            return Http::post("$host:$port/browser", [
-                'url' => $leadRedirect->link,
-            ]);
+            $leadResult = $leadRedirect->lead->leadResult;
+            ['host' => $host, 'port' => $port] = Config::get('browser');
+            $link = Arr::get($leadResult->toArray(), $leadRedirect->lead->redirectLinkKey);
+            $this->leadRedirectRepository->patch($leadRedirect, 'link', $link);
+
+            return Http::post("$host:$port/browser", ['url' => $link,]);
         } catch (Exception $e) {
             Log::error(get_class($this) . ": Screenshot was not generated for lead {$leadRedirect->lead->id}. Reason: {$e->getMessage()}");
             return null;
@@ -146,7 +142,6 @@ final class LeadRedirectService
         $fileName = "screenshots/$lead->id.png";
         Storage::disk('public')->exists($fileName) && Storage::disk('public')->delete($fileName);
         Storage::disk('public')->put($fileName, $uploadedFile->get());
-        sleep(5);
 
         return $this->leadRedirectRepository->update(
             $leadRedirect,

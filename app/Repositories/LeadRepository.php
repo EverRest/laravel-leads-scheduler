@@ -24,12 +24,46 @@ final class LeadRepository extends Repository
             ->whereBetween(
                 'scheduled_at',
                 [
-//                    Carbon::now()->subMonth(),
-//                    Carbon::now()->addMonth(),
-                    Carbon::now()->subMinute(),
-                    Carbon::now()->addMinute()
+                    Carbon::now()->subMonth(),
+                    Carbon::now()->addMonth(),
+//                    Carbon::now()->subMinute(),
+//                    Carbon::now()->addMinute()
                 ]
             )->get();
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getLeadsWithoutProxy(): Collection
+    {
+        return $this->query()
+            ->where('is_sent', false)
+            ->where('scheduled_at', '=<', Carbon::now()->addHours(3)->toDateTimeString())
+            ->whereDoesntHave('leadProxy')->get();
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getSentLeads(): Collection
+    {
+        return $this->query()
+            ->where('is_sent', true)
+            ->where('scheduled_at', '>=', Carbon::today()->toDateTimeString())
+            ->get();
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getLeadsWithRedirects(): Collection
+    {
+        return $this->query()
+            ->where('is_sent', true)
+            ->where('scheduled_at', '>=', Carbon::today()->toDateTimeString())
+            ->whereHas('leadRedirect')
+            ->get();
     }
 
     /**
@@ -39,7 +73,7 @@ final class LeadRepository extends Repository
      */
     public function getBatchResult(string $import): bool
     {
-        return $this->query()
+        return !$this->query()
             ->where('import', $import)
             ->where('is_sent', false)
             ->exists();

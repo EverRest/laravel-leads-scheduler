@@ -7,6 +7,7 @@ use App\Models\Lead;
 use App\Repositories\LeadProxyRepository;
 use App\Repositories\LeadRepository;
 use App\Repositories\LeadResultRepository;
+use App\Services\Proxy\AstroService;
 use Exception;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\App;
@@ -73,13 +74,11 @@ abstract class PartnerService
     protected function SaveLeadResult(Lead $lead, Response $response): void
     {
         $this->leadResultRepository
-            ->firstOrCreate(
-                [
-                    'lead_id' => $lead->id,
-                    'status' => $response->status(),
-                    'data' => $response->json(),
-                ]
-            );
+            ->firstOrCreate([
+                'lead_id' => $lead->id,
+                'status' => $response->status(),
+                'data' => $response->json(),
+            ]);
     }
 
     protected abstract function sendRequest(Data $dto, Lead $lead): Response;
