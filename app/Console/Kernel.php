@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->command('leads:send')->everyMinute();
+//        $schedule->command('leads:send')->everyMinute();
 //        $schedule->command('lead:delete-proxy')->daily();
     }
 
