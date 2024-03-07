@@ -93,7 +93,7 @@ final class LeadBatchService
         Telegram::sendMessage(
             [
                 'chat_id' => $chatId,
-                'text' =>   "Batch $lead->import відправив {$leads->count()} лідів. Успішних: $successfulLeadsCount, Неуспішних: $failedLeadsCount",
+                'text' =>   "Batch $lead->import відправив партнеру {$lead->partner->name} {$leads->count()} лідів. Успішних: $successfulLeadsCount, Неуспішних: $failedLeadsCount",
             ]
         );
     }
