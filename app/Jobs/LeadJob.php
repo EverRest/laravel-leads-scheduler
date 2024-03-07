@@ -24,7 +24,7 @@ class LeadJob implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(protected readonly int $leadId)
+    public function __construct(protected int $leadId)
     {
         $repository = App::make(LeadRepository::class);
         $this->lead = $repository->findOrFail($leadId);
