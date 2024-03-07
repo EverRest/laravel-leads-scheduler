@@ -16,7 +16,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
-class SendLeads extends Command
+class SendLeadsOld extends Command
 {
     /**
      * The name and signature of the console command.
@@ -82,10 +82,10 @@ class SendLeads extends Command
         $leadRedirect =  $service->send($lead);
         Log::info($leadRedirect);
         $this->leadRedirectService->generateScreenshotByLeadRedirect($leadRedirect);
-        $isBatchClosed = $this->leadRepository->getBatchResult($lead->import);
+//        $isBatchClosed = $this->leadRepository->getBatchResult($lead->import);
         $this->leadRepository->patch($lead, 'is_sent' , true);
-        if ($isBatchClosed) {
+//        if ($isBatchClosed) {
             $this->leadBatchService->closeBatchByLead($lead);
-        }
+//        }
     }
 }

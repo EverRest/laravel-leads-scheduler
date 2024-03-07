@@ -3,6 +3,11 @@ declare(strict_types=1);
 
 namespace App\Services\Schedule;
 
+use App\Jobs\CloseBatchJob;
+use App\Jobs\CreateLeadProxyJob;
+use App\Jobs\DeleteLeadProxyJob;
+use App\Jobs\GenerateScreenShotJob;
+use App\Jobs\SendLeadJob;
 use App\Models\Partner;
 use App\Repositories\LeadRepository;
 use App\Repositories\PartnerRepository;
@@ -19,7 +24,7 @@ final class ScheduleService
 
     /**
      * @param PartnerRepository $partnerRepository
-     * @param LeadRepository    $leadRepository
+     * @param LeadRepository $leadRepository
      */
     public function __construct(
         private readonly PartnerRepository $partnerRepository,
@@ -48,8 +53,14 @@ final class ScheduleService
         foreach ($importedLeads as $importedLead) {
             $leadModel = $this->scheduleLead($importedLead, $partner, $fromDate, $toDate);
             $leadModels->push($leadModel);
+            $scheduledTime = Carbon::parse($leadModel->scheduled_at);
+            dispatch((new CreateLeadProxyJob($leadModel->id))->delay($scheduledTime->copy()->subMinutes(10)));
+            dispatch((new SendLeadJob($leadModel->id))->delay($scheduledTime->copy()));
+            dispatch((new GenerateScreenShotJob($leadModel->id))->delay($scheduledTime->copy()->addMinutes()));
+            dispatch((new DeleteLeadProxyJob($leadModel->id))->delay($scheduledTime->copy()->addMinutes(10)));
         }
-
+        dispatch((new CloseBatchJob($leadModel->id))
+            ->delay($toDate->copy()->addMinutes(10)));
         return $leadModels;
     }
 
@@ -165,7 +176,7 @@ final class ScheduleService
     }
 
     /**
-     * @param array  $importedLead
+     * @param array $importedLead
      * @param Partner $partner
      * @param Carbon $freeSlot
      *

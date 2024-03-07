@@ -44,8 +44,8 @@ class BatchRequest extends FormRequest
             'leads.*.phone_phoneCode' => 'required|string|min:2|max:255',
             'leads.*.phone' => 'nullable|string|min:2|max:50',
             'partner_id' => 'required|numeric|exists:partners,external_id',
-            'fromDate' => 'required|date',
-            'toDate' => 'required|date',
+            'fromDate' => 'required|date|after:now',
+            'toDate' => 'required|date|after:now',
         ];
     }
 }

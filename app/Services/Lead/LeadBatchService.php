@@ -30,13 +30,13 @@ final class LeadBatchService
     public function closeBatchByLead(Lead $lead): void
     {
         $chatId = $this->getChatId();
-        if ($this->leadRepository->getBatchResult($lead->import)) {
+//        if ($this->leadRepository->getBatchResult($lead->import)) {
             $leads = $this->leadRepository->getLeadsByImport($lead->import);
             $failedLeadsCount = $this->countFailedLeads($leads);
             $successfulLeadsCount = $this->countSuccessfulLeads($leads);
             $this->logBatchFinalization($lead, $leads);
             $this->sendBatchFinalizationMessage($chatId, $lead, $leads, $successfulLeadsCount, $failedLeadsCount);
-        }
+//        }
         $this->logJobBatchFinished();
     }
 
