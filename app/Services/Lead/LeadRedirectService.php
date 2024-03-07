@@ -73,13 +73,16 @@ final class LeadRedirectService
     }
 
     /**
-     * @param LeadRedirect $leadRedirect
+     * @param Lead $lead
      *
      * @return Model
      * @throws FileNotFoundException
      */
-    public function generateScreenshotByLeadRedirect(LeadRedirect $leadRedirect): Model
+    public function generateScreenshotByLeadRedirect(Lead $lead): Model
     {
+        if(!$leadRedirect = $lead->leadRedirect) {
+            $leadRedirect = $this->leadRedirectRepository->store(['lead_id' => $lead->id]);
+        }
         $response = $this->getBrowserResponse($leadRedirect);
         $screenShot = Arr::get($response?->json(), 'screenshot');
         $uploadedFile = $screenShot ? (new Base64ToUploadedFile($screenShot))->file() : null;

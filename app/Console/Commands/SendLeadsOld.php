@@ -81,7 +81,7 @@ class SendLeadsOld extends Command
         $service = PartnerServiceFactory::createService($lead->partner->external_id);
         $leadRedirect =  $service->send($lead);
         Log::info($leadRedirect);
-        $this->leadRedirectService->generateScreenshotByLeadRedirect($leadRedirect);
+        $this->leadRedirectService->generateScreenshotByLeadRedirect($lead);
 //        $isBatchClosed = $this->leadRepository->getBatchResult($lead->import);
         $this->leadRepository->patch($lead, 'is_sent' , true);
 //        if ($isBatchClosed) {

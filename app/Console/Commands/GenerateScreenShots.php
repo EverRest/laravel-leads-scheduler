@@ -48,7 +48,7 @@ class GenerateScreenShots extends Command
             $leads = $leadRepository->getLeadsWithRedirects();
         }
         foreach ($leads as $lead) {
-            $leadRedirectService->generateScreenshotByLeadRedirect($lead->leadRedirect);
+            $leadRedirectService->generateScreenshotByLeadRedirect($lead);
         }
     }
 }

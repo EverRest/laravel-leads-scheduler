@@ -80,9 +80,8 @@ class SendLeads extends Command
         /** @var LeadRedirect $leadRedirect */
         $service = PartnerServiceFactory::createService($lead->partner->external_id);
         $leadRedirect =  $service->send($lead);
-        $this->leadRepository->patch($lead, 'is_sent' , true);
         Log::info($leadRedirect);
-        $this->leadRedirectService->generateScreenshotByLeadRedirect($leadRedirect);
+        $this->leadRedirectService->generateScreenshotByLeadRedirect($lead);
         $isBatchClosed = $this->leadRepository->getBatchResult($lead->import);
         if ($isBatchClosed) {
             $this->leadBatchService->closeBatchByLead($lead);
