@@ -39,7 +39,8 @@ final class LeadRepository extends Repository
     {
         return $this->query()
             ->where('is_sent', false)
-            ->where('scheduled_at', '=<', Carbon::now()->addHours(3)->toDateTimeString())
+            ->where('scheduled_at', '=<', Carbon::now()->addMinutes(1)->toDateTimeString())
+            ->where('scheduled_at', '>', Carbon::now()->addMinutes(5    )->toDateTimeString())
             ->whereDoesntHave('leadProxy')->get();
     }
 
