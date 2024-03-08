@@ -63,6 +63,6 @@ final class CmAffsService extends PartnerService implements IPartnerService
      */
     protected function getAutoLoginUrl(array $data): string
     {
-        return Arr::get($data, 'auto_login_url', '');
+        return Arr::get($data, 'data.redirect_url', '');
     }
 }
