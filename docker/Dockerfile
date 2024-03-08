@@ -54,5 +54,3 @@ COPY docker/nginx/default.conf /etc/nginx/conf.d/default.conf
 
 # Expose ports
 EXPOSE 9000
-
-ENTRYPOINT ["composer", "install", "--no-interaction"]
