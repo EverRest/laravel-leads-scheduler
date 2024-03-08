@@ -42,7 +42,7 @@ final class StarkIrevService extends PartnerService implements IPartnerService
             'Content-Type' => 'application/x-www-form-urlencoded',
             'Host' => 'stark-ld.platform500.com',
         ])->withOptions([
-            'proxy' => "http://{$lead->leadProxy->username}:{$lead->leadProxy->password}@{$lead->leadProxy->host}:{$lead->leadProxy->port}",
+//            'proxy' => "http://{$lead->leadProxy->username}:{$lead->leadProxy->password}@{$lead->leadProxy->host}:{$lead->leadProxy->port}",
             'verify' => false,
             'timeout' => 20000,
             'curl' => [

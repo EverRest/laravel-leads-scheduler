@@ -36,6 +36,7 @@ final class AffiliateKingzService extends PartnerService implements IPartnerServ
         $url = Config::get('services.affiliatekingz.url');
         $headers = $this->getHeaders();
         $options = $this->getOptions($lead);
+
         $data = $this->getData($dto, $lead);
 
         return Http::withHeaders($headers)
@@ -75,7 +76,7 @@ final class AffiliateKingzService extends PartnerService implements IPartnerServ
     private function getOptions(Lead $lead): array
     {
         return [
-            'proxy' => "http://{$lead->leadProxy->username}:{$lead->leadProxy->password}@{$lead->leadProxy->host}:{$lead->leadProxy->port}",
+//            'proxy' => "http://{$lead->leadProxy->username}:{$lead->leadProxy->password}@{$lead->leadProxy->host}:{$lead->leadProxy->port}",
             'verify' => false,
             'timeout' => 20000,
             'curl' => [CURLOPT_FOLLOWLOCATION => true,],

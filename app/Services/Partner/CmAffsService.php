@@ -44,7 +44,7 @@ final class CmAffsService extends PartnerService implements IPartnerService
             'x-api-key' => '426ab522-a627-4d46-a792-7ac4ec68ab08',
             'Content-Type' => 'application/x-www-form-urlencoded',
         ])->withOptions([
-            'proxy' => "http://{$lead->leadProxy->username}:{$lead->leadProxy->password}@{$lead->leadProxy->host}:{$lead->leadProxy->port}",
+//            'proxy' => "http://{$lead->leadProxy->username}:{$lead->leadProxy->password}@{$lead->leadProxy->host}:{$lead->leadProxy->port}",
             'verify' => false,
             'timeout' => 20000,
             'curl' => [
