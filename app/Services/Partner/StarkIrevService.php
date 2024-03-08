@@ -36,22 +36,9 @@ final class StarkIrevService extends PartnerService implements IPartnerService
         $url = Config::get('services.startkirev.url');
 
         return Http::withHeaders([
-//            'Accept' => '*/*',
-//            'Accept-Encoding' => 'gzip, deflate',
-//            'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
             'Content-Type' => 'application/x-www-form-urlencoded',
-//            'Host' => 'stark-ld.platform500.com',
+            'x-api-key' =>  'fdb03b91-7ffc-4c9b-84bc-5cae4bacd446',
         ])
-//            ->withOptions([
-//            'proxy' => "http://{$lead->leadProxy->username}:{$lead->leadProxy->password}@{$lead->leadProxy->host}:{$lead->leadProxy->port}",
-//            'verify' => false,
-//            'timeout' => 20000,
-//            'curl' => [
-//                CURLOPT_FOLLOWLOCATION => true,
-//            ],
-//            'debug' => true,
-//        ])
-            ->asForm()
             ->post($url, [...$dto->toArray(), 'ip' => $lead->leadProxy->ip,]);
     }
 
