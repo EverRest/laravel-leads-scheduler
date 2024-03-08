@@ -37,10 +37,10 @@ final class StarkIrevService extends PartnerService implements IPartnerService
 
         return Http::withHeaders([
             'Accept' => '*/*',
-            'Accept-Encoding' => 'gzip, deflate',
-            'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
+//            'Accept-Encoding' => 'gzip, deflate',
+//            'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
             'Content-Type' => 'application/x-www-form-urlencoded',
-            'Host' => 'stark-ld.platform500.com',
+//            'Host' => 'stark-ld.platform500.com',
         ])->withOptions([
 //            'proxy' => "http://{$lead->leadProxy->username}:{$lead->leadProxy->password}@{$lead->leadProxy->host}:{$lead->leadProxy->port}",
             'verify' => false,
