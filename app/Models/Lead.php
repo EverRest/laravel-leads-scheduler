@@ -125,8 +125,8 @@ class Lead extends Model
                 if($this->leadResult) {
                     return match ($this->partner->external_id) {
                         '1' => 'data.extras.redirect.url',
-                        '2' => 'data.extras.redirect.url1',
-                        '3' => 'data.extras.redirect.url1',
+                        '2' => 'data.redirect_url',
+                        '3' => 'auto_login_url',
                         default => throw new InvalidArgumentException('Invalid partner_id'),
                     };
                 }
