@@ -36,7 +36,7 @@ final class StarkIrevService extends PartnerService implements IPartnerService
         $url = Config::get('services.startkirev.url');
 
         return Http::withHeaders([
-            'Accept' => '*/*',
+//            'Accept' => '*/*',
 //            'Accept-Encoding' => 'gzip, deflate',
 //            'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
             'Content-Type' => 'application/x-www-form-urlencoded',
