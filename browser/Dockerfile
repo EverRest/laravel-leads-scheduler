@@ -1,7 +1,7 @@
 FROM node:18-alpine
 
 # Set working directory
-WORKDIR /app
+WORKDIR /usr/src/app
 
 # Install dependencies
 RUN apk --no-cache add \
@@ -30,9 +30,9 @@ COPY package*.json ./
 RUN npm install
 
 # Copy the rest of the application files
-COPY .  ./
+COPY .  .
 
 # Expose ports
 EXPOSE 4000
 
-#CMD ["npm", "run", "start"]
+CMD ["npm", "run", "start"]
