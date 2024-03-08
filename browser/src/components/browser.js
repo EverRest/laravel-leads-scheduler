@@ -9,17 +9,20 @@ class Browser {
         puppeteer.use(StealthPlugin())
         this.proxy = proxy
         const arg = ['--disable-gpu', '--disable-setuid-sandbox', '--no-sandbox', '--no-zygote' ]
-        return (async () => {
-            this.browser = await puppeteer.launch({
-                headless: true,
-                executablePath: '/usr/bin/chromium-browser',
-                args: proxy ? [...arg,
-                    `--proxy-server=${proxy.protocol}://${proxy.host}:${proxy.port}`,
-                ] : [...arg],
-            });
-            return this;
-        })();
+        this.proxyArgs =   proxy ? [...arg, `--proxy-server=${proxy.protocol}://${proxy.host}:${proxy.port}`,] : [...arg]
     }
+
+    async init() {
+    this.browser = await puppeteer.launch({
+        headless: true,
+        executablePath: '/usr/bin/chromium-browser',
+        args: this.proxyArgs,
+        // args: proxy ? [...arg,
+        //     `--proxy-server=${proxy.protocol}://${proxy.host}:${proxy.port}`,
+        // ] : [...arg],
+    });
+    return this;
+}
 
     async close () {
         this.browser.close();

@@ -17,7 +17,8 @@ router.post('/browser', async (req, res, next) => {
 })
 
 async function getScreenshot(proxy, url) {
-    const browser = await new Browser(proxy)
+    const browser = new Browser(proxy)
+    await browser.init();
     const {screenshot} = await browser.createPage(url)
     const base64screenshot = screenshot.toString('base64')
     await browser.close();
