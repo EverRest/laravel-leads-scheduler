@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Helpers;
 
+use Illuminate\Support\Str;
+
 final class PasswordGenerator
 {
     /**
@@ -20,6 +22,8 @@ final class PasswordGenerator
             $password .= substr($possibleChars, $rand, 1);
         }
         $password .= rand(1, 1000);
+        $password .= strtoupper(Str::random(1));
+
         return $password;
     }
 }
