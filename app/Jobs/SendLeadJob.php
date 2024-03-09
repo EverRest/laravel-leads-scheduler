@@ -8,6 +8,13 @@ use App\Services\Partner\PartnerServiceFactory;
 class SendLeadJob extends LeadJob
 {
     /**
+     * The number of times the job may be attempted.
+     *
+     * @var int
+     */
+    public int $tries = 1;
+
+    /**
      * Execute the job.
      */
     public function handle(): void
