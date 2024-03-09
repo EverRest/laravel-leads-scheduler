@@ -50,10 +50,10 @@ abstract class PartnerService
     /**
      * @param Lead $lead
      *
-     * @return string
+     * @return ?string
      * @throws Exception
      */
-    public function send(Lead $lead): string
+    public function send(Lead $lead): ?string
     {
         $dto = $this->createDtoByLeadId($lead->id);
         $response = $this->sendRequest($dto, $lead);
@@ -62,7 +62,7 @@ abstract class PartnerService
             Log::error($response->status() . " Partner $lead->partner_id is not available.");
         }
 
-        return $this->getAutoLoginUrl($response->json());
+        return $this->getAutoLoginUrl($response->json()??[]);
     }
 
     /**
@@ -93,7 +93,7 @@ abstract class PartnerService
     /**
      * @param array $data
      *
-     * @return string
+     * @return string|null
      */
-    protected abstract function getAutoLoginUrl(array $data): string;
+    protected abstract function getAutoLoginUrl(array $data): ?string;
 }

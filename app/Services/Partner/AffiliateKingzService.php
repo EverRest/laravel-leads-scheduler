@@ -48,9 +48,9 @@ final class AffiliateKingzService extends PartnerService implements IPartnerServ
     /**
      * @param array $data
      *
-     * @return string
+     * @return string|null
      */
-    protected function getAutoLoginUrl(array $data): string
+    protected function getAutoLoginUrl(array $data): ?string
     {
         return Arr::get($data, 'extras.redirect.url', '');
     }

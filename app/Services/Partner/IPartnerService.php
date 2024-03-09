@@ -10,7 +10,7 @@ interface IPartnerService
     /**
      * @param Lead $lead
      *
-     * @return string
+     * @return ?string
      */
-    public function send(Lead $lead):string;
+    public function send(Lead $lead):?string;
 }

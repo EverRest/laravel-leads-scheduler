@@ -47,7 +47,7 @@ final class StarkIrevService extends PartnerService implements IPartnerService
      *
      * @return string
      */
-    protected function getAutoLoginUrl(array $data): string
+        protected function getAutoLoginUrl(array $data): ?string
     {
         return Arr::get($data, 'data.auto_login_url', '');
     }
