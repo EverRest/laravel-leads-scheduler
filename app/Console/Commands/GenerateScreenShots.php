@@ -8,6 +8,7 @@ use App\Services\Lead\LeadRedirectService;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 class GenerateScreenShots extends Command
 {
@@ -49,6 +50,7 @@ class GenerateScreenShots extends Command
         }
         foreach ($leads as $lead) {
             $leadRedirectService->generateScreenshotByLeadRedirect($lead);
+            Log::info('GenerateScreenShots: ' . $lead->id . ' lead');
         }
     }
 }

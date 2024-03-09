@@ -7,6 +7,7 @@ use App\Jobs\DeleteLeadProxyJob;
 use App\Repositories\LeadRepository;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class   DeleteProxy extends Command
@@ -49,5 +50,6 @@ class   DeleteProxy extends Command
 //            $astroService->deletePort($lead->leadProxy->external_id);
             DeleteLeadProxyJob::dispatch($lead->id)->delay(now()->addMinutes());
         }
+        Log::info('DeleteProxy: ' . $leads->count() . ' leads');
     }
 }
