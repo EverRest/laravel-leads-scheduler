@@ -57,6 +57,27 @@ final class LeadRedirectService
     }
 
     /**
+     * @param LeadRedirect $leadRedirect
+     *
+     * @return Model
+     * @throws FileNotFoundException
+     */
+    public function generateScreenshotByLeadRedirect(LeadRedirect $leadRedirect): Model
+    {
+        $link = Arr::get($leadRedirect->lead->leadResult->toArray(), $leadRedirect->lead->redirectLinkKey);
+        $leadRedirect = $this->leadRedirectRepository->patch($leadRedirect, 'link',$link);
+        dd($leadRedirect->partner_id, $link, $leadRedirect->lead->redirectLinkKey);
+        $response = $this->getBrowserResponse($leadRedirect);
+        $screenShot = Arr::get($response?->json()??[], 'screenshot');
+        $uploadedFile = $screenShot ? (new Base64ToUploadedFile($screenShot))->file() : null;
+        if ($uploadedFile && $uploadedFile->isValid()) {
+            return $this->storeScreenshot($leadRedirect, $uploadedFile);
+        }
+
+        return $leadRedirect;
+    }
+
+    /**
      * @param Lead $lead
      *
      * @return string|null
@@ -70,32 +91,6 @@ final class LeadRedirectService
             Log::error(get_class($this) . ": Redirect link was not generated for lead $lead->id. Reason: {$e->getMessage()}");
             return null;
         }
-    }
-
-    /**
-     * @param LeadRedirect $leadRedirect
-     *
-     * @return Model
-     * @throws FileNotFoundException
-     */
-    public function generateScreenshotByLeadRedirect(LeadRedirect $leadRedirect): Model
-    {
-//        $leadRedirect = $lead->leadRedirect;
-//        if (!$leadRedirect) {
-//            $leadRedirect = $this->leadRedirectRepository->store([
-//                'lead_id' => $lead->id,
-//                'link' => Arr::get($lead->leadResult->data, $lead->redirectLinkKey),
-//            ]);
-//        }
-//        $leadRedirect = Arr::get($lead->leadResult->data, $lead->redirectLinkKey);
-        $response = $this->getBrowserResponse($leadRedirect);
-        $screenShot = Arr::get($response?->json()??[], 'screenshot');
-        $uploadedFile = $screenShot ? (new Base64ToUploadedFile($screenShot))->file() : null;
-        if ($uploadedFile && $uploadedFile->isValid()) {
-            return $this->storeScreenshot($leadRedirect, $uploadedFile);
-        }
-
-        return $leadRedirect;
     }
 
     /**

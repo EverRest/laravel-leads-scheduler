@@ -50,7 +50,7 @@ abstract class PartnerService
     /**
      * @param Lead $lead
      *
-     * @return ?string
+     * @return string
      * @throws Exception
      */
     public function send(Lead $lead): ?string
@@ -93,7 +93,7 @@ abstract class PartnerService
     /**
      * @param array $data
      *
-     * @return string|null
+     * @return string
      */
-    protected abstract function getAutoLoginUrl(array $data): ?string;
+    protected abstract function getAutoLoginUrl(array $data): string;
 }
