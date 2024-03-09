@@ -47,6 +47,18 @@ final class LeadRepository extends Repository
     /**
      * @return Collection
      */
+    public function getTodayLeadsProxy(): Collection
+    {
+        return $this->query()
+            ->where('is_sent', false)
+            ->where('scheduled_at', '>=', Carbon::today()->toDateTimeString())
+            ->where('scheduled_at', '<', Carbon::tomorrow()->toDateTimeString())
+            ->whereDoesntHave('leadProxy')->get();
+    }
+
+    /**
+     * @return Collection
+     */
     public function getSentLeads(): Collection
     {
         return $this->query()

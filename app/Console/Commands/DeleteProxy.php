@@ -3,14 +3,13 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Repositories\LeadProxyRepository;
+use App\Jobs\DeleteLeadProxyJob;
 use App\Repositories\LeadRepository;
-use App\Services\Proxy\AstroService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 use Throwable;
 
-class DeleteProxy extends Command
+class   DeleteProxy extends Command
 {
     /**
      * The name and signature of the console command.
@@ -29,14 +28,12 @@ class DeleteProxy extends Command
     /**
      * Execute the console command.
      *
-     * @param AstroService $astroService
      * @param LeadRepository $leadRepository
      *
      * @return void
      * @throws Throwable
      */
     public function handle(
-        AstroService     $astroService,
         LeadRepository   $leadRepository,
     ): void
     {
@@ -46,10 +43,11 @@ class DeleteProxy extends Command
             $leads = Collection::make();
             $leads->push($lead);
         } else {
-            $leads = $leadRepository->getLeadsWithoutProxy();
+            $leads = $leadRepository->getTodayLeadsProxy();
         }
         foreach ($leads as $lead) {
-            $astroService->deletePort($lead->leadProxy->external_id);
+//            $astroService->deletePort($lead->leadProxy->external_id);
+            DeleteLeadProxyJob::dispatch($lead->id)->delay(now()->addMinutes());
         }
     }
 }
