@@ -65,8 +65,8 @@ final class LeadRedirectService
     public function generateScreenshotByLeadRedirect(LeadRedirect $leadRedirect): Model
     {
         $link = Arr::get($leadRedirect->lead->leadResult->toArray(), $leadRedirect->lead->redirectLinkKey);
+       /** @var LeadRedirect $leadRedirect */
         $leadRedirect = $this->leadRedirectRepository->patch($leadRedirect, 'link',$link);
-        dd($leadRedirect->partner_id, $link, $leadRedirect->lead->redirectLinkKey);
         $response = $this->getBrowserResponse($leadRedirect);
         $screenShot = Arr::get($response?->json()??[], 'screenshot');
         $uploadedFile = $screenShot ? (new Base64ToUploadedFile($screenShot))->file() : null;
