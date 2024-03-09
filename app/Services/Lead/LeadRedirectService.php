@@ -122,19 +122,20 @@ final class LeadRedirectService
     {
         try {
             $leadResult = $leadRedirect->lead->leadResult;
-            ['host' => $host, 'port' => $port] = Config::get('browser');
             $link = Arr::get($leadResult->toArray(), $leadRedirect->lead->redirectLinkKey);
             $this->leadRedirectRepository->patch($leadRedirect, 'link', $link);
-
+            $proxy =  [
+                'host' => $leadRedirect->lead->leadProxy->host,
+                'port' => $leadRedirect->lead->leadProxy->port,
+                'protocol' => $leadRedirect->lead->leadProxy->protocol,
+                'username' => $leadRedirect->lead->leadProxy->username,
+                'password' => $leadRedirect->lead->leadProxy->password,
+            ];
+            Log::info("Link: $link");
+            Log::info("Proxy: " . json_encode($proxy));
             return Http::post("http://localhost:4000/browser", [
                 'url' => $link,
-                'proxy' => [
-                    'host' => $leadRedirect->lead->leadProxy->host,
-                    'port' => $leadRedirect->lead->leadProxy->port,
-                    'protocol' => $leadRedirect->lead->leadProxy->protocol,
-                    'username' => $leadRedirect->lead->leadProxy->username,
-                    'password' => $leadRedirect->lead->leadProxy->password,
-                ]
+                'proxy' => $proxy
             ]);
         } catch (Exception $e) {
             Log::error(get_class($this) . ": Screenshot was not generated for lead {$leadRedirect->lead->id}. Reason: {$e->getMessage()}");
