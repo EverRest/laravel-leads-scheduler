@@ -126,12 +126,14 @@ final class LeadRedirectService
             $link = Arr::get($leadResult->toArray(), $leadRedirect->lead->redirectLinkKey);
             $this->leadRedirectRepository->patch($leadRedirect, 'link', $link);
 
-            return Http::post("$host:$port/browser", [
+            return Http::post("http://localhost:4000/browser", [
                 'url' => $link,
                 'proxy' => [
                     'host' => $leadRedirect->lead->leadProxy->host,
                     'port' => $leadRedirect->lead->leadProxy->port,
                     'protocol' => $leadRedirect->lead->leadProxy->protocol,
+                    'username' => $leadRedirect->lead->leadProxy->username,
+                    'password' => $leadRedirect->lead->leadProxy->password,
                 ]
             ]);
         } catch (Exception $e) {
