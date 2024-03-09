@@ -95,5 +95,5 @@ abstract class PartnerService
      *
      * @return string
      */
-    protected abstract function getAutoLoginUrl(array $data): string;
+    protected abstract function getAutoLoginUrl(array $data): ?string;
 }
