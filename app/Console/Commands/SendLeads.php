@@ -13,7 +13,6 @@ use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class SendLeads extends Command
@@ -27,12 +26,10 @@ class SendLeads extends Command
 
     /**
      * @param LeadRepository $leadRepository
-     * @param LeadBatchService $leadBatchService
      * @param LeadRedirectService $leadRedirectService
      */
     public function __construct(
         private readonly LeadRepository $leadRepository,
-        private readonly LeadBatchService    $leadBatchService,
         private readonly LeadRedirectService $leadRedirectService,
     )
     {
@@ -80,11 +77,10 @@ class SendLeads extends Command
         /** @var LeadRedirect $leadRedirect */
         $service = PartnerServiceFactory::createService($lead->partner->external_id);
         $leadRedirect =  $service->send($lead);
-        Log::info($leadRedirect);
-        $this->leadRedirectService->generateScreenshotByLeadRedirect($lead);
+        $this->leadRedirectService->generateScreenshotByLeadRedirect($leadRedirect);
         $isBatchClosed = $this->leadRepository->getBatchResult($lead->import);
-        if ($isBatchClosed) {
-            $this->leadBatchService->closeBatchByLead($lead);
-        }
+//        if ($isBatchClosed) {
+//            $this->leadBatchService->closeBatchByLead($lead);
+//        }
     }
 }

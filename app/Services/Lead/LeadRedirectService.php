@@ -44,6 +44,20 @@ final class LeadRedirectService
 
     /**
      * @param Lead $lead
+     * @param string|null $redirectLink
+     *
+     * @return Model
+     */
+    public function storeRedirectLink(Lead $lead, ?string $redirectLink): Model
+    {
+        return $this->leadRedirectRepository->store([
+            'lead_id' => $lead->id,
+            'link' => $redirectLink,
+        ]);
+    }
+
+    /**
+     * @param Lead $lead
      *
      * @return string|null
      */
@@ -59,36 +73,23 @@ final class LeadRedirectService
     }
 
     /**
-     * @param Lead $lead
-     * @param string|null $redirectLink
-     *
-     * @return Model
-     */
-    private function storeRedirectLink(Lead $lead, ?string $redirectLink): Model
-    {
-        return $this->leadRedirectRepository->store([
-            'lead_id' => $lead->id,
-            'link' => $redirectLink,
-        ]);
-    }
-
-    /**
-     * @param Lead $lead
+     * @param LeadRedirect $leadRedirect
      *
      * @return Model
      * @throws FileNotFoundException
      */
-    public function generateScreenshotByLeadRedirect(Lead $lead): Model
+    public function generateScreenshotByLeadRedirect(LeadRedirect $leadRedirect): Model
     {
-        $leadRedirect = $lead->leadRedirect;
-        if (!$leadRedirect) {
-            $leadRedirect = $this->leadRedirectRepository->store([
-                'lead_id' => $lead->id,
-                'link' => Arr::get($lead->leadResult->data, $lead->redirectLinkKey),
-            ]);
-        }
+//        $leadRedirect = $lead->leadRedirect;
+//        if (!$leadRedirect) {
+//            $leadRedirect = $this->leadRedirectRepository->store([
+//                'lead_id' => $lead->id,
+//                'link' => Arr::get($lead->leadResult->data, $lead->redirectLinkKey),
+//            ]);
+//        }
+//        $leadRedirect = Arr::get($lead->leadResult->data, $lead->redirectLinkKey);
         $response = $this->getBrowserResponse($leadRedirect);
-        $screenShot = Arr::get($response?->json(), 'screenshot');
+        $screenShot = Arr::get($response?->json()??[], 'screenshot');
         $uploadedFile = $screenShot ? (new Base64ToUploadedFile($screenShot))->file() : null;
         if ($uploadedFile && $uploadedFile->isValid()) {
             return $this->storeScreenshot($leadRedirect, $uploadedFile);
