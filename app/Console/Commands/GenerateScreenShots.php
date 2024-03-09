@@ -41,14 +41,14 @@ class GenerateScreenShots extends Command
         if ($this->argument('leadId')) {
             $leadId = intval($this->argument('leadId'));
             $lead = $leadRepository->findOrFail($leadId);
-            $leadRedirectService->generateScreenshotByLeadRedirect($lead->leadRedirect);
+            $leadRedirectService->generateScreenshotByLeadRedirect($lead);
             $leads = Collection::make();
             $leads->push($lead);
         } else {
-            $leads = $leadRepository->getLeadsWithRedirects();
+            $leads = $leadRepository->getSentLeads();
         }
         foreach ($leads as $lead) {
-            $leadRedirectService->generateScreenshotByLeadRedirect($lead->leadRedirect);
+            $leadRedirectService->generateScreenshotByLeadRedirect($lead);
         }
     }
 }
