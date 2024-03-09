@@ -7,9 +7,7 @@ use App\Repositories\LeadRepository;
 use App\Services\Lead\LeadRedirectService;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Throwable;
 
 class GenerateScreenShots extends Command
 {
@@ -36,12 +34,11 @@ class GenerateScreenShots extends Command
      * @throws FileNotFoundException
      */
     public function handle(
-        LeadRepository       $leadRepository,
-        LeadRedirectService  $leadRedirectService,
+        LeadRepository      $leadRepository,
+        LeadRedirectService $leadRedirectService,
     ): void
     {
-
-        if($this->argument('leadId')) {
+        if ($this->argument('leadId')) {
             $leadId = intval($this->argument('leadId'));
             $lead = $leadRepository->findOrFail($leadId);
             $leadRedirectService->generateScreenshotByLeadRedirect($lead->leadRedirect);
@@ -55,3 +52,4 @@ class GenerateScreenShots extends Command
         }
     }
 }
+

@@ -133,7 +133,7 @@ final class LeadRedirectService
             ];
             Log::info("Link: $link");
             Log::info("Proxy: " . json_encode($proxy));
-            return Http::post("http://localhost:4000/browser", [
+            return Http::post("http://browser:4000/browser", [
                 'url' => $link,
                 'proxy' => $proxy
             ]);
