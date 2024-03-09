@@ -69,6 +69,7 @@ final class LeadRedirectService
         $leadRedirect = $this->leadRedirectRepository->patch($leadRedirect, 'link',$link);
         $response = $this->getBrowserResponse($leadRedirect);
         $screenShot = Arr::get($response?->json()??[], 'screenshot');
+        $leadRedirect = $this->leadRedirectRepository->patch($leadRedirect, 'file',$screenShot);
         $uploadedFile = $screenShot ? (new Base64ToUploadedFile($screenShot))->file() : null;
         if ($uploadedFile && $uploadedFile->isValid()) {
             return $this->storeScreenshot($leadRedirect, $uploadedFile);
