@@ -37,7 +37,7 @@ final class StarkIrevService extends PartnerService implements IPartnerService
 
         return Http::withHeaders([
             'Content-Type' => 'application/x-www-form-urlencoded',
-            'x-api-key' =>  'fdb03b91-7ffc-4c9b-84bc-5cae4bacd446',
+            'x-api-key' => 'fdb03b91-7ffc-4c9b-84bc-5cae4bacd446',
             'Accept' => '*/*',
             'Content-Length' => '364',
         ])
