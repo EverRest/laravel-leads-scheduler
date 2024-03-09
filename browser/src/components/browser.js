@@ -117,6 +117,7 @@ class Browser {
     async captureScreenshot(page, url) {
         let screenshot;
         try {
+            console.log('Navigating to URL:', url);
             await page.goto(url, {waitUntil: 'networkidle0', timeout: 0}).then(async () => {
                 screenshot = await page.screenshot({
                     omitBackground: true,
