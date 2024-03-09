@@ -15,6 +15,6 @@ class GenerateScreenShotJob extends LeadJob
      */
     public function handle(LeadRedirectService $leadRedirectService): void
     {
-        $leadRedirectService->generateScreenshotByLeadRedirect($this->lead->leadRedirect);
+        $leadRedirectService->generateScreenshotByLeadRedirect($this->lead);
     }
 }

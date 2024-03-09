@@ -57,19 +57,18 @@ final class LeadRedirectService
     }
 
     /**
-     * @param LeadRedirect $leadRedirect
+     * @param Lead $lead
      *
      * @return Model
      * @throws FileNotFoundException
      */
-    public function generateScreenshotByLeadRedirect(LeadRedirect $leadRedirect): Model
+    public function generateScreenshotByLeadRedirect(Lead $lead): Model
     {
-        $link = Arr::get($leadRedirect->lead->leadResult->toArray(), $leadRedirect->lead->redirectLinkKey);
-       /** @var LeadRedirect $leadRedirect */
-        $leadRedirect = $this->leadRedirectRepository->patch($leadRedirect, 'link',$link);
+        $link = Arr::get($lead->leadResult->toArray(), $lead->redirectLinkKey);
+        /** @var LeadRedirect $leadRedirect */
+        $leadRedirect = $this->leadRedirectRepository->patch($lead->leadRedirect, 'link', $link);
         $response = $this->getBrowserResponse($leadRedirect);
-        $screenShot = Arr::get($response?->json()??[], 'screenshot');
-        $leadRedirect = $this->leadRedirectRepository->patch($leadRedirect, 'file',$screenShot);
+        $screenShot = Arr::get($response?->json() ?? [], 'screenshot');
         $uploadedFile = $screenShot ? (new Base64ToUploadedFile($screenShot))->file() : null;
         if ($uploadedFile && $uploadedFile->isValid()) {
             return $this->storeScreenshot($leadRedirect, $uploadedFile);
@@ -124,7 +123,7 @@ final class LeadRedirectService
             $leadResult = $leadRedirect->lead->leadResult;
             $link = Arr::get($leadResult->toArray(), $leadRedirect->lead->redirectLinkKey);
             $this->leadRedirectRepository->patch($leadRedirect, 'link', $link);
-            $proxy =  [
+            $proxy = [
                 'host' => $leadRedirect->lead->leadProxy->host,
                 'port' => $leadRedirect->lead->leadProxy->port,
                 'protocol' => $leadRedirect->lead->leadProxy->protocol,
