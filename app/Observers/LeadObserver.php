@@ -17,7 +17,7 @@ class LeadObserver
     public function created(Lead $lead): void
     {
             $scheduledTime = Carbon::parse($lead->scheduled_at);
-//            dispatch((new CreateLeadProxyJob($lead->id))->delay($scheduledTime->copy()->subMinutes(3)));
+            dispatch((new CreateLeadProxyJob($lead->id))->delay($scheduledTime->copy()->subMinutes(3)));
             dispatch((new SendLeadJob($lead->id))->delay($scheduledTime->copy()));
 //            dispatch((new GenerateScreenShotJob($leadModel->id))->delay($scheduledTime->copy()->addMinutes()));
 //            dispatch((new DeleteLeadProxyJob($lead->id))->delay($scheduledTime->copy()->addMinutes(5)));
