@@ -56,6 +56,7 @@ class GenerateScreenShots extends Command
         foreach ($leads as $lead) {
             $leadRedirectService->generateScreenshotByLeadRedirect($lead);
             Log::info('GenerateScreenShots: ' . $lead->id . ' lead');
+            $leadRepository->destroy($lead);
             sleep(10);
         }
     }
