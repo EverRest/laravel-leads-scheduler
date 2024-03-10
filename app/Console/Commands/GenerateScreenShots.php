@@ -54,7 +54,6 @@ class GenerateScreenShots extends Command
             ->get();
         }
         foreach ($leads as $lead) {
-            Log::info('GenerateScreenShots: ' . $lead->id . ' lead');
             $leadRedirectService->generateScreenshotByLeadRedirect($lead);
             Log::info('GenerateScreenShots: ' . $lead->id . ' lead');
             sleep(10);
