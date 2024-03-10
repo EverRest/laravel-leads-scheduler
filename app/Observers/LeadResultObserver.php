@@ -6,9 +6,6 @@ namespace App\Observers;
 
 use App\Jobs\GenerateScreenShotJob;
 use App\Models\LeadResult;
-use App\Services\Lead\LeadRedirectService;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\App;
 
 class LeadResultObserver
 {

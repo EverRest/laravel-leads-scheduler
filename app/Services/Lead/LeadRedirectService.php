@@ -89,7 +89,7 @@ final class LeadRedirectService
     public function generateScreenshotByLeadRedirect(Lead $lead): Model
     {
         $leadResult = $this->leadResultRepository->query()->firstWhere('lead_id', $lead->id);
-        $link = Arr::get($leadResult?->toArray() ?? [], $lead->redirectLinkKey);
+        $link = Arr::get($leadResult->toArray() ?? [], $lead->redirectLinkKey);
         Log::info('GenerateScreenshotByLeadRedirect: ' . $lead->id . ' lead');
         Log::info('GenerateScreenshotByLeadRedirect: ' . $leadResult->id . ' leadResult');
         Log::info('LinkKey: ' . $lead->redirectLinkKey. ' lead');
