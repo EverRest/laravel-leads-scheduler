@@ -10,6 +10,7 @@ use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class GenerateScreenShots extends Command
 {
@@ -33,7 +34,7 @@ class GenerateScreenShots extends Command
      * @param LeadRepository $leadRepository
      * @param LeadRedirectService $leadRedirectService
      * @return void
-     * @throws FileNotFoundException
+     * @throws FileNotFoundException|Throwable
      */
     public function handle(
         LeadRepository      $leadRepository,
@@ -49,15 +50,13 @@ class GenerateScreenShots extends Command
         } else {
             $leads = $leadRepository->query()
                 ->whereHas('leadResult', fn($q) => $q->whereNotNull('data'))
-                ->where('scheduled_at', '>=', Carbon::now()->subMinutes(30)
+                ->where('scheduled_at', '>=', Carbon::now()->subMinutes(10)
                     ->toDateTimeString())
             ->get();
         }
         foreach ($leads as $lead) {
             $leadRedirectService->generateScreenshotByLeadRedirect($lead);
             Log::info('GenerateScreenShots: ' . $lead->id . ' lead');
-            $leadRepository->destroy($lead);
-            sleep(10);
         }
     }
 }
