@@ -111,11 +111,37 @@ class Browser {
         });
     }
 
+    async captureScreenshotWithRetry(page, url, maxRetries = 3) {
+        let screenshot;
+        let error;
+
+        for (let retry = 0; retry < maxRetries; retry++) {
+            try {
+                console.log(`Navigating to URL (Attempt ${retry + 1}):`, url);
+                await page.goto(url, { waitUntil: 'networkidle0', timeout: 60000 });
+                screenshot = await page.screenshot({
+                    omitBackground: true,
+                    encoding: 'binary'
+                });
+                break;
+            } catch (caughtError) {
+                error = caughtError;
+                console.error(`Error during attempt ${retry + 1}:`, error.message);
+            }
+        }
+
+        if (!screenshot) {
+            console.error(`Failed to capture screenshot after ${maxRetries} attempts. Last error:`, error);
+        }
+
+        return screenshot;
+    }
+
     async captureScreenshot(page, url) {
         let screenshot;
         try {
             console.log('Navigating to URL:', url);
-            await page.goto(url, {waitUntil: 'networkidle0', timeout: 60000}).then(async () => {
+            await page.goto(url, {waitUntil: 'networkidle0', timeout: 0}).then(async () => {
                 screenshot = await page.screenshot({
                     omitBackground: true,
                     encoding: 'binary'
