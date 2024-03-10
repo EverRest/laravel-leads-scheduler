@@ -86,7 +86,11 @@ final class LeadRedirectService
      */
     public function generateScreenshotByLeadRedirect(Lead $lead): Model
     {
+        Log::info('GenerateScreenshotByLeadRedirect: ' . $lead->id . ' lead');
         $link = Arr::get($lead->leadResult->toArray(), $lead->redirectLinkKey);
+        Log::info('LinkKey: ' . $lead->redirectLinkKey. ' lead');
+        Log::info('LinkData: ' . implode(',', $lead->leadResult->toArray()). ' lead');
+        Log::info('Link: ' . $link. ' lead');
         if($link) {
             /** @var LeadRedirect $leadRedirect */
             $leadRedirect = $this->leadRedirectRepository->patch($lead->leadRedirect, 'link', $link);
