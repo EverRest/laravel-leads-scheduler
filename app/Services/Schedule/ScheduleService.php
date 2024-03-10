@@ -54,7 +54,7 @@ final class ScheduleService
             $leadModel = $this->scheduleLead($importedLead, $partner, $fromDate, $toDate);
             $leadModels->push($leadModel);
             $scheduledTime = Carbon::parse($leadModel->scheduled_at);
-            dispatch((new CreateLeadProxyJob($leadModel->id))->delay($scheduledTime->copy()->subMinutes()));
+//            dispatch((new CreateLeadProxyJob($leadModel->id))->delay($scheduledTime->copy()->subMinutes()));
             dispatch((new SendLeadJob($leadModel->id))->delay($scheduledTime->copy()));
 //            dispatch((new GenerateScreenShotJob($leadModel->id))->delay($scheduledTime->copy()->addMinutes()));
 //            dispatch((new DeleteLeadProxyJob($leadModel->id))->delay($scheduledTime->copy()->addMinutes()));
