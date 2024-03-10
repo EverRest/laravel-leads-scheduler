@@ -62,8 +62,8 @@ final class LeadRepository extends Repository
     public function getSentLeads(): Collection
     {
         return $this->query()
-            ->where('scheduled_at', '<=', Carbon::now()->toDateTimeString())
-            ->where('scheduled_at', '>=', Carbon::now()->subMinutes(2)->toDateTimeString())
+            ->where('scheduled_at', '<', Carbon::now()->toDateTimeString())
+            ->where('scheduled_at', '>=', Carbon::now()->subMinutes(1)->toDateTimeString())
             ->get();
     }
 
