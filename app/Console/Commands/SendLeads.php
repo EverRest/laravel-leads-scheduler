@@ -67,7 +67,6 @@ class SendLeads extends Command
     /**
      * @param Lead $lead
      *
-     * @throws FileNotFoundException
      * @throws Exception
      */
     private function sendLead(
@@ -77,7 +76,6 @@ class SendLeads extends Command
         /** @var LeadRedirect $leadRedirect */
         $service = PartnerServiceFactory::createService($lead->partner->external_id);
         $leadRedirect =  $service->send($lead);
-        $this->leadRedirectService->generateScreenshotByLeadRedirect($lead);
 //        $isBatchClosed = $this->leadRepository->getBatchResult($lead->import);
 //        if ($isBatchClosed) {
 //            $this->leadBatchService->closeBatchByLead($lead);

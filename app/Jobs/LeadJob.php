@@ -28,6 +28,5 @@ class LeadJob implements ShouldQueue
     {
         $repository = App::make(LeadRepository::class);
         $this->lead = $repository->findOrFail($leadId);
-        GenerateScreenShotJob::dispatch($leadId);
     }
 }
