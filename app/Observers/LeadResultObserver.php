@@ -16,11 +16,8 @@ class LeadResultObserver
      */
     public function created(LeadResult $leadResult): void
     {
-        $lead = $leadResult->lead();
-        if (!$lead->leadRedirect()->exists()) {
-            $leadRedirect = Arr::get($leadResult->toArray(), $leadResult->lead->redirectLinkKey);
-            App::make(LeadRedirectService::class)->storeRedirectLink($leadResult->lead, $leadRedirect);
-        }
+        $leadRedirect = Arr::get($leadResult->toArray(), $leadResult->lead->redirectLinkKey);
+        App::make(LeadRedirectService::class)->storeRedirectLink($leadResult->lead, $leadRedirect);
     }
 
     /**

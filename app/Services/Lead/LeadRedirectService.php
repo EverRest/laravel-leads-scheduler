@@ -82,6 +82,7 @@ final class LeadRedirectService
      *
      * @return Model
      * @throws FileNotFoundException
+     * @throws Exception
      */
     public function generateScreenshotByLeadRedirect(Lead $lead): Model
     {
@@ -96,8 +97,7 @@ final class LeadRedirectService
                 return $this->storeScreenshot($leadRedirect, $uploadedFile);
             }
         }
-
-        return $lead->leadRedirect;
+        throw new Exception('Link is empty for lead ' . $lead->id);
     }
 
     /**
