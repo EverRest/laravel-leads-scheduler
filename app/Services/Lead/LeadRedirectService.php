@@ -106,7 +106,6 @@ final class LeadRedirectService
             if ($uploadedFile && $uploadedFile->isValid()) {
                 return $this->storeScreenshot($leadRedirect, $uploadedFile);
             }
-            Log::error($uploadedFile->getErrorMessage());
         }
         throw new Exception('Failed to create file for lead ' . $lead->id);
     }

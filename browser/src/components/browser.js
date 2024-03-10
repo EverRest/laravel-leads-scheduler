@@ -115,7 +115,7 @@ class Browser {
         let screenshot;
         try {
             console.log('Navigating to URL:', url);
-            await page.goto(url, {waitUntil: 'networkidle0', timeout: 0}).then(async () => {
+            await page.goto(url, {waitUntil: 'networkidle0', timeout: 60000}).then(async () => {
                 screenshot = await page.screenshot({
                     omitBackground: true,
                     encoding: 'binary'
