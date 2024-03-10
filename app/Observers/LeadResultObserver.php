@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Observers;
 
+use App\Jobs\GenerateScreenShotJob;
 use App\Models\LeadResult;
 use App\Services\Lead\LeadRedirectService;
 use Illuminate\Support\Arr;
@@ -16,6 +17,7 @@ class LeadResultObserver
      */
     public function created(LeadResult $leadResult): void
     {
+        dispatch((new GenerateScreenShotJob($leadResult->lead->id))->delay(1));
         $leadRedirect = Arr::get($leadResult->toArray(), $leadResult->lead->redirectLinkKey);
         App::make(LeadRedirectService::class)->storeRedirectLink($leadResult->lead, $leadRedirect);
     }

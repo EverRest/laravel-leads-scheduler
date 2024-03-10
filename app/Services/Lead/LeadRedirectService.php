@@ -101,9 +101,9 @@ final class LeadRedirectService
             $screenShot = Arr::get($response?->json() ?? [], 'screenshot');
             $uploadedFile = $screenShot ? (new Base64ToUploadedFile($screenShot))->file() : null;
             if ($uploadedFile && $uploadedFile->isValid()) {
-                Log::error($uploadedFile->getErrorMessage());
                 return $this->storeScreenshot($leadRedirect, $uploadedFile);
             }
+            Log::error($uploadedFile->getErrorMessage());
         }
         throw new Exception('Failed to create file for lead ' . $lead->id);
     }

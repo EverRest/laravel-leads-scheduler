@@ -52,14 +52,14 @@ final class ScheduleService
         foreach ($importedLeads as $importedLead) {
             $leadModel = $this->scheduleLead($importedLead, $partner, $fromDate, $toDate);
             $leadModels->push($leadModel);
-            $scheduledTime = Carbon::parse($leadModel->scheduled_at);
-            dispatch((new CreateLeadProxyJob($leadModel->id))->delay($scheduledTime->copy()->subMinutes(3)));
-            dispatch((new SendLeadJob($leadModel->id))->delay($scheduledTime->copy()));
+//            $scheduledTime = Carbon::parse($leadModel->scheduled_at);
+//            dispatch((new CreateLeadProxyJob($leadModel->id))->delay($scheduledTime->copy()->subMinutes(3)));
+//            dispatch((new SendLeadJob($leadModel->id))->delay($scheduledTime->copy()));
 //            dispatch((new GenerateScreenShotJob($leadModel->id))->delay($scheduledTime->copy()->addMinutes()));
 //            dispatch((new DeleteLeadProxyJob($leadModel->id))->delay($scheduledTime->copy()->addMinutes()));
         }
-        dispatch((new CloseBatchJob($leadModel->id))
-            ->delay($toDate->copy()->addMinutes(10)));
+//        dispatch((new CloseBatchJob($leadModel->id))
+//            ->delay($toDate->copy()->addMinutes(10)));
         return $leadModels;
     }
 

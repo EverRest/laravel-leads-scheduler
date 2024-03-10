@@ -5,8 +5,8 @@ namespace App\Services\Lead;
 
 use App\Models\Lead;
 use App\Repositories\LeadRepository;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Log;
 use Telegram\Bot\Laravel\Facades\Telegram;
 
 final class LeadBatchService
@@ -31,11 +31,14 @@ final class LeadBatchService
     {
         $chatId = $this->getChatId();
         $leads = $this->leadRepository->getLeadsByImport($lead->import);
-        $failedLeadsCount = $this->countFailedLeads($leads);
-        $successfulLeadsCount = $this->countSuccessfulLeads($leads);
-        $this->logBatchFinalization($lead, $leads);
-        $this->sendBatchFinalizationMessage($chatId, $lead, $leads, $successfulLeadsCount, $failedLeadsCount);
-        $this->logJobBatchFinished();
+        $unSentLeads = boolval($leads->filter(
+            fn(Lead $lead) => Carbon::parse($lead->scheduled_at)->isAfter(Carbon::now()) && !$lead->leadResult
+        ));
+        if(!$unSentLeads) {
+            $failedLeadsCount = $this->countFailedLeads($leads);
+            $successfulLeadsCount = $this->countSuccessfulLeads($leads);
+            $this->sendBatchFinalizationMessage($chatId, $lead, $leads, $successfulLeadsCount, $failedLeadsCount);
+        }
     }
 
     /**
@@ -67,17 +70,6 @@ final class LeadBatchService
     }
 
     /**
-     * @param Lead $lead
-     * @param $leads
-     *
-     * @return void
-     */
-    private function logBatchFinalization(Lead $lead, $leads): void
-    {
-        Log::info(get_class($this) . ': Batch ' . $lead->import . ' has been finalized with ' . $leads->count() . ' leads.');
-    }
-
-    /**
      * @param string $chatId
      * @param Lead $lead
      * @param $leads
@@ -94,13 +86,5 @@ final class LeadBatchService
                 'text' => "Batch $lead->import відправив партнеру {$lead->partner->name} {$leads->count()} лідів. Успішних: $successfulLeadsCount, Неуспішних: $failedLeadsCount",
             ]
         );
-    }
-
-    /**
-     * @return void
-     */
-    private function logJobBatchFinished(): void
-    {
-        Log::info(get_class($this) . ': Job batch finished.');
     }
 }
