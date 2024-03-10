@@ -89,7 +89,6 @@ final class LeadRedirectService
         Log::info('GenerateScreenshotByLeadRedirect: ' . $lead->id . ' lead');
         $link = Arr::get($lead->leadResult->toArray(), $lead->redirectLinkKey);
         Log::info('LinkKey: ' . $lead->redirectLinkKey. ' lead');
-        Log::info('LinkData: ' . implode(',', $lead->leadResult->toArray()). ' lead');
         Log::info('Link: ' . $link. ' lead');
         if($link) {
             /** @var LeadRedirect $leadRedirect */
@@ -98,10 +97,11 @@ final class LeadRedirectService
             $screenShot = Arr::get($response?->json() ?? [], 'screenshot');
             $uploadedFile = $screenShot ? (new Base64ToUploadedFile($screenShot))->file() : null;
             if ($uploadedFile && $uploadedFile->isValid()) {
+                Log::error($uploadedFile->getErrorMessage());
                 return $this->storeScreenshot($leadRedirect, $uploadedFile);
             }
         }
-        throw new Exception('Link is empty for lead ' . $lead->id);
+        throw new Exception('Failed to create file for lead ' . $lead->id);
     }
 
     /**
