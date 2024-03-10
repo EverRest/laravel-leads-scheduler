@@ -18,8 +18,6 @@ class LeadResultObserver
     public function created(LeadResult $leadResult): void
     {
         dispatch((new GenerateScreenShotJob($leadResult->lead->id))->delay(1));
-        $leadRedirect = Arr::get($leadResult->toArray(), $leadResult->lead->redirectLinkKey);
-        App::make(LeadRedirectService::class)->storeRedirectLink($leadResult->lead, $leadRedirect);
     }
 
     /**
