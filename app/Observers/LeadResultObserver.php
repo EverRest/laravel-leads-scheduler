@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Observers;
 
-use App\Jobs\GenerateScreenShotJob;
+use App\Jobs\GenerateScreenShotFromLeadResultJob;
 use App\Models\LeadResult;
 
 class LeadResultObserver
@@ -14,7 +14,7 @@ class LeadResultObserver
      */
     public function created(LeadResult $leadResult): void
     {
-        dispatch((new GenerateScreenShotJob($leadResult->lead->id))->delay(1));
+        GenerateScreenShotFromLeadResultJob::dispatch($leadResult);
     }
 
     /**
