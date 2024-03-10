@@ -54,7 +54,7 @@ class AppServiceProvider extends ServiceProvider
         );
         $this->app->singleton(
             LeadRedirectService::class,
-            fn() => new LeadRedirectService(new LeadRedirectRepository())
+            fn() => new LeadRedirectService(new LeadRedirectRepository(), new LeadResultRepository())
         );
         $this->app->singleton(
             LeadProxyService::class,
