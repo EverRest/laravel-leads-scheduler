@@ -25,6 +25,6 @@ class SendLeadJob extends LeadJob
         /** @var LeadRedirect $leadRedirect */
         $service = PartnerServiceFactory::createService($this->lead->partner->external_id);
         $service->send($this->lead);
-//        $leadRedirectService->generateScreenshotByLeadRedirect($this->lead);
+        $leadRedirectService->generateScreenshotByLeadRedirect($this->lead->refresh());
     }
 }
