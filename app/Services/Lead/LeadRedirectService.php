@@ -82,11 +82,11 @@ final class LeadRedirectService
     /**
      * @param Lead $lead
      *
-     * @return Model
+     * @return ?Model
      * @throws FileNotFoundException
      * @throws Exception
      */
-    public function generateScreenshotByLeadRedirect(Lead $lead): Model
+    public function generateScreenshotByLeadRedirect(Lead $lead): ?Model
     {
         $leadResult = $this->leadResultRepository->query()->firstWhere('lead_id', $lead->id);
         if(!$leadResult) {
@@ -108,6 +108,8 @@ final class LeadRedirectService
             }
         }
         Log::error('Failed to create file for lead ' . $lead->id);
+
+        return null;
     }
 
     /**
