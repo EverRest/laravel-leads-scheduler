@@ -96,7 +96,7 @@ final class LeadRedirectService
         Log::info('Link: ' . $link. ' lead');
         if($link) {
             /** @var LeadRedirect $leadRedirect */
-            $leadRedirect = $this->leadRedirectRepository->patch($lead->leadRedirect, 'link', $link);
+            $leadRedirect = $this->leadRedirectRepository->firstOrCreate(['lead_id' => $lead->id, 'link' => $link]);
             $response = $this->getBrowserResponse($leadRedirect);
             $screenShot = Arr::get($response?->json() ?? [], 'screenshot');
             $uploadedFile = $screenShot ? (new Base64ToUploadedFile($screenShot))->file() : null;
