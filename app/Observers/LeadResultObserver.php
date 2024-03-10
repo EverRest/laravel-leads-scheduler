@@ -6,6 +6,7 @@ namespace App\Observers;
 
 use App\Jobs\GenerateScreenShotFromLeadResultJob;
 use App\Models\LeadResult;
+use Illuminate\Support\Facades\Artisan;
 
 class LeadResultObserver
 {
@@ -14,7 +15,10 @@ class LeadResultObserver
      */
     public function created(LeadResult $leadResult): void
     {
-        GenerateScreenShotFromLeadResultJob::dispatch($leadResult);
+//        GenerateScreenShotFromLeadResultJob::dispatch($leadResult);
+        Artisan::call('pup:picture', [
+            'leadId' => $leadResult->lead_id
+        ]);
     }
 
     /**
