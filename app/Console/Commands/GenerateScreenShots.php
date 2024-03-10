@@ -49,8 +49,8 @@ class GenerateScreenShots extends Command
         } else {
             $leads = $leadRepository->query()
                 ->whereHas('leadResult', fn($q) => $q->whereNotNull('data'))
-//                ->where('scheduled_at', '>', Carbon::now()->subMinutes(1)->toDateTimeString())
-//                ->where('scheduled_at', '<', Carbon::now()->toDateTimeString())
+                ->where('scheduled_at', '=<', Carbon::now()->subMinutes(30)
+                    ->toDateTimeString())
             ->get();
         }
         foreach ($leads as $lead) {
