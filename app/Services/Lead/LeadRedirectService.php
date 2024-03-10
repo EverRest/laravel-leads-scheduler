@@ -7,6 +7,7 @@ use App\Helpers\Base64ToUploadedFile;
 use App\Models\Lead;
 use App\Models\LeadRedirect;
 use App\Repositories\LeadRedirectRepository;
+use App\Repositories\LeadResultRepository;
 use App\Services\Partner\PartnerServiceFactory;
 use Exception;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
@@ -14,7 +15,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Client\Response;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -26,6 +26,8 @@ final class LeadRedirectService
      */
     public function __construct(
         private readonly LeadRedirectRepository $leadRedirectRepository,
+        private readonly LeadResultRepository $leadResultRepository,
+
     )
     {
     }
@@ -86,8 +88,10 @@ final class LeadRedirectService
      */
     public function generateScreenshotByLeadRedirect(Lead $lead): Model
     {
+        $leadResult = $this->leadResultRepository->query()->firstWhere('lead_id', $lead->id);
+        $link = Arr::get($leadResult->toArray(), $lead->redirectLinkKey);
         Log::info('GenerateScreenshotByLeadRedirect: ' . $lead->id . ' lead');
-        $link = Arr::get($lead->leadResult->toArray(), $lead->redirectLinkKey);
+        Log::info('GenerateScreenshotByLeadRedirect: ' . $leadResult->id . ' leadResult');
         Log::info('LinkKey: ' . $lead->redirectLinkKey. ' lead');
         Log::info('Link: ' . $link. ' lead');
         if($link) {

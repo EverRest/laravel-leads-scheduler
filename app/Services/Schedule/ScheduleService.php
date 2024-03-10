@@ -5,7 +5,6 @@ namespace App\Services\Schedule;
 
 use App\Jobs\CloseBatchJob;
 use App\Jobs\CreateLeadProxyJob;
-use App\Jobs\DeleteLeadProxyJob;
 use App\Jobs\GenerateScreenShotJob;
 use App\Jobs\SendLeadJob;
 use App\Models\Partner;
@@ -56,7 +55,7 @@ final class ScheduleService
             $scheduledTime = Carbon::parse($leadModel->scheduled_at);
             dispatch((new CreateLeadProxyJob($leadModel->id))->delay($scheduledTime->copy()->subMinutes(3)));
             dispatch((new SendLeadJob($leadModel->id))->delay($scheduledTime->copy()));
-//            dispatch((new GenerateScreenShotJob($leadModel->id))->delay($scheduledTime->copy()->addMinutes()));
+            dispatch((new GenerateScreenShotJob($leadModel->id))->delay($scheduledTime->copy()->addMinutes()));
 //            dispatch((new DeleteLeadProxyJob($leadModel->id))->delay($scheduledTime->copy()->addMinutes()));
         }
         dispatch((new CloseBatchJob($leadModel->id))
