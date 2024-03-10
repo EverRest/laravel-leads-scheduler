@@ -118,20 +118,20 @@ class Lead extends Model
     /**
      * @return Attribute
      */
-//    public function redirectLinkKey(): Attribute
-//    {
-//        return Attribute::make(
-//            get: function () {
-//                if($this->leadResult) {
-//                    return match ($this->partner->external_id) {
-//                        '1' => 'data.extras.redirect.url',
-//                        '2' => 'data.data.redirect_url',
-//                        '3' => 'data.auto_login_url',
-//                        default => throw new InvalidArgumentException('Invalid partner_id'),
-//                    };
-//                }
-//                throw new Exception('Lead result not found.');
-//            },
-//        );
-//    }
+    public function redirectLinkKey(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                if($this->leadResult) {
+                    return match ($this->partner->external_id) {
+                        '1' => 'data.extras.redirect.url',
+                        '2' => 'data.data.redirect_url',
+                        '3' => 'data.auto_login_url',
+                        default => throw new InvalidArgumentException('Invalid partner_id'),
+                    };
+                }
+                throw new Exception('Lead result not found.');
+            },
+        );
+    }
 }
