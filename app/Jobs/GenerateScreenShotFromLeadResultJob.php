@@ -20,6 +20,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -28,13 +29,16 @@ class GenerateScreenShotFromLeadResultJob
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    private LeadResultRepository $leadResultRepository;
+        private LeadRedirectRepository $leadRedirectRepository;
+        private LeadRedirectService $leadRedirectService;
+
     public function __construct(
-        private readonly LeadResultRepository $leadResultRepository,
-        private readonly LeadRedirectRepository $leadRedirectRepository,
-        private readonly LeadRedirectService $leadRedirectService,
     )
     {
-
+        $this->leadResultRepository = App::make(LeadResultRepository::class);
+        $this->leadRedirectRepository = App::make(LeadRedirectRepository::class);
+        $this->leadRedirectService = App::make(LeadRedirectService::class);
     }
 
     /**

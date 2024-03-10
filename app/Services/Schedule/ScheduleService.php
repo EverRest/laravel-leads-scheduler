@@ -3,10 +3,6 @@ declare(strict_types=1);
 
 namespace App\Services\Schedule;
 
-use App\Jobs\CloseBatchJob;
-use App\Jobs\CreateLeadProxyJob;
-use App\Jobs\GenerateScreenShotJob;
-use App\Jobs\SendLeadJob;
 use App\Models\Partner;
 use App\Repositories\LeadRepository;
 use App\Repositories\PartnerRepository;
