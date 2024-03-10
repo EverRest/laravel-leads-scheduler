@@ -23,6 +23,7 @@ final class PasswordGenerator
         }
         $password .= rand(1, 1000);
         $password .= strtoupper(Str::random(1));
+        $password .= strtolower(Str::random(1));
 
         return $password;
     }
