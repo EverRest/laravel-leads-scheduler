@@ -73,7 +73,7 @@ abstract class PartnerService
     protected function SaveLeadResult(Lead $lead, Response $response): void
     {
         $this->leadRepository
-            ->update($lead->id, [
+            ->update($lead, [
                 'status' => $response->status(),
                 'data' => $response->json() ?? [],
             ]);
