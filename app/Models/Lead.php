@@ -72,7 +72,7 @@ class Lead extends Model
     protected $casts = [
         'scheduled_at' => 'datetime',
         'is_sent' => 'boolean',
-        'data' => 'array',
+        'data' => 'json',
     ];
 
     /**
