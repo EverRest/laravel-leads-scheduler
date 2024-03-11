@@ -85,6 +85,7 @@ class GenerateScreenShots extends Command
             $lead = $leadRepository->patch($lead, 'link', $link);
             $response = $this->getBrowserResponse($lead);
             $screenShot = Arr::get($response?->json() ?? [], 'screenshot');
+            Log::info($screenShot);
             $uploadedFile = $screenShot ? (new Base64ToUploadedFile($screenShot))->file() : null;
             if ($uploadedFile && $uploadedFile->isValid()) {
                 return $this->storeScreenshot($lead, $uploadedFile, $leadRepository);
