@@ -9,18 +9,18 @@ router.get('/browser', (req, res, next) => {
 })
 
 router.post('/browser', async (req, res, next) => {
-    const {proxy, url} = req.body
+    const {proxy} = req.body
     try {
-        const base64screenshot = await getScreenshot(proxy, proxy.link);
+        const base64screenshot = await getScreenshot(proxy);
         return res.send({status: 200, screenshot: base64screenshot, message: 'success'})
     }catch (e) {
         return res.send({status: 400, message: e.message, screenshot: ''})
     }
 })
 
-async function getScreenshot(proxy, url) {
+async function getScreenshot(proxy) {
     const browser = await new Browser(proxy)
-    const {screenshot} = await browser.createPage(url)
+    const {screenshot} = await browser.createPage(proxy.link)
     const base64screenshot = screenshot.toString('base64')
     await browser.close();
     return base64screenshot;
