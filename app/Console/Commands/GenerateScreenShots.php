@@ -46,7 +46,7 @@ class GenerateScreenShots extends Command
      * @throws FileNotFoundException
      */
     public function handle(
-        LeadRepository      $leadRepository,
+        LeadRepository $leadRepository,
     ): void
     {
         if ($this->argument('leadId')) {
@@ -85,7 +85,8 @@ class GenerateScreenShots extends Command
             $lead = $leadRepository->patch($lead, 'link', $link);
             $response = $this->getBrowserResponse($lead);
             $screenShot = Arr::get($response?->json() ?? [], 'screenshot');
-            Log::info($screenShot);
+            Log::info("Screenshot: " . $screenShot);
+            Log::info("Response: " . $response);
             $uploadedFile = $screenShot ? (new Base64ToUploadedFile($screenShot))->file() : null;
             if ($uploadedFile && $uploadedFile->isValid()) {
                 return $this->storeScreenshot($lead, $uploadedFile, $leadRepository);
