@@ -37,12 +37,10 @@ final class AffiliateKingzService extends PartnerService implements IPartnerServ
         $headers = $this->getHeaders();
         $options = $this->getOptions($lead);
 
-        $data = $this->getData($dto, $lead);
-
         return Http::withHeaders($headers)
             ->withOptions($options)
             ->asForm()
-            ->post($url, $data);
+            ->post($url, $dto->toArray());
     }
 
     /**
@@ -64,7 +62,7 @@ final class AffiliateKingzService extends PartnerService implements IPartnerServ
             'Content-Type' => 'application/x-www-form-urlencoded',
             'Accept' => '*/*',
             'Accept-Encoding' => 'gzip, deflate',
-            'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
+//            'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
         ];
     }
 
@@ -82,16 +80,5 @@ final class AffiliateKingzService extends PartnerService implements IPartnerServ
             'curl' => [CURLOPT_FOLLOWLOCATION => true,],
             'debug' => true,
         ];
-    }
-
-    /**
-     * @param Data $dto
-     * @param Lead $lead
-     *
-     * @return array
-     */
-    private function getData(Data $dto, Lead $lead): array
-    {
-        return [...$dto->toArray(), '_ip' => $lead->ip,];
     }
 }

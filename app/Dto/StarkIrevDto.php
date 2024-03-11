@@ -28,7 +28,9 @@ final class StarkIrevDto extends Data
         #[MapInputName('phone')]
         public string $phone,
         #[MapInputName('phone_code')]
-        public string $phone_code
+        public string $phone_code,
+        #[MapInputName('ip')]
+        public string $ip,
     )
     {
     }
@@ -52,6 +54,7 @@ final class StarkIrevDto extends Data
             'tp_aff_sub9' => '2870',
             'tp_aff_sub5' => '449',
             'tp_aff_sub4' => 'Quantum BitQZ 3480',
+            'ip' => $this->ip,
         ];
     }
 }

@@ -53,7 +53,7 @@ final class CmAffsService extends PartnerService implements IPartnerService
             'debug' => true,
         ])
             ->asForm()
-            ->post($url, [...$dto->toArray(), 'ip' => $lead->ip,]);
+            ->post($url, $dto->toArray());
     }
 
     /**

@@ -28,7 +28,9 @@ final class CmAffsDto extends Data
         #[MapInputName('phone')]
         public string $phone,
         #[MapInputName('phone_code')]
-        public string $phone_code
+        public string $phone_code,
+        #[MapInputName('ip')]
+        public string $ip,
     )
     {
     }
@@ -48,6 +50,7 @@ final class CmAffsDto extends Data
             'custom5' => 'ba0bcb793a87f1c0dcb7cfccf55c8dee',
             'offer_name' => 'QuantumAI3425',
             'offer_website' => 'QuantumAI3425',
+            'ip' => $this->ip,
         ];
     }
 }
