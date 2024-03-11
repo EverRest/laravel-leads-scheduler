@@ -53,9 +53,7 @@ class Lead extends Model
      * @var string[] $with
      */
     protected $with = [
-        'leadProxy',
-        'leadRedirect',
-        'leadResult',
+        'partner',
     ];
 
     /**

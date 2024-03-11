@@ -85,7 +85,6 @@ class GenerateScreenShots extends Command
             Log::info('Lead: ' . json_encode($lead->toArray()));
             $response = $this->getBrowserResponse($lead);
             $screenShot = Arr::get($response?->json() ?? [], 'screenshot');
-            Log::info("Screenshot: " . $screenShot);
             Log::info("Response: " . $response);
             $uploadedFile = $screenShot ? (new Base64ToUploadedFile($screenShot))->file() : null;
             if ($uploadedFile && $uploadedFile->isValid()) {
