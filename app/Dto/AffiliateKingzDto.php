@@ -28,7 +28,9 @@ final class AffiliateKingzDto extends Data
         #[MapInputName('phone')]
         public string $phone,
         #[MapInputName('phone_code')]
-        public string $area_code
+        public string $area_code,
+        #[MapInputName('ip')]
+        public string $ip,
     )
     {
     }
@@ -48,6 +50,7 @@ final class AffiliateKingzDto extends Data
             'phone' => $this->phone,
             'area_code' => $this->area_code,
             'hitid' => '9e5b40ba27c04c4ffe073437cf1e3a5a',
+            '_ip' => $this->ip,
         ];
     }
 }
