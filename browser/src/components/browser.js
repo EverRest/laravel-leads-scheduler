@@ -7,10 +7,10 @@ class Browser {
     proxy;
     constructor (proxy) {
         console.log(proxy)
-
         puppeteer.use(StealthPlugin())
         this.proxy = proxy
         const arg = ['--disable-gpu', '--disable-setuid-sandbox', '--no-sandbox', '--no-zygote' ]
+        console.log(proxy);
         return (async () => {
             this.browser = await puppeteer.launch({
                 executablePath: '/usr/bin/chromium-browser',
@@ -104,8 +104,10 @@ class Browser {
 
         try {
             await page.goto(url, {waitUntil: 'networkidle0', timeout: 0}).then(async () => {
+                console.log('After page.goto');
+                const currentTimestampInSeconds = Math.floor(Date.now() / 1000);
                 screenshot = await page.screenshot({
-                    // path: './example.png'
+                    path: '../storage/app/public/screenshots/' + currentTimestampInSeconds + '.png',
                     omitBackground: true,
                     encoding: 'binary'
                 });

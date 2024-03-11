@@ -10,7 +10,8 @@ router.get('/browser', (req, res, next) => {
 router.post('/browser', async (req, res, next) => {
     const {proxy, url} = req.body
     let base64screenshot = "";
-
+console.log('Proxy:' + proxy)
+console.log('Proxy:' + url)
     try {
         const browser = await new Browser(proxy)
         const {page, screenshot} = await browser.createPage(url)
