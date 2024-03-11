@@ -77,10 +77,8 @@ abstract class PartnerService
             ->update($lead, [
                 'status' => $response->status(),
                 'data' => $result,
-                'link' =>  $this->getAutoLoginUrl($result),
+                'link' =>  $this->getAutoLoginUrl($result??[]),
             ]);
-        Log::info('LinkKey: ' . $lead->redirectLinkKey . ' lead');
-        Log::info('Link: ' .  $this->getAutoLoginUrl($result) . ' lead');
         $this->leadResultRepository
             ->firstOrCreate([
                 'lead_id' => $lead->id,
