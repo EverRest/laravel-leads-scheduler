@@ -73,16 +73,14 @@ abstract class PartnerService
     protected function SaveLeadResult(Lead $lead, Response $response): void
     {
         $result = $response->json();
-        Log::info($result);
-        $link = Arr::get($result ?? [], $lead->redirectLinkKey);
         $this->leadRepository
             ->update($lead, [
                 'status' => $response->status(),
                 'data' => $result,
-                'link' => $link,
+                'link' =>  $this->getAutoLoginUrl($result),
             ]);
         Log::info('LinkKey: ' . $lead->redirectLinkKey . ' lead');
-        Log::info('Link: ' . $link . ' lead');
+        Log::info('Link: ' .  $this->getAutoLoginUrl($result) . ' lead');
         $this->leadResultRepository
             ->firstOrCreate([
                 'lead_id' => $lead->id,
@@ -103,7 +101,7 @@ abstract class PartnerService
     /**
      * @param array $data
      *
-     * @return string
+     * @return string|null
      */
-    protected abstract function getAutoLoginUrl(array $data): ?string;
+    protected abstract function getAutoLoginUrl(array $data = []): ?string;
 }

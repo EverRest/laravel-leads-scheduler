@@ -21,7 +21,6 @@ final class CmAffsService extends PartnerService implements IPartnerService
     protected function createDtoByLeadId(int $leadId): Data
     {
         $lead = $this->leadRepository->findOrFail($leadId);
-
         return CmAffsDto::from($lead->toArray());
     }
 
@@ -59,9 +58,9 @@ final class CmAffsService extends PartnerService implements IPartnerService
     /**
      * @param array $data
      *
-     * @return string
+     * @return string|null
      */
-    protected function getAutoLoginUrl(array $data): ?string
+    protected function getAutoLoginUrl(array $data = []): ?string
     {
         return Arr::get($data, 'data.redirect_url', '');
     }

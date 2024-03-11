@@ -38,6 +38,7 @@ final class StarkIrevService extends PartnerService implements IPartnerService
         return Http::withHeaders([
             'Content-Type' => 'application/x-www-form-urlencoded',
             'x-api-key' => 'fdb03b91-7ffc-4c9b-84bc-5cae4bacd446',
+            'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
             'Accept' => '*/*',
             'Content-Length' => '364',
         ])
@@ -47,9 +48,9 @@ final class StarkIrevService extends PartnerService implements IPartnerService
     /**
      * @param array $data
      *
-     * @return string
+     * @return string|null
      */
-        protected function getAutoLoginUrl(array $data): ?string
+        protected function getAutoLoginUrl(array $data = []): ?string
     {
         return Arr::get($data, 'auto_login_url', '');
     }
