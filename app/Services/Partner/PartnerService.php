@@ -8,8 +8,8 @@ use App\Repositories\LeadProxyRepository;
 use App\Repositories\LeadRepository;
 use App\Repositories\LeadResultRepository;
 use App\Services\Proxy\AstroService;
-use Exception;
 use Illuminate\Http\Client\Response;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Spatie\LaravelData\Data;
@@ -72,11 +72,17 @@ abstract class PartnerService
      */
     protected function SaveLeadResult(Lead $lead, Response $response): void
     {
+        $result = $response->json();
+        Log::info($result);
+        $link = Arr::get($result ?? [], $lead->redirectLinkKey);
         $this->leadRepository
             ->update($lead, [
                 'status' => $response->status(),
-                'data' => $response->json() ?? [],
+                'data' => $result,
+                'link' => $link,
             ]);
+        Log::info('LinkKey: ' . $lead->redirectLinkKey . ' lead');
+        Log::info('Link: ' . $link . ' lead');
         $this->leadResultRepository
             ->firstOrCreate([
                 'lead_id' => $lead->id,
