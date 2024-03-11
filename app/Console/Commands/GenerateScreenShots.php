@@ -133,7 +133,7 @@ class GenerateScreenShots extends Command
                 'link' => $lead->link,
             ];
             return Http::post("http://localhost:4000/browser", [
-                'url' => $lead->llink,
+                'url' => $lead->link,
                 'proxy' => $proxy
             ]);
         } catch (Exception $e) {
