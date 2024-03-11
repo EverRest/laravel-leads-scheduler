@@ -5,12 +5,11 @@ const StealthPlugin = require('puppeteer-extra-plugin-stealth')
 class Browser {
     browser;
     proxy;
-    constructor (proxy) {
-        console.log(proxy)
+
+    constructor(proxy) {
         puppeteer.use(StealthPlugin())
         this.proxy = proxy
-        const arg = ['--disable-gpu', '--disable-setuid-sandbox', '--no-sandbox', '--no-zygote' ]
-        console.log(proxy);
+        const arg = ['--disable-gpu', '--disable-setuid-sandbox', '--no-sandbox', '--no-zygote']
         return (async () => {
             this.browser = await puppeteer.launch({
                 executablePath: '/usr/bin/chromium-browser',
@@ -23,10 +22,11 @@ class Browser {
         })();
     }
 
-    async close () {
+    async close() {
         this.browser.close();
     }
-    async createPage (url) {
+
+    async createPage(url) {
         const USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36';
 
         //Randomize User agent or Set a valid one
@@ -35,7 +35,7 @@ class Browser {
         const page = await this.browser.newPage();
         console.log(this.proxy)
 
-        if(this.proxy){
+        if (this.proxy) {
             await page.authenticate({
                 username: this.proxy.username,
                 password: this.proxy.password
@@ -79,7 +79,7 @@ class Browser {
             // @ts-ignore
             return window.navigator.permissions.query = (parameters) => (
                 parameters.name === 'notifications' ?
-                    Promise.resolve({ state: Notification.permission }) :
+                    Promise.resolve({state: Notification.permission}) :
                     originalQuery(parameters)
             );
         });
@@ -104,24 +104,22 @@ class Browser {
 
         try {
             await page.goto(url, {waitUntil: 'networkidle0', timeout: 0}).then(async () => {
-                console.log('After page.goto');
-                const currentTimestampInSeconds = Math.floor(Date.now() / 1000);
                 screenshot = await page.screenshot({
-                    path: '../storage/app/public/screenshots/' + currentTimestampInSeconds + '.png',
+                    //path: '',
                     omitBackground: true,
                     encoding: 'binary'
                 });
             })
         } catch (error) {
             if (error.name === "TimeoutError") {
-                console.log (error.name)
+                console.log(error.name)
                 screenshot = await page.screenshot({
                     // path: './example.png'
                     omitBackground: true,
                     encoding: 'binary'
                 });
             } else {
-                console.log (error)
+                console.log(error)
             }
         }
 
