@@ -15,6 +15,11 @@ final class LeadRepository extends Repository
     protected string $model = Lead::class;
 
     /**
+     * @var int $default_limit
+     */
+    protected int $default_limit = 1000;
+
+    /**
      * @return Collection
      */
     public function getLeadsToSend(): Collection

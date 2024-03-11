@@ -8,6 +8,7 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 final class LeadController extends Controller
 {
@@ -28,8 +29,8 @@ final class LeadController extends Controller
      */
     public function __invoke(Request $request): JsonResponse
     {
-        $leads = $this->leadRepository->list($request->all());
+        $leads = $this->leadRepository->getPaginatedList($request->all());
 
-        return Response::data($leads);
+        return response()->json($leads, ResponseAlias::HTTP_OK);
     }
 }

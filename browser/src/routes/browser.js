@@ -1,29 +1,27 @@
 const { Router } = require('express')
 const Browser = require('../components/browser')
 const router = Router()
-const fs = require('fs').promises; // Using promises version for async/await
-const path = require('path');
 
 router.get('/browser', (req, res, next) => {
-    res.send({message: 'success'})
+    console.log(req.query)
+    res.send({message: "success"})
 })
 
 router.post('/browser', async (req, res, next) => {
-    const {proxy} = req.body
+    const {proxy, url} = req.body
+    let base64screenshot = "";
+
     try {
-        const base64screenshot = await getScreenshot(proxy);
-        return res.send({status: 200, screenshot: base64screenshot, message: 'success'})
+        const browser = await new Browser(proxy)
+        const {page, screenshot} = await browser.createPage(url)
+        base64screenshot = screenshot.toString("base64")
+        await browser.close();
+
+        return res.send({status: 200, screenshot: base64screenshot})
     }catch (e) {
-        return res.send({status: 400, message: e.message, screenshot: ''})
+        console.log(e)
+        return res.send({status: 400, screenshot: base64screenshot})
     }
 })
-
-async function getScreenshot(proxy) {
-    const browser = await new Browser(proxy)
-    const {screenshot} = await browser.createPage(proxy.link)
-    const base64screenshot = screenshot.toString('base64')
-    await browser.close();
-    return base64screenshot;
-}
 
 module.exports = router

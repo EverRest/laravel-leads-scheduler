@@ -6,17 +6,19 @@ class Browser {
     browser;
     proxy;
     constructor (proxy) {
+        console.log(proxy)
+
         puppeteer.use(StealthPlugin())
         this.proxy = proxy
         const arg = ['--disable-gpu', '--disable-setuid-sandbox', '--no-sandbox', '--no-zygote' ]
         return (async () => {
             this.browser = await puppeteer.launch({
-                headless: true,
                 executablePath: '/usr/bin/chromium-browser',
                 args: proxy ? [...arg,
                     `--proxy-server=${proxy.protocol}://${proxy.host}:${proxy.port}`,
                 ] : [...arg],
             });
+
             return this;
         })();
     }
@@ -25,31 +27,22 @@ class Browser {
         this.browser.close();
     }
     async createPage (url) {
-        const page = await this.setupPage();
-        await this.setPageProxy(page);
-        await this.setPageViewPort(page);
-        await this.setUserAgent(page);
-        await this.setPageSettings(page);
-        console.log(url);
-        let screenshot = await this.captureScreenshot(page, url);
-        return {page, screenshot};
-    }
+        const USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36';
 
-    async setupPage() {
-        return await this.browser.newPage();
-    }
+        //Randomize User agent or Set a valid one
+        const userAgent = randomUseragent.getRandom();
+        const UA = userAgent || USER_AGENT;
+        const page = await this.browser.newPage();
+        console.log(this.proxy)
 
-    async setPageProxy(page) {
         if(this.proxy){
             await page.authenticate({
                 username: this.proxy.username,
                 password: this.proxy.password
-            });
-            console.log(this.proxy)
+            })
         }
-    }
 
-    async setPageViewPort(page) {
+        //Randomize viewport size
         await page.setViewport({
             width: 1920 + Math.floor(Math.random() * 100),
             height: 1280 + Math.floor(Math.random() * 100),
@@ -58,25 +51,21 @@ class Browser {
             isLandscape: false,
             isMobile: false,
         });
-    }
 
-    async setUserAgent(page) {
-        const USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36';
-        const userAgent = randomUseragent.getRandom();
-        const UA = userAgent || USER_AGENT;
         await page.setUserAgent(UA);
         await page.setJavaScriptEnabled(true);
         await page.setDefaultNavigationTimeout(0);
-    }
 
-    async setPageSettings(page) {
         await page.evaluateOnNewDocument(() => {
+            // Pass webdriver check
             Object.defineProperty(navigator, 'webdriver', {
                 get: () => false,
             });
         });
 
         await page.evaluateOnNewDocument(() => {
+            // Pass chrome check
+
             // @ts-ignore
             window.chrome = {
                 runtime: {},
@@ -110,47 +99,22 @@ class Browser {
                 get: () => ['en-US', 'en'],
             });
         });
-    }
 
-    async captureScreenshotWithRetry(page, url, maxRetries = 3) {
-        let screenshot;
-        let error;
+        let screenshot
 
-        for (let retry = 0; retry < maxRetries; retry++) {
-            try {
-                await page.goto(url, { waitUntil: 'networkidle0', timeout: 60000 });
-                screenshot = await page.screenshot({
-                    omitBackground: true,
-                    encoding: 'binary'
-                });
-                break;
-            } catch (caughtError) {
-                error = caughtError;
-                console.error(`Error during attempt ${retry + 1}:`, error.message);
-            }
-        }
-
-        if (!screenshot) {
-            console.error(`Failed to capture screenshot after ${maxRetries} attempts. Last error:`, error);
-        }
-
-        return screenshot;
-    }
-
-    async   captureScreenshot(page, url) {
-        let screenshot;
         try {
-            console.log('Navigating to URL:', url);
             await page.goto(url, {waitUntil: 'networkidle0', timeout: 0}).then(async () => {
                 screenshot = await page.screenshot({
+                    // path: './example.png'
                     omitBackground: true,
                     encoding: 'binary'
                 });
             })
         } catch (error) {
             if (error.name === "TimeoutError") {
-                console.log (error)
+                console.log (error.name)
                 screenshot = await page.screenshot({
+                    // path: './example.png'
                     omitBackground: true,
                     encoding: 'binary'
                 });
@@ -158,8 +122,11 @@ class Browser {
                 console.log (error)
             }
         }
-        return screenshot;
+
+
+        return {page, screenshot};
     }
+
 }
 
 module.exports = Browser

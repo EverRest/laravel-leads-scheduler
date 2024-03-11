@@ -3,12 +3,11 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
-use App\Models\LeadResult;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
+use Illuminate\Support\Collection as IlluminateCollection;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Contracts\Pagination\Paginator;
@@ -17,44 +16,56 @@ use Throwable;
 class Repository
 {
     /**
-     * @var string
+     * @var string $model
      */
     protected string $model;
+
+    /**
+     * @var string $default_order
+     */
+    protected string $default_order = 'DESC';
+
+    /**
+     * @var string $default_sort
+     */
+    protected string $default_sort = 'id';
+
+    /**
+     * @var int $default_limit
+     */
+    protected int $default_limit = 10;
+
+    /**
+     * @var array
+     */
+    protected array $with = [];
 
     /**
      * Get a list of models
      *
      * @param array $data
      *
-     * @return Collection
+     * @return IlluminateCollection
      */
-    public function list(array $data = []): Collection
+    public function getList(array $data = []): IlluminateCollection
     {
-        $query = $this->search($data);
-//        $this->filter(
-//            $query,
-//            Arr::except(
-//                $data,
-//                [
-//                    Config::get('pagination.search_key'),
-//                    Config::get('pagination.sort_key'),
-//                    Config::get('pagination.order_key'),
-//                    Config::get('pagination.limit_key'),
-//                    Config::get('pagination.page_key')
-//                ]
-//            )
-//        );
-        $this->sort(
-            $query,
-            Arr::only(
-                $data,
-                [
-                    Config::get('pagination.sort_key'),
-                    Config::get('pagination.order_key')
-                ]
-            ),
-        );
-        return $query->lockForUpdate()->get();
+        $query = $this->listQuery($data);
+
+        return $query->get();
+    }
+
+    /**
+     * Get a list of models
+     *
+     * @param array $data
+     *
+     * @return Paginator
+     */
+    public function getPaginatedList(array $data = []): Paginator
+    {
+        $query = $this->listQuery($data);
+
+        return $this->paginate($query, $data);
     }
 
     /**
@@ -67,7 +78,25 @@ class Repository
          */
         $model = App::make($this->model);
 
-        return $model::query()->lockForUpdate();
+        return $model::query();
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return mixed
+     */
+    protected function listQuery(array $data): mixed
+    {
+        $query = $this->search($data);
+        $query = $this->with($query,);
+        $this->filter(
+            $query,
+            Arr::except($data, ['search', 'limit', 'page', 'sort', 'order'])
+        );
+        $this->sort($query, Arr::only($data, ['sort', 'order',]),);
+
+        return $query;
     }
 
     /**
