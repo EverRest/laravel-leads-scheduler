@@ -30,8 +30,8 @@ class Browser {
         await this.setPageViewPort(page);
         await this.setUserAgent(page);
         await this.setPageSettings(page);
+        console.log(url);
         let screenshot = await this.captureScreenshot(page, url);
-        console.log(screenshot);
         return {page, screenshot};
     }
 
@@ -137,7 +137,7 @@ class Browser {
         return screenshot;
     }
 
-    async captureScreenshot(page, url) {
+    async   captureScreenshot(page, url) {
         let screenshot;
         try {
             console.log('Navigating to URL:', url);
