@@ -62,6 +62,7 @@ class GenerateScreenShots extends Command
                 ->get();
         }
         foreach ($leads as $lead) {
+            $this->info('GenerateScreenShots: ' . $lead->id . ' lead');
             $this->generateScreenshotByLeadRedirect($lead, $leadRepository);
             Log::info('GenerateScreenShots: ' . $lead->id . ' lead');
         }
