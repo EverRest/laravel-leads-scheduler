@@ -30,7 +30,9 @@ class Browser {
         await this.setPageViewPort(page);
         await this.setUserAgent(page);
         await this.setPageSettings(page);
+        console.log(url);
         let screenshot = await this.captureScreenshot(page, url);
+        console.log(screenshot);
         return {page, screenshot};
     }
 
