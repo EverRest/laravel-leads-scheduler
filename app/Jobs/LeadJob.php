@@ -22,6 +22,11 @@ class LeadJob implements ShouldQueue
     protected Lead $lead;
 
     /**
+     * @var int $timeout
+     */
+    protected int $timeout = 600;
+
+    /**
      * Create a new job instance.
      */
     public function __construct(protected int $leadId)
