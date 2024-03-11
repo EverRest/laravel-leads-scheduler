@@ -11,7 +11,7 @@ router.get('/browser', (req, res, next) => {
 router.post('/browser', async (req, res, next) => {
     const {proxy, url} = req.body
     try {
-        console.log(req.body, proxy, url)
+        console.log( 'body: ' + req.body, proxy, url)
         const { screenshot, filename } = await getScreenshot(proxy, url);
         const base64screenshot = await getScreenshot(proxy, url);
         const savePath = path.join(__dirname, 'files', filename);

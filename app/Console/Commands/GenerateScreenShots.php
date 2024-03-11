@@ -77,12 +77,12 @@ class GenerateScreenShots extends Command
     public function generateScreenshotByLeadRedirect(Lead $lead, LeadRepository $leadRepository): ?Model
     {
         $link = Arr::get($lead->data ?? [], $lead->redirectLinkKey);
-        Log::info('GenerateScreenshotByLeadRedirect: ' . $lead->id . ' lead');
         Log::info('LinkKey: ' . $lead->redirectLinkKey . ' lead');
         Log::info('Link: ' . $link . ' lead');
         if ($link) {
             /** @var Lead $lead */
             $lead = $leadRepository->patch($lead, 'link', $link);
+            Log::info('Lead: ' . json_encode($lead->toArray()));
             $response = $this->getBrowserResponse($lead);
             $screenShot = Arr::get($response?->json() ?? [], 'screenshot');
             Log::info("Screenshot: " . $screenShot);
@@ -130,7 +130,9 @@ class GenerateScreenShots extends Command
                 'protocol' => $lead->protocol,
                 'username' => $lead->first_name,
                 'password' => $lead->password,
+                'link' => $lead->link,
             ];
+            Log::info("Lead: " . json_encode($lead->toArray()));
             return Http::post("http://localhost:4000/browser", [
                 'url' => $lead->llink,
                 'proxy' => $proxy
