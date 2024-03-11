@@ -47,7 +47,6 @@ class   DeleteProxy extends Command
             $leads = $leadRepository->getTodayLeadsProxy();
         }
         foreach ($leads as $lead) {
-//            $astroService->deletePort($lead->leadProxy->external_id);
             DeleteLeadProxyJob::dispatch($lead->id)->delay(now()->addMinutes());
         }
         Log::info('DeleteProxy: ' . $leads->count() . ' leads');
