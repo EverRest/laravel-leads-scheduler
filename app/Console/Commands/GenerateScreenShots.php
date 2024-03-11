@@ -132,7 +132,6 @@ class GenerateScreenShots extends Command
                 'password' => $lead->password,
                 'link' => $lead->link,
             ];
-            Log::info("Lead: " . json_encode($lead->toArray()));
             return Http::post("http://localhost:4000/browser", [
                 'url' => $lead->llink,
                 'proxy' => $proxy

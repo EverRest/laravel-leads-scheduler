@@ -25,7 +25,6 @@ class Browser {
         this.browser.close();
     }
     async createPage (url) {
-        console.log(url);
         const page = await this.setupPage();
         await this.setPageProxy(page);
         await this.setPageViewPort(page);
@@ -119,7 +118,6 @@ class Browser {
 
         for (let retry = 0; retry < maxRetries; retry++) {
             try {
-                console.log(`Navigating to URL (Attempt ${retry + 1}):`, url);
                 await page.goto(url, { waitUntil: 'networkidle0', timeout: 60000 });
                 screenshot = await page.screenshot({
                     omitBackground: true,
