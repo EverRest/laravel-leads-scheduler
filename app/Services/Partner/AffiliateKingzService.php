@@ -92,6 +92,6 @@ final class AffiliateKingzService extends PartnerService implements IPartnerServ
      */
     private function getData(Data $dto, Lead $lead): array
     {
-        return [...$dto->toArray(), '_ip' => $lead->leadProxy->ip,];
+        return [...$dto->toArray(), '_ip' => $lead->ip,];
     }
 }

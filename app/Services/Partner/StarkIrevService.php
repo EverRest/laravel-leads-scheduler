@@ -41,7 +41,7 @@ final class StarkIrevService extends PartnerService implements IPartnerService
             'Accept' => '*/*',
             'Content-Length' => '364',
         ])
-            ->post($url, [...$dto->toArray(), 'ip' => $lead->leadProxy->ip,]);
+            ->post($url, [...$dto->toArray(), 'ip' => $lead->ip,]);
     }
 
     /**
