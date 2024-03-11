@@ -81,7 +81,6 @@ class GenerateScreenShots extends Command
         Log::info('LinkKey: ' . $lead->redirectLinkKey . ' lead');
         Log::info('Link: ' . $link . ' lead');
         if ($link) {
-            $this->info($link);
             /** @var Lead $lead */
             $lead = $leadRepository->patch($lead, 'link', $link);
             $response = $this->getBrowserResponse($lead);
@@ -91,7 +90,7 @@ class GenerateScreenShots extends Command
                 return $this->storeScreenshot($lead, $uploadedFile, $leadRepository);
             }
         }
-        Log::error('Failed to create file for lead ' . $lead->id);
+        Log::error('No redirect link for lead ' . $lead->id);
 
         return null;
     }
