@@ -4,9 +4,6 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Helpers\PasswordGenerator;
-use App\Services\Partner\AffiliateKingzService;
-use App\Services\Partner\CmAffsService;
-use App\Services\Partner\StarkIrevService;
 use Exception;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,7 +12,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use InvalidArgumentException;
-use PHPUnit\Framework\MockObject\RuntimeException;
 
 /**
  * Class Lead
@@ -40,7 +36,17 @@ class Lead extends Model
         'password',
         'country',
         'partner_id',
+        'protocol',
         'scheduled_at',
+        'country_name',
+        'ip',
+        'proxy_external_id',
+        'host',
+        'port',
+        'link',
+        'file',
+        'status',
+        'data',
     ];
 
     /**
@@ -66,6 +72,7 @@ class Lead extends Model
     protected $casts = [
         'scheduled_at' => 'datetime',
         'is_sent' => 'boolean',
+        'data' => 'array',
     ];
 
     /**

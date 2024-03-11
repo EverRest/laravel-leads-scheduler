@@ -50,8 +50,7 @@ abstract class PartnerService
     /**
      * @param Lead $lead
      *
-     * @return string
-     * @throws Exception
+     * @return string|null
      */
     public function send(Lead $lead): ?string
     {
@@ -62,7 +61,7 @@ abstract class PartnerService
             Log::error($response->status() . " Partner $lead->partner_id is not available.");
         }
 
-        return $this->getAutoLoginUrl($response->json()??[]);
+        return $this->getAutoLoginUrl($response->json() ?? []);
     }
 
     /**
@@ -73,6 +72,11 @@ abstract class PartnerService
      */
     protected function SaveLeadResult(Lead $lead, Response $response): void
     {
+        $this->leadRepository
+            ->update($lead->id, [
+                'status' => $response->status(),
+                'data' => $response->json() ?? [],
+            ]);
         $this->leadResultRepository
             ->firstOrCreate([
                 'lead_id' => $lead->id,

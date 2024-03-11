@@ -31,14 +31,9 @@ final class LeadBatchService
     {
         $chatId = $this->getChatId();
         $leads = $this->leadRepository->getLeadsByImport($lead->import);
-        $unSentLeads = boolval($leads->filter(
-            fn(Lead $lead) => Carbon::parse($lead->scheduled_at)->isAfter(Carbon::now()) && !$lead->leadResult
-        ));
-        if(!$unSentLeads) {
-            $failedLeadsCount = $this->countFailedLeads($leads);
-            $successfulLeadsCount = $this->countSuccessfulLeads($leads);
-            $this->sendBatchFinalizationMessage($chatId, $lead, $leads, $successfulLeadsCount, $failedLeadsCount);
-        }
+        $failedLeadsCount = $this->countFailedLeads($leads);
+        $successfulLeadsCount = $this->countSuccessfulLeads($leads);
+        $this->sendBatchFinalizationMessage($chatId, $lead, $leads, $successfulLeadsCount, $failedLeadsCount);
     }
 
     /**

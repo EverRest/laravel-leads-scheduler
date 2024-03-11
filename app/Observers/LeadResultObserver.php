@@ -14,10 +14,6 @@ class LeadResultObserver
      */
     public function created(LeadResult $leadResult): void
     {
-//        GenerateScreenShotFromLeadResultJob::dispatch($leadResult);
-        Artisan::call('lead:generate-screen-shots', [
-            'leadId' => $leadResult->lead_id
-        ]);
     }
 
     /**

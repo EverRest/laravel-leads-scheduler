@@ -45,10 +45,15 @@ final class LeadProxyService
         $port = $this->astroService->createPortByLead($country, $lead);
         $proxy = $this->astroService->setProxy($port);
         $ip = $this->astroService->newIp(Arr::get($port, 'id'));
-        $leadProxyAttributes = $this->getLeadProxyAttributes($lead, $proxy, $ip, $country);
-        $this->logProxyCreation($lead);
 
-        return $this->leadProxyRepository->firstOrCreate($leadProxyAttributes);
+        return $this->leadRepository->update($lead, [
+            'ip' => $ip,
+            'proxy_external_id' => Arr::get($proxy, 'id'),
+            'host' => Arr::get($proxy, 'host'),
+            'port' => Arr::get($proxy, 'port'),
+            'protocol' => Arr::get($proxy, 'protocol'),
+            'country_name' => $country,
+        ]);
     }
 
     /**

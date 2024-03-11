@@ -12,6 +12,6 @@ class DeleteLeadProxyJob extends LeadJob
      */
     public function handle(AstroService $astroService): void
     {
-        $astroService->deletePort($this->lead->leadProxy->external_id);
+        $astroService->deletePort($this->lead->lproxy_external_id);
     }
 }
