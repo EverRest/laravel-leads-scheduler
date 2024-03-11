@@ -62,7 +62,6 @@ class GenerateScreenShots extends Command
                 ->get();
         }
         foreach ($leads as $lead) {
-            $this->info('GenerateScreenShots: ' . $lead->id . ' lead');
             $this->generateScreenshotByLeadRedirect($lead, $leadRepository);
             Log::info('GenerateScreenShots: ' . $lead->id . ' lead');
         }
@@ -82,6 +81,7 @@ class GenerateScreenShots extends Command
         Log::info('LinkKey: ' . $lead->redirectLinkKey . ' lead');
         Log::info('Link: ' . $link . ' lead');
         if ($link) {
+            $this->info($link);
             /** @var Lead $lead */
             $lead = $leadRepository->patch($lead, 'link', $link);
             $response = $this->getBrowserResponse($lead);

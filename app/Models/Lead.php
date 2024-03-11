@@ -129,11 +129,11 @@ class Lead extends Model
     {
         return Attribute::make(
             get: function () {
-                if($this->leadResult) {
+                if($this->data) {
                     return match ($this->partner->external_id) {
-                        '1' => 'data.extras.redirect.url',
-                        '2' => 'data.data.redirect_url',
-                        '3' => 'data.auto_login_url',
+                        '1' => 'extras.redirect.url',
+                        '2' => 'data.redirect_url',
+                        '3' => 'auto_login_url',
                         default => throw new InvalidArgumentException('Invalid partner_id'),
                     };
                 }
