@@ -4,14 +4,10 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Models\Lead;
-use App\Models\LeadRedirect;
 use App\Repositories\LeadRepository;
-use App\Services\Lead\LeadBatchService;
-use App\Services\Lead\LeadRedirectService;
 use App\Services\Partner\PartnerServiceFactory;
 use Exception;
 use Illuminate\Console\Command;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Collection;
 use Throwable;
 
