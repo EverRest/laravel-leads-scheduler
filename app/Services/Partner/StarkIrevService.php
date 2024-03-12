@@ -43,8 +43,8 @@ final class StarkIrevService extends PartnerService implements IPartnerService
             'timeout' => 20000,
             'curl' => [
                 CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_RETURNTRANSFER => true, // Added for better handling of the response
-                CURLOPT_POSTFIELDS => http_build_query($dto->toArray()), // Send POST data as URL-encoded form data
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_POSTFIELDS => http_build_query($dto->toArray()),
             ],
             'debug' => true,
         ])
