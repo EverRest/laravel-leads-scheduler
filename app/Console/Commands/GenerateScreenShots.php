@@ -6,7 +6,6 @@ namespace App\Console\Commands;
 
 use App\Helpers\Base64ToUploadedFile;
 use App\Models\Lead;
-use App\Models\LeadRedirect;
 use App\Repositories\LeadRepository;
 use Exception;
 use Illuminate\Console\Command;
