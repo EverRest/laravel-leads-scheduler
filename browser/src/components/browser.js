@@ -5,7 +5,6 @@ const StealthPlugin = require('puppeteer-extra-plugin-stealth')
 class Browser {
     browser;
     proxy;
-
     constructor(proxy) {
         puppeteer.use(StealthPlugin())
         this.proxy = proxy
@@ -16,6 +15,7 @@ class Browser {
                 // args: proxy ? [...arg,
                 //     `--proxy-server=${proxy.protocol}://${proxy.host}:${proxy.port}`,
                 // ] : [...arg],
+                args: [...arg],
             });
 
             return this;
