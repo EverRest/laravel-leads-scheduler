@@ -26,11 +26,9 @@ class SendLeads extends Command
 
     /**
      * @param LeadRepository $leadRepository
-     * @param LeadRedirectService $leadRedirectService
      */
     public function __construct(
         private readonly LeadRepository $leadRepository,
-        private readonly LeadRedirectService $leadRedirectService,
     )
     {
         parent::__construct();
@@ -73,9 +71,8 @@ class SendLeads extends Command
         Lead                $lead,
     ): void
     {
-        /** @var LeadRedirect $leadRedirect */
         $service = PartnerServiceFactory::createService($lead->partner->external_id);
-        $leadRedirect =  $service->send($lead);
+        $service->send($lead);
 //        $isBatchClosed = $this->leadRepository->getBatchResult($lead->import);
 //        if ($isBatchClosed) {
 //            $this->leadBatchService->closeBatchByLead($lead);

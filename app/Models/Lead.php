@@ -82,30 +82,6 @@ class Lead extends Model
     }
 
     /**
-     * @return HasOne
-     */
-    public function leadProxy(): HasOne
-    {
-        return $this->hasOne(LeadProxy::class);
-    }
-
-    /**
-     * @return HasOne
-     */
-    public function leadRedirect(): HasOne
-    {
-        return $this->hasOne(LeadRedirect::class);
-    }
-
-    /**
-     * @return HasOne
-     */
-    public function leadResult(): HasOne
-    {
-        return $this->hasOne(LeadResult::class);
-    }
-
-    /**
      * @return Attribute
      */
     public function password(): Attribute

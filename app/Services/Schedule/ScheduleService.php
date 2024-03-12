@@ -52,7 +52,6 @@ final class ScheduleService
         foreach ($importedLeads as $importedLead) {
             $leadModel = $this->scheduleLead($importedLead, $partner, $fromDate, $toDate);
             $leadModels->push($leadModel);
-            $scheduledTime = Carbon::parse($leadModel->scheduled_at);
         }
         dispatch((new CloseBatchJob($leadModel->id))
             ->delay($toDate->copy()->addMinutes(10)));

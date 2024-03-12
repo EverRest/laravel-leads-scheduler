@@ -3,9 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Lead;
-use App\Models\LeadResult;
 use App\Observers\LeadObserver;
-use App\Observers\LeadResultObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -28,7 +26,6 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        LeadResult::observe(LeadResultObserver::class);
         Lead::observe(LeadObserver::class);
     }
 

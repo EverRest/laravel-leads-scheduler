@@ -41,6 +41,14 @@ final class StarkIrevService extends PartnerService implements IPartnerService
             'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
             'Accept' => '*/*',
             'Content-Length' => '364',
+        ])->withOptions([
+            'proxy' => "http://{$lead->first_name}:{$lead->password}@{$lead->lhost}:{$lead->port}",
+            'verify' => false,
+            'timeout' => 20000,
+            'curl' => [
+                CURLOPT_FOLLOWLOCATION => true,
+            ],
+            'debug' => true,
         ])
             ->post($url, $dto->toArray());
     }

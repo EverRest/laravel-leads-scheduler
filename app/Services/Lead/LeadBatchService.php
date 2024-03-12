@@ -1,11 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Services\Lead;
 
 use App\Models\Lead;
 use App\Repositories\LeadRepository;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Config;
 use Telegram\Bot\Laravel\Facades\Telegram;
 
