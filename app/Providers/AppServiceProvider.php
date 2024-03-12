@@ -29,37 +29,13 @@ class AppServiceProvider extends ServiceProvider
             fn() => new ScheduleService(new PartnerRepository(), new LeadRepository())
         );
         $this->app->singleton(
-            LeadResultService::class,
-            fn() => new LeadResultService(new LeadResultRepository(), new LeadRepository())
-        );
-        $this->app->singleton(
             LeadRepository::class,
             fn() => new LeadRepository()
-        );
-        $this->app->singleton(
-            LeadResultRepository::class,
-            fn() => new LeadResultRepository()
-        );
-        $this->app->singleton(
-            LeadRedirectRepository::class,
-            fn() => new LeadRedirectRepository()
         );
         $this->app->singleton(
             PartnerRepository::class,
             fn() => new PartnerRepository()
         );;
-        $this->app->singleton(
-            LeadResultService::class,
-            fn() => new LeadResultService(new LeadResultRepository(), new LeadRepository())
-        );
-        $this->app->singleton(
-            LeadRedirectService::class,
-            fn() => new LeadRedirectService(new LeadRedirectRepository(), new LeadResultRepository())
-        );
-        $this->app->singleton(
-            LeadProxyService::class,
-            fn() => new LeadProxyService(new LeadRepository(), new LeadProxyRepository(), new AstroService())
-        );
         $this->app->singleton(
             LeadBatchService::class,
             fn() => new LeadBatchService(new LeadRepository())
