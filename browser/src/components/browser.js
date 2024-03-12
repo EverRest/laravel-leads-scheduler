@@ -33,6 +33,7 @@ class Browser {
         const userAgent = randomUseragent.getRandom();
         const UA = userAgent || USER_AGENT;
         const page = await this.browser.newPage();
+        await page.setDefaultNavigationTimeout(30000);
 
         if (this.proxy) {
             console.log('Using proxy:', this.proxy.username, this.proxy.password, this.proxy.host, this.proxy.port);
