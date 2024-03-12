@@ -51,7 +51,7 @@ final class LeadBatchService
      */
     private function countFailedLeads($leads): int
     {
-        return $leads->filter(fn(Lead $lead) => !in_array($lead->leadResult?->status, ['200', '201']))->count();
+        return $leads->filter(fn(Lead $lead) => !in_array($lead->status, ['200', '201']))->count();
     }
 
     /**
@@ -61,7 +61,7 @@ final class LeadBatchService
      */
     private function countSuccessfulLeads($leads): int
     {
-        return $leads->filter(fn(Lead $lead) => in_array($lead->leadResult?->status, ['200', '201']))->count();
+        return $leads->filter(fn(Lead $lead) => in_array($lead->status, ['200', '201']))->count();
     }
 
     /**
