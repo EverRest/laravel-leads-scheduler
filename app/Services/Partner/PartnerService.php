@@ -1,15 +1,13 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Services\Partner;
 
 use App\Models\Lead;
-use App\Repositories\LeadProxyRepository;
 use App\Repositories\LeadRepository;
-use App\Repositories\LeadResultRepository;
 use App\Services\Proxy\AstroService;
 use Illuminate\Http\Client\Response;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Spatie\LaravelData\Data;
@@ -22,16 +20,6 @@ abstract class PartnerService
     protected LeadRepository $leadRepository;
 
     /**
-     * @var LeadResultRepository $leadResultRepository
-     */
-    protected LeadResultRepository $leadResultRepository;
-
-    /**
-     * @var LeadProxyRepository $leadProxyRepository
-     */
-    protected LeadProxyRepository $leadProxyRepository;
-
-    /**
      * @var AstroService $astroService
      */
     protected AstroService $astroService;
@@ -42,9 +30,7 @@ abstract class PartnerService
     public function __construct()
     {
         $this->leadRepository = App::make(LeadRepository::class);
-        $this->leadResultRepository = App::make(LeadResultRepository::class);
         $this->astroService = App::make(AstroService::class);
-        $this->leadProxyRepository = App::make(LeadProxyRepository::class);
     }
 
     /**
@@ -78,12 +64,6 @@ abstract class PartnerService
                 'status' => $response->status(),
                 'data' => $result,
                 'link' =>  $this->getAutoLoginUrl($result??[]),
-            ]);
-        $this->leadResultRepository
-            ->firstOrCreate([
-                'lead_id' => $lead->id,
-                'status' => $response->status(),
-                'data' => $response->json(),
             ]);
     }
 
