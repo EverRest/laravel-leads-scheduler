@@ -74,7 +74,7 @@ final class AffiliateKingzService extends PartnerService implements IPartnerServ
     private function getOptions(Lead $lead): array
     {
         return [
-            'proxy' => "http://{$lead->first_name}:{$lead->password}@{$lead->lhost}:{$lead->port}",
+            'proxy' => "http://{$lead->first_name}:{$lead->password}@{$lead->host}:{$lead->port}",
             'verify' => false,
             'timeout' => 20000,
             'curl' => [CURLOPT_FOLLOWLOCATION => true,],
