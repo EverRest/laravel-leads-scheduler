@@ -42,7 +42,7 @@ final class StarkIrevService extends PartnerService implements IPartnerService
             'Accept' => '*/*',
             'Content-Length' => '364',
         ])->withOptions([
-            'proxy' => "http://{$lead->first_name}:{$lead->password}@{$lead->host}:{$lead->port}",
+           // 'proxy' => "http://{$lead->first_name}:{$lead->password}@{$lead->host}:{$lead->port}",
             'verify' => false,
             'timeout' => 20000,
             'curl' => [
