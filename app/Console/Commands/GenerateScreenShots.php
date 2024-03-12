@@ -19,6 +19,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class GenerateScreenShots extends Command
 {
@@ -55,7 +56,8 @@ class GenerateScreenShots extends Command
             $leads->push($lead);
         } else {
             $leads = $leadRepository->query()
-                ->whereNotNull('data')
+                ->whereIn('status', [ResponseAlias::HTTP_OK, ResponseAlias::HTTP_CREATED])
+                ->whereNotNull('link')
                 ->where('scheduled_at', '>=', Carbon::now()->subMinutes(5)
                     ->toDateTimeString())
                 ->get();
