@@ -51,7 +51,7 @@ class SendLeads extends Command
             $leads = Collection::make();
             $leads->push($lead);
         } else {
-            $leads = $this->leadRepository->getLeadsWithoutProxy();
+            $leads = $this->leadRepository->getLeads();
         }
         $leads->each(
             fn(Lead $lead) => $this->sendLead($lead,)

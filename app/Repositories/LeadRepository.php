@@ -46,7 +46,8 @@ final class LeadRepository extends Repository
             ->where('is_sent', false)
             ->where('scheduled_at', '=<', Carbon::now()->addMinutes(1)->toDateTimeString())
             ->where('scheduled_at', '>', Carbon::now()->addMinutes(5    )->toDateTimeString())
-            ->whereDoesntHave('leadProxy')->get();
+            ->whereNotNull('proxy_external_id')
+            ->get();
     }
 
     /**
