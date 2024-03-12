@@ -94,25 +94,6 @@ class GenerateScreenShots extends Command
     }
 
     /**
-     * @param LeadRedirect $leadRedirect
-     *
-     * @return bool
-     */
-    private function validateLeadRedirect(LeadRedirect $leadRedirect): bool
-    {
-        $lead = $leadRedirect->lead;
-        if (!$leadRedirect->link) {
-            Log::error("Can't find redirect link for lead: {$lead->id}");
-            return false;
-        }
-        if (!$lead->leadProxy) {
-            Log::error("Can't find proxy for lead: $lead->id");
-            return false;
-        }
-        return true;
-    }
-
-    /**
      * @param Lead $lead
      *
      * @return Response|null
