@@ -15,7 +15,6 @@ class Browser {
                 args: proxy ? [...arg,
                     `--proxy-server=${proxy.protocol}://${proxy.host}:${proxy.port}`,
                 ] : [...arg],
-                // args: [...arg],
             });
 
             return this;
