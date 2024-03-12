@@ -107,7 +107,6 @@ class GenerateScreenShots extends Command
                 'protocol' => $lead->protocol,
                 'username' => $lead->first_name,
                 'password' => $lead->password,
-                'link' => $lead->link,
             ];
             return Http::post("http://localhost:4000/browser", [
                 'url' => $lead->link,

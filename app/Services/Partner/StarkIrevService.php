@@ -37,20 +37,18 @@ final class StarkIrevService extends PartnerService implements IPartnerService
 
         return Http::withHeaders([
             'Content-Type' => 'application/x-www-form-urlencoded',
-            'x-api-key' => 'fdb03b91-7ffc-4c9b-84bc-5cae4bacd446',
             'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
-            'Accept' => '*/*',
-            'Content-Length' => '364',
         ])->withOptions([
-           // 'proxy' => "http://{$lead->first_name}:{$lead->password}@{$lead->host}:{$lead->port}",
             'verify' => false,
             'timeout' => 20000,
             'curl' => [
                 CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_RETURNTRANSFER => true, // Added for better handling of the response
+                CURLOPT_POSTFIELDS => http_build_query($dto->toArray()), // Send POST data as URL-encoded form data
             ],
             'debug' => true,
         ])
-            ->post($url, $dto->toArray());
+            ->post($url);
     }
 
     /**
