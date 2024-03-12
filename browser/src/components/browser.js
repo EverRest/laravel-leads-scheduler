@@ -33,9 +33,9 @@ class Browser {
         const userAgent = randomUseragent.getRandom();
         const UA = userAgent || USER_AGENT;
         const page = await this.browser.newPage();
-        console.log(this.proxy)
 
         if (this.proxy) {
+            console.log('Using proxy:', this.proxy.username, this.proxy.password, this.proxy.host, this.proxy.port);
             await page.authenticate({
                 username: this.proxy.username,
                 password: this.proxy.password
