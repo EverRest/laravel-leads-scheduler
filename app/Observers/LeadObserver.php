@@ -20,6 +20,6 @@ class LeadObserver
         $scheduledTime = Carbon::parse($lead->scheduled_at);
         dispatch((new CreateLeadProxyJob($lead->id))->delay($scheduledTime->copy()->subMinutes()));
         dispatch((new SendLeadJob($lead->id))->delay($scheduledTime->copy()));
-        dispatch((new DeleteLeadProxyJob($lead->id))->delay($scheduledTime->copy()->addMinutes()));
+        dispatch((new DeleteLeadProxyJob($lead->id))->delay($scheduledTime->copy()->addMinutes(30)));
     }
 }
