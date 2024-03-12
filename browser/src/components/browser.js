@@ -103,7 +103,9 @@ class Browser {
         let screenshot
 
         try {
-            await page.goto(url, {waitUntil: 'networkidle0', timeout: 0}).then(async () => {
+            console.log('Before page.goto:', url);
+            await page.goto(url,  { waitUntil: 'networkidle0', timeout: 60000 }).then(async () => {
+                console.log('After page.goto');
                 screenshot = await page.screenshot({
                     //path: '',
                     omitBackground: true,
