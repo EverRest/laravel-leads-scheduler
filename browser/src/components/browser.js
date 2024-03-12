@@ -12,10 +12,10 @@ class Browser {
         return (async () => {
             this.browser = await puppeteer.launch({
                 executablePath: '/usr/bin/chromium-browser',
-                // args: proxy ? [...arg,
-                //     `--proxy-server=${proxy.protocol}://${proxy.host}:${proxy.port}`,
-                // ] : [...arg],
-                args: [...arg],
+                args: proxy ? [...arg,
+                    `--proxy-server=${proxy.protocol}://${proxy.host}:${proxy.port}`,
+                ] : [...arg],
+                // args: [...arg],
             });
 
             return this;
@@ -35,13 +35,13 @@ class Browser {
         const page = await this.browser.newPage();
         await page.setDefaultNavigationTimeout(30000);
 
-        // if (this.proxy) {
-        //     console.log('Using proxy:', this.proxy.username, this.proxy.password, this.proxy.host, this.proxy.port);
-        //     await page.authenticate({
-        //         username: this.proxy.username,
-        //         password: this.proxy.password
-        //     })
-        // }
+        if (this.proxy) {
+            console.log('Using proxy:', this.proxy.username, this.proxy.password, this.proxy.host, this.proxy.port);
+            await page.authenticate({
+                username: this.proxy.username,
+                password: this.proxy.password
+            })
+        }
 
         //Randomize viewport size
         await page.setViewport({
