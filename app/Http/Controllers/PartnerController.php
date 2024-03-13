@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Http\Controllers;
@@ -14,7 +15,7 @@ final class PartnerController extends Controller
     /**
      * @param PartnerRepository $partnerRepository
      */
-    public function __construct(private readonly PartnerRepository $partnerRepository)
+    final public function __construct(private readonly PartnerRepository $partnerRepository)
     {
     }
 
