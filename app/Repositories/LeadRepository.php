@@ -155,8 +155,8 @@ final class LeadRepository extends Repository
      */
     protected function filter($query, array $filter): Builder
     {
-        $from = Arr::get($filter, 'from', Carbon::today());
-        $to = Arr::get($filter, 'to', Carbon::tomorrow());
+        $from = Arr::get($filter, 'from', Carbon::today()->timestamp);
+        $to = Arr::get($filter, 'to', Carbon::tomorrow()->timestamp);
         $query->whereBetween('scheduled_at', [$from, $to]);
 
         return parent::filter($query, Arr::except($filter, ['from', 'to']));
