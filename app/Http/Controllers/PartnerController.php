@@ -27,7 +27,7 @@ final class PartnerController extends Controller
     public function __invoke(Request $request): JsonResponse
     {
         $attributes = $request->all();
-        $partners = $this->partnerRepository->list($attributes);
+        $partners = $this->partnerRepository->getList($attributes);
 
         return Response::data($partners);
     }
