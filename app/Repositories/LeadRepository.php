@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Models\Lead;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
@@ -18,6 +20,11 @@ final class LeadRepository extends Repository
      * @var int $default_limit
      */
     protected int $default_limit = 1000;
+
+    /**
+     * @var string $default_sort
+     */
+    protected string $default_sort = 'scheduled_at';
 
     /**
      * @return Collection
@@ -138,5 +145,20 @@ final class LeadRepository extends Repository
             ->where('partner_id', $partnerId)
             ->whereBetween('scheduled_at', [$fromDate, $toDate])
             ->pluck('scheduled_at');
+    }
+
+    /**
+     * @param $query
+     * @param array $filter
+     *
+     * @return Builder
+     */
+    protected function filter($query, array $filter): Builder
+    {
+        $from = Arr::get($filter, 'from', Carbon::today());
+        $to = Arr::get($filter, 'to', Carbon::tomorrow());
+        $query->whereBetween('scheduled_at', [$from, $to]);
+
+        return parent::filter($query, Arr::except($filter, ['from', 'to']));
     }
 }
