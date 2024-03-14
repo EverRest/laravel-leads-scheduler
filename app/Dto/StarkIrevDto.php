@@ -17,7 +17,7 @@ final class StarkIrevDto extends Data
      * @param string $phone_code
      * @param string $ip
      * @param string $offer_name
-     * @param string $offer_source
+     * @param string $traffic_source
      */
     public function __construct(
         #[MapInputName('first_name')]
@@ -36,8 +36,8 @@ final class StarkIrevDto extends Data
         public string $ip,
         #[MapInputName('offer_name')]
         public string $offer_name,
-        #[MapInputName('offer_source')]
-        public string $offer_source,
+        #[MapInputName('traffic_source')]
+        public string $traffic_source,
     )
     {
     }
@@ -55,7 +55,7 @@ final class StarkIrevDto extends Data
                 'email' => $this->email,
                 'phone' => $this->phone_code . $this->phone,
             ],
-            'tp_source' => $this->offer_source,
+            'tp_source' => $this->traffic_source,
             'tp_aff_sub' => '',
             'tp_aff_sub2' => '384jnc7fob1p',
             'tp_aff_sub9' => '2870',
