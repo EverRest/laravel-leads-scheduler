@@ -52,7 +52,7 @@ final class CmAffsDto extends Data
             'last_name' => $this->last_name,
             'password' => $this->password,
             'email' => $this->email,
-            'phone' => "+{$this->phone_code}{$this->phone}",
+            'phone' => $this->phone_code . $this->phone,
             'custom1' => $this->offer_name,
             'custom5' => 'ba0bcb793a87f1c0dcb7cfccf55c8dee',
             'offer_name' => $this->offer_name,
