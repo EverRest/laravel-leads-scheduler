@@ -15,6 +15,8 @@ final class StarkIrevDto extends Data
      * @param string $email
      * @param string $phone
      * @param string $phone_code
+     * @param string $ip
+     * @param string $offer_name
      */
     public function __construct(
         #[MapInputName('first_name')]

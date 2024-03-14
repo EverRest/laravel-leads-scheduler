@@ -16,6 +16,7 @@ final class AffiliateKingzDto extends Data
      * @param string $phone
      * @param string $area_code
      * @param string $ip
+     * @param string $offer_name
      */
     public function __construct(
         #[MapInputName('first_name')]

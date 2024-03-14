@@ -15,6 +15,9 @@ final class CmAffsDto extends Data
      * @param string $email
      * @param string $phone
      * @param string $phone_code
+     * @param string $ip
+     * @param string $offer_name
+     * @param string $offer_url
      */
     public function __construct(
         #[MapInputName('first_name')]
@@ -31,6 +34,10 @@ final class CmAffsDto extends Data
         public string $phone_code,
         #[MapInputName('ip')]
         public string $ip,
+        #[MapInputName('offer_name')]
+        public string $offer_name,
+        #[MapInputName('offer_url')]
+        public string $offer_url,
     )
     {
     }
@@ -46,10 +53,10 @@ final class CmAffsDto extends Data
             'password' => $this->password,
             'email' => $this->email,
             'phone' => "+{$this->phone_code}{$this->phone}",
-            'custom1' => 'QuantumAI3425',
+            'custom1' => $this->offer_name,
             'custom5' => 'ba0bcb793a87f1c0dcb7cfccf55c8dee',
-            'offer_name' => 'QuantumAI3425',
-            'offer_website' => 'QuantumAI3425',
+            'offer_name' => $this->offer_name,
+            'offer_website' => $this->offer_url,
             'ip' => $this->ip,
         ];
     }
