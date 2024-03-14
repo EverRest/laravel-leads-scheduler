@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Services\Schedule;
 
+use App\Helpers\PasswordGenerator;
 use App\Jobs\CloseBatchJob;
 use App\Jobs\CreateLeadProxyJob;
 use App\Jobs\DeleteLeadProxyJob;
@@ -187,7 +188,7 @@ final class ScheduleService
             'email' => Arr::get($importedLead, 'email'),
             'phone' => Arr::get($importedLead, 'phone'),
             'phone_code' => Arr::get($importedLead, 'area_code'),
-            'password' => Arr::get($importedLead, 'password'),
+            'password' => PasswordGenerator::generatePassword(),
             'country' => Arr::get($importedLead, 'country_code'),
             'country_name' => Arr::get($importedLead, 'country'),
             'traffic_source' => Arr::get($importedLead, 'traffic_source'),

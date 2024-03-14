@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Models;
@@ -16,7 +17,8 @@ class Partner extends Model
     protected $fillable = [
         'external_id',
         'name',
-        'data',
+        'code',
+        'dto_redirect_key',
     ];
 
     /**

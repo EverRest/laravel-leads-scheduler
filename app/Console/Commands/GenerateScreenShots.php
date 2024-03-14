@@ -78,8 +78,8 @@ class GenerateScreenShots extends Command
      */
     public function generateScreenshotByLeadRedirect(Lead $lead, LeadRepository $leadRepository): ?Model
     {
-        $link = Arr::get($lead->data ?? [], $lead->redirectLinkKey);
-        Log::info('LinkKey: ' . $lead->redirectLinkKey . ' lead');
+        $link = Arr::get($lead->data ?? [], $lead->partner->dto_redirect_key);
+        Log::info('LinkKey: ' . $lead->partner->dto_redirect_key . ' lead');
         Log::info('Link: ' . $link . ' lead');
         if ($link) {
             /** @var Lead $lead */
