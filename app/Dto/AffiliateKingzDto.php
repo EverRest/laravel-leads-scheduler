@@ -32,6 +32,8 @@ final class AffiliateKingzDto extends Data
         public string $area_code,
         #[MapInputName('ip')]
         public string $ip,
+        #[MapInputName('offer_name')]
+        public string $offer_name,
     )
     {
     }
@@ -46,7 +48,7 @@ final class AffiliateKingzDto extends Data
             'last_name' => $this->last_name,
             'password' => $this->password,
             'email' => $this->email,
-            'funnel' => 'QuantumProject3394',
+            'funnel' => $this->offer_name,
             'affid' => '22',
             'phone' => $this->phone,
             'area_code' => $this->area_code,

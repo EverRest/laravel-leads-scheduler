@@ -31,18 +31,18 @@ class BatchRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'leads' => [
-                'required',
-                'array',
-                new LeadPartnerRule($this->partner_id, $this->fromDate, $this->toDate)
-            ],
-            'leads.*.ip_data' => 'required|array',
-            'leads.*.ip_data.country' => 'required|string|min:2|max:50',
+            'leads' => ['required', 'array', new LeadPartnerRule($this->partner_id, $this->fromDate, $this->toDate)],
+            "leads.*.external_id" => "required|numeric",
             'leads.*.first_name' => 'required|string|min:2|max:50',
             'leads.*.last_name' => 'required|string|min:2|max:100',
             'leads.*.email' => 'required|email|min:2|max:100',
-            'leads.*.phone_phoneCode' => 'required|string|min:2|max:255',
+            'leads.*.area_code' => 'required|string|min:2|max:10',
+            'leads.*.country_code' => 'required|string|min:2|max:10',
+            'leads.*.country' => 'required|string|min:2|max:100',
             'leads.*.phone' => 'nullable|string|min:2|max:50',
+            'leads.*.offerName' => 'nullable|string|min:2|max:50',
+            'leads.*.offerUrl' => 'nullable|string|min:2|max:255',
+            'leads.*.traffic_source' => 'nullable|string|min:2|max:50',
             'partner_id' => 'required|numeric|exists:partners,external_id',
             'fromDate' => 'required|date|after:now',
             'toDate' => 'required|date|after:now',

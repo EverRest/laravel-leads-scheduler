@@ -31,6 +31,8 @@ final class StarkIrevDto extends Data
         public string $phone_code,
         #[MapInputName('ip')]
         public string $ip,
+        #[MapInputName('offer_name')]
+        public string $offer_name,
     )
     {
     }
@@ -46,14 +48,14 @@ final class StarkIrevDto extends Data
                 'last_name' => $this->last_name,
                 'password' => $this->password,
                 'email' => $this->email,
-                'phone' =>  "+$this->phone_code . $this->phone",
+                'phone' =>  "+{$this->phone_code}{$this->phone}",
             ],
-            'tp_source' => 'Quantum BitQZ 3480',
+            'tp_source' => $this->offer_name,
             'tp_aff_sub' => '',
             'tp_aff_sub2' => '384jnc7fob1p',
             'tp_aff_sub9' => '2870',
             'tp_aff_sub5' => '449',
-            'tp_aff_sub4' => 'Quantum BitQZ 3480',
+            'tp_aff_sub4' => $this->offer_name,
             'ip' => $this->ip,
         ];
     }

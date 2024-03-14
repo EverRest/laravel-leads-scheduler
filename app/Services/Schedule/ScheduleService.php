@@ -181,13 +181,18 @@ final class ScheduleService
         return [
             'partner_id' => $partner->id,
             'scheduled_at' => $freeSlot,
+            'external_id' => Arr::get($importedLead, 'external_id'),
             'first_name' => Arr::get($importedLead, 'first_name'),
             'last_name' => Arr::get($importedLead, 'last_name'),
             'email' => Arr::get($importedLead, 'email'),
             'phone' => Arr::get($importedLead, 'phone'),
-            'phone_code' => Arr::get($importedLead, 'phone_phoneCode'),
+            'phone_code' => Arr::get($importedLead, 'area_code'),
             'password' => Arr::get($importedLead, 'password'),
-            'country' => Arr::get($importedLead, 'ip_data.country'),
+            'country' => Arr::get($importedLead, 'country_code'),
+            'country_name' => Arr::get($importedLead, 'country'),
+            'traffic_source' => Arr::get($importedLead, 'traffic_source'),
+            'offer_name' => Arr::get($importedLead, 'offerName'),
+            'offer_url' => Arr::get($importedLead, 'offerUrl'),
             'import' => $partner->id . '-' . Carbon::now()->format(self::DEFAULT_TIME_FORMAT),
         ];
     }
