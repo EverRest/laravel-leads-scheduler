@@ -147,18 +147,18 @@ final class LeadRepository extends Repository
             ->pluck('scheduled_at');
     }
 
-    /**
-     * @param $query
-     * @param array $filter
-     *
-     * @return Builder
-     */
-    protected function filter($query, array $filter): Builder
-    {
-        $from = Arr::get($filter, 'from', Carbon::today()->timestamp);
-        $to = Arr::get($filter, 'to', Carbon::tomorrow()->timestamp);
-        $query->whereBetween('scheduled_at', [$from, $to]);
-
-        return parent::filter($query, Arr::except($filter, ['from', 'to']));
-    }
+//    /**
+//     * @param $query
+//     * @param array $filter
+//     *
+//     * @return Builder
+//     */
+//    protected function filter($query, array $filter): Builder
+//    {
+//        $from = Arr::get($filter, 'from', Carbon::today()->timestamp);
+//        $to = Arr::get($filter, 'to', Carbon::tomorrow()->timestamp);
+//        $query->whereBetween('scheduled_at', [$from, $to]);
+//
+//        return parent::filter($query, Arr::except($filter, ['from', 'to']));
+//    }
 }
