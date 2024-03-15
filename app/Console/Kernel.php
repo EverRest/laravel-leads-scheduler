@@ -14,7 +14,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         $schedule->command('lead:delete-proxy')->dailyAt('22:00');
-//        $schedule->command('lead:generate-screen-shots' )->everyFiveMinutes();
+        $schedule->command('lead:generate-screen-shots' )->everyFiveMinutes();
     }
 
     /**
