@@ -53,7 +53,7 @@ final class StarkIrevDto extends Data
                 'last_name' => $this->last_name,
                 'password' => $this->password,
                 'email' => $this->email,
-                'phone' => $this->phone_code . $this->phone,
+                'phone' => "+" . $this->phone_code . $this->phone,
             ],
             'tp_source' => $this->traffic_source,
             'tp_aff_sub' => '',
