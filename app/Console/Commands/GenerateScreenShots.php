@@ -59,8 +59,8 @@ class GenerateScreenShots extends Command
                 ->whereIn('status', [ResponseAlias::HTTP_OK, ResponseAlias::HTTP_CREATED])
                 ->whereNotNull('link')
                 ->whereNull('file')
-                ->where('scheduled_at', '>=', Carbon::today()
-                    ->toDateTimeString())
+                ->where('scheduled_at', '<=', Carbon::now()->toDateTimeString())
+                ->where('scheduled_at', '>=', Carbon::today()->toDateTimeString())
                 ->get();
         }
         foreach ($leads as $lead) {
