@@ -28,6 +28,6 @@ class SendLeadJob extends LeadJob
     {
         $service = PartnerServiceFactory::createService($this->lead->partner->external_id);
         $link = $service->send($this->lead);
-        if($link) Artisan::call('lead:generate-screen-shots', ['leadId' => $this->lead->id]);
+//        if($link) Artisan::call('lead:generate-screen-shots', ['leadId' => $this->lead->id]);
     }
 }
