@@ -51,4 +51,9 @@ return [
     'telegram' => [
         'chat_id' => env('TELEGRAM_CHAT_ID'),
     ],
+
+    'puppeteer' => [
+        'url' => env('PUPPETEER_URL', 'localhost'),
+        'port' => env('PUPPETEER_PORT', 4000),
+    ],
 ];

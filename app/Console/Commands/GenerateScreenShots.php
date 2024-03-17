@@ -16,6 +16,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -59,8 +60,12 @@ class GenerateScreenShots extends Command
                 ->whereIn('status', [ResponseAlias::HTTP_OK, ResponseAlias::HTTP_CREATED])
                 ->whereNotNull('link')
                 ->whereNull('file')
-                ->where('scheduled_at', '<=', Carbon::now()->toDateTimeString())
-                ->where('scheduled_at', '>=', Carbon::today()->toDateTimeString())
+                ->where('scheduled_at', '>=', Carbon::now()
+                    ->subHour()
+                    ->toDateTimeString()
+                )
+                ->where('scheduled_at', '>=', Carbon::today()
+                    ->toDateTimeString())
                 ->get();
         }
         foreach ($leads as $lead) {
@@ -103,6 +108,9 @@ class GenerateScreenShots extends Command
      */
     private function getBrowserResponse(Lead $lead): ?Response
     {
+        $browserHost = Config::get('services.puppeteer.url');
+        $browserPort = Config::get('services.puppeteer.port');
+
         try {
             $proxy = [
                 'host' => $lead->host,
@@ -111,10 +119,10 @@ class GenerateScreenShots extends Command
                 'username' => $lead->first_name,
                 'password' => $lead->password,
             ];
-            return Http::post("http://localhost:4000/browser", [
-                'url' => $lead->link,
-                'proxy' => $proxy
-            ]);
+            return Http::post(
+                "http://$browserHost:$browserPort/browser",
+                ['url' => $lead->link, 'proxy' => $proxy]
+            );
         } catch (Exception $e) {
             Log::error(get_class($this) . ": Screenshot was not generated for lead {$lead->id}. Reason: {$e->getMessage()}");
             return null;
