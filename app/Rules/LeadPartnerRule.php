@@ -35,7 +35,7 @@ class LeadPartnerRule implements ValidationRule
         /** @var ScheduleService $service */
         $service = App::make(ScheduleService::class);
         $count = $service->countFreeSlots($this->partnerId, Carbon::parse($this->from), Carbon::parse($this->to));
-        if ($count <= count($value)) {
+        if ($count < count($value)) {
             $fail("The number of leads exceeds the number of free slots for the partner.");
         }
     }
